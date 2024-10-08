@@ -1,4 +1,4 @@
-package sdkMigration
+package dbMigration
 
 import (
 	"os"
@@ -8,6 +8,7 @@ import (
 	"github.com/Furiady/skripsi/db-migration/dbMigration/command"
 	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/migration"
 	"github.com/Furiady/skripsi/db-migration/dbMigration/migrator"
+	
 	"gorm.io/gorm"
 )
 

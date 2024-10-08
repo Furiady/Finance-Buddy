@@ -2,7 +2,7 @@ package main
 
 import (
 	migration "github.com/Furiady/skripsi/db-migration/dbMigration"
-	postgre "github.com/Furiady/skripsi/db-migration/dbMigration/migrations/postgre"
+	postgre "github.com/Furiady/skripsi/db-migration/migrations/postgre"
 )
 
 func main() {
