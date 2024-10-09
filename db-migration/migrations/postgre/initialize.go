@@ -2,7 +2,7 @@
 package postgre
 
 import (
-	"github.com/Furiady/db-migration/dbMigration/helper/migration"
+	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/migration"
 	"gorm.io/gorm"
 )
 
