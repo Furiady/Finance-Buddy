@@ -3,10 +3,19 @@ package postgre
 
 import (
 	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/migration"
+
 	"gorm.io/gorm"
 )
 
 func InitializeMigrations(conn *gorm.DB) []migration.Migration {
 	var migrations = make([]migration.Migration, 0)
+	migrations = append(migrations, Migration_20241009095011(conn))
 	return migrations
-} 
+}
+
+func Migration_20241009095011(conn *gorm.DB) migration.Migration {
+	return &migration_20241009095011{
+		Conn: conn,
+	}
+}
+
