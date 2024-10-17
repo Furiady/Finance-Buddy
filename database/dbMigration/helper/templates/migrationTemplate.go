@@ -4,7 +4,7 @@ const MigrationsTemplate = `package {{.MigrationType}}
 
 import (
 	"gorm.io/gorm"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/file"
+	"database/dbMigration/helper/file"
 )
 
 type migration_{{.Version}} struct {

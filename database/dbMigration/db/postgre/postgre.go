@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/Furiady/skripsi/db-migration/dbMigration/config"
+	"database/dbMigration/config"
+
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )

@@ -3,9 +3,10 @@ package command
 import (
 	"strings"
 
-	"github.com/Furiady/skripsi/db-migration/dbMigration/handler"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/version"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/migrator"
+	"database/dbMigration/handler"
+	"database/dbMigration/helper/version"
+	"database/dbMigration/migrator"
+
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
 )

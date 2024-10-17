@@ -5,11 +5,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Furiady/skripsi/db-migration/dbMigration/db/postgre"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/connection"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/migration"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/version"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/migrator"
+	"database/dbMigration/db/postgre"
+	"database/dbMigration/helper/connection"
+	"database/dbMigration/helper/migration"
+	"database/dbMigration/helper/version"
+	"database/dbMigration/migrator"
+
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"gorm.io/gorm"

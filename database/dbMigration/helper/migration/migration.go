@@ -5,7 +5,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/version"
+	"database/dbMigration/helper/version"
 )
 
 type Migration interface {

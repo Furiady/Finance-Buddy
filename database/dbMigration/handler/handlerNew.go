@@ -6,10 +6,11 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/connection"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/migration"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/version"
+	"database/dbMigration/helper"
+	"database/dbMigration/helper/connection"
+	"database/dbMigration/helper/migration"
+	"database/dbMigration/helper/version"
+
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )

@@ -3,12 +3,13 @@ package dbMigration
 import (
 	"os"
 
+	"database/dbMigration/command"
+	"database/dbMigration/helper/migration"
+	"database/dbMigration/migrator"
+
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/command"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/migration"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/migrator"
-	
+
 	"gorm.io/gorm"
 )
 

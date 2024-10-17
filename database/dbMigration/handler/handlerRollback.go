@@ -3,8 +3,9 @@ package handler
 import (
 	"strings"
 
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/version"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/migrator"
+	"database/dbMigration/helper/version"
+	"database/dbMigration/migrator"
+
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )

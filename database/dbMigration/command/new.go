@@ -6,9 +6,10 @@ import (
 	"strings"
 	"time"
 
-	"github.com/Furiady/skripsi/db-migration/dbMigration/handler"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/connection"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/version"
+	"database/dbMigration/handler"
+	"database/dbMigration/helper/connection"
+	"database/dbMigration/helper/version"
+
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"github.com/urfave/cli/v2"

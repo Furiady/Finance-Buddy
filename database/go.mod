@@ -1,4 +1,4 @@
-module github.com/Furiady/skripsi/db-migration
+module database
 
 go 1.22.0
 

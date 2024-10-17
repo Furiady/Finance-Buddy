@@ -2,7 +2,7 @@ package postgre
 
 import (
 	"gorm.io/gorm"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/file"
+	"database/dbMigration/helper/file"
 )
 
 type migration_20241009095011 struct {

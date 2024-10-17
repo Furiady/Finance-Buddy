@@ -4,7 +4,7 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/templates"
+	"database/dbMigration/helper/templates"
 )
 
 type (

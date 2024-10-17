@@ -3,12 +3,13 @@ package handler
 import (
 	"sync"
 
-	"github.com/Furiady/skripsi/db-migration/dbMigration/config"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/connection"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/migration"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/migration/postgre"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/helper/version"
-	"github.com/Furiady/skripsi/db-migration/dbMigration/migrator"
+	"database/dbMigration/config"
+	"database/dbMigration/helper/connection"
+	"database/dbMigration/helper/migration"
+	"database/dbMigration/helper/migration/postgre"
+	"database/dbMigration/helper/version"
+	"database/dbMigration/migrator"
+
 	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 )
