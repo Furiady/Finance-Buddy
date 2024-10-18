@@ -1,0 +1,278 @@
+openapi: 3.0.0
+x-stoplight:
+  id: l97rg9k84kyv5
+info:
+  title: Common
+  version: '1.0'
+  contact: {}
+servers:
+  - url: 'http://localhost:9000'
+paths: {}
+components:
+  schemas:
+    User:
+      title: User
+      x-stoplight:
+        id: 8kgku1z0r2203
+      type: object
+      properties:
+        id:
+          type: string
+          x-stoplight:
+            id: 31b6w6xqxmzca
+        email:
+          type: string
+          x-stoplight:
+            id: 1n72kmjfef18w
+          format: email
+        username:
+          type: string
+          x-stoplight:
+            id: 0ho9rcd1l8i0k
+        password:
+          type: string
+          x-stoplight:
+            id: 6e8q5q6rgfbpa
+        pin:
+          type: string
+          x-stoplight:
+            id: ae1u3y3h69zhy
+        coin:
+          type: integer
+          x-stoplight:
+            id: 36ozdcnmswrc0
+        balance:
+          type: integer
+          x-stoplight:
+            id: 7slfwfn9da1oe
+          format: int64
+        records:
+          type: array
+          x-stoplight:
+            id: 0kc70mw2oyyei
+          items:
+            $ref: '#/components/schemas/Transaction'
+        quests:
+          type: array
+          x-stoplight:
+            id: kz2s7ja8gv2j6
+          items:
+            $ref: '#/components/schemas/Quest'
+        pets:
+          type: array
+          x-stoplight:
+            id: dehkxjqqcgz3q
+          items:
+            $ref: '#/components/schemas/Pet'
+        accessories:
+          x-stoplight:
+            id: 39nlxiz9try9r
+          type: array
+          items:
+            $ref: '#/components/schemas/Accessory'
+        themes:
+          type: array
+          x-stoplight:
+            id: 92tefon340mtk
+          items:
+            $ref: '#/components/schemas/Theme'
+      required:
+        - id
+        - email
+        - username
+        - password
+        - pin
+        - coin
+        - balance
+        - records
+        - quests
+        - pets
+        - accessories
+        - themes
+    Transaction:
+      title: Transaction
+      x-stoplight:
+        id: rlnsisl7n650x
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          x-stoplight:
+            id: ksyj0g4egoqxc
+        description:
+          type: string
+          x-stoplight:
+            id: dp3dv6xbewqdy
+        category:
+          type: string
+          x-stoplight:
+            id: 6s2cb1b1bumon
+        value:
+          type: integer
+          x-stoplight:
+            id: pnlq3j2xq5lk0
+        url:
+          type: string
+          x-stoplight:
+            id: kumfwjzkdiwye
+        createdAt:
+          type: string
+          x-stoplight:
+            id: bvrcwxnieka60
+      required:
+        - id
+        - title
+        - description
+        - category
+        - value
+        - url
+        - createdAt
+    Quest:
+      title: Quest
+      x-stoplight:
+        id: d7ir80842q8a6
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          x-stoplight:
+            id: 6l34oarznzi72
+        description:
+          type: string
+          x-stoplight:
+            id: wo7mw35kkk7l7
+        reward:
+          type: integer
+          x-stoplight:
+            id: l1g1xwvmdlan7
+        cooldown:
+          type: integer
+          x-stoplight:
+            id: kvvl7k592neb4
+        status:
+          type: boolean
+          x-stoplight:
+            id: o30txyg1nf5ir
+        updatedAt:
+          type: string
+          x-stoplight:
+            id: nfex64ztgs8fq
+      required:
+        - id
+        - title
+        - description
+        - reward
+        - cooldown
+        - status
+        - updatedAt
+    Pet:
+      title: Pet
+      x-stoplight:
+        id: i0w5toa1unj2a
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          x-stoplight:
+            id: 4dba08hrdagyn
+        price:
+          type: integer
+          x-stoplight:
+            id: uhk9jc6lfukkl
+        status:
+          type: boolean
+          x-stoplight:
+            id: zrdq5shsh42gv
+        url:
+          type: string
+          x-stoplight:
+            id: 62jw1l75f9qhc
+      required:
+        - id
+        - name
+        - price
+        - status
+        - url
+    Accessory:
+      title: Accessory
+      x-stoplight:
+        id: wd1ri9oohsjqi
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          x-stoplight:
+            id: epc7oxdvroqsn
+        price:
+          type: integer
+          x-stoplight:
+            id: eighuh90sua0l
+        status:
+          type: boolean
+          x-stoplight:
+            id: k6r30fagwrh8u
+        url:
+          type: string
+          x-stoplight:
+            id: 2eg5aqwt2ccep
+      required:
+        - id
+        - name
+        - price
+        - status
+        - url
+    Theme:
+      title: Theme
+      x-stoplight:
+        id: ktsw3azgdwc0x
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+          x-stoplight:
+            id: m0afnlt1dk6nm
+        price:
+          type: integer
+          x-stoplight:
+            id: 49lpnnsieeesr
+        status:
+          type: boolean
+          x-stoplight:
+            id: o71igc49klmup
+        url:
+          type: string
+          x-stoplight:
+            id: rlaohp9kfli04
+      required:
+        - id
+        - name
+        - price
+        - status
+        - url
+    BaseResponse:
+      title: BaseResponse
+      x-stoplight:
+        id: xa5yx093f05rx
+      type: object
+      properties:
+        message:
+          type: string
+          x-stoplight:
+            id: bvl6bx1zddh4x
+        timestamp:
+          type: string
+          x-stoplight:
+            id: 0ctzdhy6lexlo
+      required:
+        - message
+        - timestamp

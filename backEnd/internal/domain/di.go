@@ -4,7 +4,7 @@ import (
 	"go.uber.org/dig"
 )
 
-type UseCase struct {
+type Domain struct {
 	dig.In
 
 }

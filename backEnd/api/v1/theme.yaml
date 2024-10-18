@@ -1,0 +1,37 @@
+openapi: 3.0.0
+x-stoplight:
+  id: yi2esoaw142h7
+info:
+  contact: {}
+  title: theme
+  version: '1.0'
+  description: APIs regarding theme
+paths:
+  /themes:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Theme
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./common.yaml#/components/schemas/Theme
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: ./common.yaml#/components/schemas/Theme
+      operationId: get-themes
+      requestBody:
+        content: {}
+      description: Get list of theme
+tags:
+  - name: Theme
