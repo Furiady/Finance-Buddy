@@ -15,11 +15,22 @@ import (
 	strictgin "github.com/oapi-codegen/runtime/strictmiddleware/gin"
 )
 
+// BuyThemeJSONBody defines parameters for BuyTheme.
+type BuyThemeJSONBody struct {
+	ThemeId string `json:"themeId"`
+}
+
+// BuyThemeJSONRequestBody defines body for BuyTheme for application/json ContentType.
+type BuyThemeJSONRequestBody BuyThemeJSONBody
+
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
+
+	// (POST /theme)
+	BuyTheme(c *gin.Context)
 	// Your GET endpoint
 	// (GET /themes)
-	GetThemes(c *gin.Context)
+	GetAll(c *gin.Context)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -31,8 +42,8 @@ type ServerInterfaceWrapper struct {
 
 type MiddlewareFunc func(c *gin.Context)
 
-// GetThemes operation middleware
-func (siw *ServerInterfaceWrapper) GetThemes(c *gin.Context) {
+// BuyTheme operation middleware
+func (siw *ServerInterfaceWrapper) BuyTheme(c *gin.Context) {
 
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
@@ -41,7 +52,20 @@ func (siw *ServerInterfaceWrapper) GetThemes(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.GetThemes(c)
+	siw.Handler.BuyTheme(c)
+}
+
+// GetAll operation middleware
+func (siw *ServerInterfaceWrapper) GetAll(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetAll(c)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -71,31 +95,61 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 		ErrorHandler:       errorHandler,
 	}
 
-	router.GET(options.BaseURL+"/themes", wrapper.GetThemes)
+	router.POST(options.BaseURL+"/theme", wrapper.BuyTheme)
+	router.GET(options.BaseURL+"/themes", wrapper.GetAll)
 }
 
-type GetThemesRequestObject struct {
+type BuyThemeRequestObject struct {
+	Body *BuyThemeJSONRequestBody
 }
 
-type GetThemesResponseObject interface {
-	VisitGetThemesResponse(w http.ResponseWriter) error
+type BuyThemeResponseObject interface {
+	VisitBuyThemeResponse(w http.ResponseWriter) error
 }
 
-type GetThemes200JSONResponse []externalRef0.Theme
+type BuyTheme200JSONResponse externalRef0.BaseResponse
 
-func (response GetThemes200JSONResponse) VisitGetThemesResponse(w http.ResponseWriter) error {
+func (response BuyTheme200JSONResponse) VisitBuyThemeResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 
 	return json.NewEncoder(w).Encode(response)
 }
 
-type GetThemesdefaultJSONResponse struct {
-	Body       map[string]interface{}
+type BuyThemedefaultJSONResponse struct {
+	Body       externalRef0.BaseResponse
 	StatusCode int
 }
 
-func (response GetThemesdefaultJSONResponse) VisitGetThemesResponse(w http.ResponseWriter) error {
+func (response BuyThemedefaultJSONResponse) VisitBuyThemeResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(response.StatusCode)
+
+	return json.NewEncoder(w).Encode(response.Body)
+}
+
+type GetAllRequestObject struct {
+}
+
+type GetAllResponseObject interface {
+	VisitGetAllResponse(w http.ResponseWriter) error
+}
+
+type GetAll200JSONResponse []externalRef0.Theme
+
+func (response GetAll200JSONResponse) VisitGetAllResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetAlldefaultJSONResponse struct {
+	Body       externalRef0.BaseResponse
+	StatusCode int
+}
+
+func (response GetAlldefaultJSONResponse) VisitGetAllResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(response.StatusCode)
 
@@ -104,9 +158,12 @@ func (response GetThemesdefaultJSONResponse) VisitGetThemesResponse(w http.Respo
 
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
+
+	// (POST /theme)
+	BuyTheme(ctx context.Context, request BuyThemeRequestObject) (BuyThemeResponseObject, error)
 	// Your GET endpoint
 	// (GET /themes)
-	GetThemes(ctx context.Context, request GetThemesRequestObject) (GetThemesResponseObject, error)
+	GetAll(ctx context.Context, request GetAllRequestObject) (GetAllResponseObject, error)
 }
 
 type StrictHandlerFunc = strictgin.StrictGinHandlerFunc
@@ -121,15 +178,23 @@ type strictHandler struct {
 	middlewares []StrictMiddlewareFunc
 }
 
-// GetThemes operation middleware
-func (sh *strictHandler) GetThemes(ctx *gin.Context) {
-	var request GetThemesRequestObject
+// BuyTheme operation middleware
+func (sh *strictHandler) BuyTheme(ctx *gin.Context) {
+	var request BuyThemeRequestObject
+
+	var body BuyThemeJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
-		return sh.ssi.GetThemes(ctx, request.(GetThemesRequestObject))
+		return sh.ssi.BuyTheme(ctx, request.(BuyThemeRequestObject))
 	}
 	for _, middleware := range sh.middlewares {
-		handler = middleware(handler, "GetThemes")
+		handler = middleware(handler, "BuyTheme")
 	}
 
 	response, err := handler(ctx, request)
@@ -137,8 +202,33 @@ func (sh *strictHandler) GetThemes(ctx *gin.Context) {
 	if err != nil {
 		ctx.Error(err)
 		ctx.Status(http.StatusInternalServerError)
-	} else if validResponse, ok := response.(GetThemesResponseObject); ok {
-		if err := validResponse.VisitGetThemesResponse(ctx.Writer); err != nil {
+	} else if validResponse, ok := response.(BuyThemeResponseObject); ok {
+		if err := validResponse.VisitBuyThemeResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetAll operation middleware
+func (sh *strictHandler) GetAll(ctx *gin.Context) {
+	var request GetAllRequestObject
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetAll(ctx, request.(GetAllRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetAll")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(GetAllResponseObject); ok {
+		if err := validResponse.VisitGetAllResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

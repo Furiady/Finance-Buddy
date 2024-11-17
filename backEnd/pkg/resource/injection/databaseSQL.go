@@ -9,7 +9,7 @@ import (
 )
 
 type SQL struct {
-	UrDB *gorm.DB
+	DB *gorm.DB
 }
 
 func NewDatabaseSQL(config config.DBConfig) (SQL, error) {
@@ -38,6 +38,6 @@ func NewDatabaseSQL(config config.DBConfig) (SQL, error) {
 	sqlDB.SetConnMaxLifetime(config.MaxLifetimeConnection)
 
 	return SQL{
-		UrDB: db,
+		DB: db,
 	}, nil
 }

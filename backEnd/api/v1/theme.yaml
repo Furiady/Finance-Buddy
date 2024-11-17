@@ -1,6 +1,6 @@
 openapi: 3.0.0
 x-stoplight:
-  id: yi2esoaw142h7
+  id: j1s9tpnt7n0lf
 info:
   contact: {}
   title: theme
@@ -26,12 +26,43 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                items:
-                  $ref: ./common.yaml#/components/schemas/Theme
-      operationId: get-themes
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-all
       requestBody:
         content: {}
       description: Get list of theme
+      parameters: []
+  /theme:
+    post:
+      summary: ''
+      operationId: buy-theme
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                themeId:
+                  type: string
+                  x-stoplight:
+                    id: vduwfikk3wx5g
+              required:
+                - themeId
+      description: Buy theme
+      tags:
+        - Theme
 tags:
   - name: Theme

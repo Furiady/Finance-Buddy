@@ -1,0 +1,108 @@
+openapi: 3.0.0
+x-stoplight:
+  id: maa0o9nsff1bd
+info:
+  description: Authentication APIs
+  title: Auth
+  version: '1.0'
+  contact: {}
+paths:
+  /login:
+    post:
+      summary: ''
+      operationId: login
+      responses:
+        '204':
+          description: No Content
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  x-stoplight:
+                    id: am6v47vhn8w10
+                password:
+                  type: string
+                  x-stoplight:
+                    id: 73vkpfez44osg
+              required:
+                - username
+                - password
+      tags:
+        - Auth
+      description: Login
+  /logout:
+    post:
+      summary: ''
+      operationId: logout
+      responses:
+        '204':
+          description: No Content
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          required: true
+      tags:
+        - Auth
+      description: Logout
+  /register:
+    post:
+      summary: ''
+      operationId: register
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  x-stoplight:
+                    id: w27e6nhntzlrp
+                username:
+                  type: string
+                  x-stoplight:
+                    id: gf06g5vz3p7xo
+                password:
+                  type: string
+                  x-stoplight:
+                    id: gia4xl3532rlb
+              required:
+                - email
+                - username
+                - password
+      tags:
+        - Auth
+      description: Register new user
+components:
+  schemas: {}
+tags:
+  - name: Auth
