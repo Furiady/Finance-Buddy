@@ -21,7 +21,7 @@ func (c *Controller) BuyTheme(ctx context.Context, request BuyThemeRequestObject
 		}, nil
 	}
 	return BuyTheme200JSONResponse{
-		Message:   "success",
+		Message:   "Theme bought",
 		Timestamp: time.Now().String(),
 	}, nil
 }

@@ -13,9 +13,9 @@ import (
 type Accessory struct {
 	Id     string `json:"id"`
 	Name   string `json:"name"`
+	Path   string `json:"path"`
 	Price  int    `json:"price"`
 	Status bool   `json:"status"`
-	Url    string `json:"url"`
 }
 
 // BaseResponse defines model for BaseResponse.
@@ -28,9 +28,9 @@ type BaseResponse struct {
 type Pet struct {
 	Id     string `json:"id"`
 	Name   string `json:"name"`
+	Path   string `json:"path"`
 	Price  int    `json:"price"`
 	Status bool   `json:"status"`
-	Url    string `json:"url"`
 }
 
 // Quest defines model for Quest.
@@ -48,9 +48,9 @@ type Quest struct {
 type Theme struct {
 	Id     string `json:"id"`
 	Name   string `json:"name"`
+	Path   string `json:"path"`
 	Price  int    `json:"price"`
 	Status bool   `json:"status"`
-	Url    string `json:"url"`
 }
 
 // Transaction defines model for Transaction.
@@ -60,24 +60,19 @@ type Transaction struct {
 	Description string `json:"description"`
 	Id          string `json:"id"`
 	Title       string `json:"title"`
+	Type        string `json:"type"`
 	Url         string `json:"url"`
-	Value       int    `json:"value"`
+	Value       int64  `json:"value"`
 }
 
 // User defines model for User.
 type User struct {
-	Accessories []Accessory         `json:"accessories"`
-	Balance     int64               `json:"balance"`
-	Coin        int                 `json:"coin"`
-	Email       openapi_types.Email `json:"email"`
-	Id          string              `json:"id"`
-	Password    string              `json:"password"`
-	Pets        []Pet               `json:"pets"`
-	Pin         string              `json:"pin"`
-	Quests      []Quest             `json:"quests"`
-	Records     []Transaction       `json:"records"`
-	Themes      []Theme             `json:"themes"`
-	Username    string              `json:"username"`
+	Balance  int64               `json:"balance"`
+	Coin     int                 `json:"coin"`
+	Email    openapi_types.Email `json:"email"`
+	Id       string              `json:"id"`
+	Pin      string              `json:"pin"`
+	Username string              `json:"username"`
 }
 
 // ServerInterface represents all server handlers.

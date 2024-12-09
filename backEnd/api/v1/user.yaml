@@ -1,0 +1,41 @@
+openapi: 3.0.0
+x-stoplight:
+  id: u99if9njxukie
+info:
+  title: user
+  version: '1.0'
+  contact: {}
+  description: User API group is used to get and update user data.
+paths:
+  /user:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - User
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./common.yaml#/components/schemas/User
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-user
+      parameters:
+        - schema:
+            type: string
+          in: cookie
+          name: token
+          required: true
+      description: Get user data by token
+components:
+  schemas: {}
+tags:
+  - name: User

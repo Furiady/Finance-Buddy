@@ -8,7 +8,7 @@ type (
 		Password string `gorm:"column:password"`
 		Pin      string `gorm:"column:pin"`
 		Coin     int    `gorm:"column:coin"`
-		Balance  int    `gorm:"column:balance"`
+		Balance  int64  `gorm:"column:balance"`
 	}
 
 	RequestGetUser struct {
@@ -23,7 +23,6 @@ type (
 		Password string `gorm:"column:password"`
 		Pin      string `gorm:"column:pin"`
 		Coin     int    `gorm:"column:coin"`
-		Balance  int    `gorm:"column:balance"`
 	}
 )
 

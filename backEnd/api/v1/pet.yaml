@@ -1,0 +1,68 @@
+openapi: 3.0.0
+x-stoplight:
+  id: d32zcf3tz4mlk
+info:
+  contact: {}
+  title: pet
+  version: '1.0'
+  description: APIs regarding pet
+paths:
+  /pets:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Pet
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./common.yaml#/components/schemas/Pet
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-all
+      requestBody:
+        content: {}
+      description: Get list of pet
+      parameters: []
+  /pet:
+    post:
+      summary: ''
+      operationId: buy-pet
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                petId:
+                  type: string
+                  x-stoplight:
+                    id: u5wi30kbyh76c
+              required:
+                - petId
+      description: Buy pet
+      tags:
+        - Pet
+tags:
+  - name: Pet

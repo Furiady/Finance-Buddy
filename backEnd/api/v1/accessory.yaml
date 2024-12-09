@@ -1,0 +1,70 @@
+openapi: 3.0.0
+x-stoplight:
+  id: o8qmq225uyytg
+info:
+  contact: {}
+  title: theme
+  version: '1.0'
+  description: APIs regarding theme
+paths:
+  /accessories:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Theme
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./common.yaml#/components/schemas/Accessory
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-all
+      requestBody:
+        content: {}
+      description: Get list of accessory
+      parameters: []
+    parameters: []
+  /accessory:
+    post:
+      summary: ''
+      operationId: buy-accessory
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessoryId:
+                  type: string
+                  x-stoplight:
+                    id: vduwfikk3wx5g
+              required:
+                - accessoryId
+      description: Buy accessory
+      tags:
+        - Theme
+    parameters: []
+tags:
+  - name: Theme

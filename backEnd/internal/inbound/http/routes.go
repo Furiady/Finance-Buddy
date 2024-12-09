@@ -2,8 +2,12 @@ package http
 
 import (
 	sdkHttpMiddleware "backEnd/cmd/appRunner/middleware/http"
+	"backEnd/internal/inbound/http/v1/accessory"
 	"backEnd/internal/inbound/http/v1/auth"
+	"backEnd/internal/inbound/http/v1/pet"
 	"backEnd/internal/inbound/http/v1/theme"
+	"backEnd/internal/inbound/http/v1/transaction"
+	"backEnd/internal/inbound/http/v1/user"
 	httpMiddleware "backEnd/pkg/middleware/http"
 	pkgResource "backEnd/pkg/resource"
 
@@ -16,8 +20,12 @@ type Http struct {
 
 	Resource pkgResource.Resource
 
-	Theme theme.Controller
-	Auth  auth.Controller
+	Theme       theme.Controller
+	Auth        auth.Controller
+	Accessory   accessory.Controller
+	Pet         pet.Controller
+	User        user.Controller
+	Transaction transaction.Controller
 }
 
 func (h Http) Routes(gn *gin.Engine) {
@@ -30,6 +38,22 @@ func (h Http) Routes(gn *gin.Engine) {
 	auth.RegisterHandlers(v1, auth.NewStrictHandler(&h.Auth, nil))
 
 	theme.RegisterHandlers(v1, theme.NewStrictHandler(&h.Theme, []theme.StrictMiddlewareFunc{
+		httpMiddleware.ValidateToken(h.Resource.ConfigApp.Environment, h.Resource.ConfigApp.TokenSecret),
+	}))
+
+	accessory.RegisterHandlers(v1, accessory.NewStrictHandler(&h.Accessory, []accessory.StrictMiddlewareFunc{
+		httpMiddleware.ValidateToken(h.Resource.ConfigApp.Environment, h.Resource.ConfigApp.TokenSecret),
+	}))
+
+	pet.RegisterHandlers(v1, pet.NewStrictHandler(&h.Pet, []pet.StrictMiddlewareFunc{
+		httpMiddleware.ValidateToken(h.Resource.ConfigApp.Environment, h.Resource.ConfigApp.TokenSecret),
+	}))
+
+	user.RegisterHandlers(v1, user.NewStrictHandler(&h.User, []user.StrictMiddlewareFunc{
+		httpMiddleware.ValidateToken(h.Resource.ConfigApp.Environment, h.Resource.ConfigApp.TokenSecret),
+	}))
+
+	transaction.RegisterHandlers(v1, transaction.NewStrictHandler(&h.Transaction, []transaction.StrictMiddlewareFunc{
 		httpMiddleware.ValidateToken(h.Resource.ConfigApp.Environment, h.Resource.ConfigApp.TokenSecret),
 	}))
 }

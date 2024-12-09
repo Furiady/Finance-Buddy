@@ -1,0 +1,265 @@
+openapi: 3.0.0
+x-stoplight:
+  id: 1jmld32uwxvt2
+info:
+  title: transaction
+  version: '1.0'
+  description: Transaction API group consist of CRUD method of Transaction data
+  contact:
+    name: Renaldo Furiady
+    email: renaldof73@gmail.com
+paths:
+  '/transaction/{transactionId}':
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Transaction
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/Transaction
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-transaction
+      description: Get single transaction data by id
+      parameters: []
+    delete:
+      summary: ''
+      operationId: delete-transaction
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      tags:
+        - Transaction
+      description: Delete single transaction data by id
+    put:
+      summary: ''
+      operationId: update-transaction
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  x-stoplight:
+                    id: x8ee0qyve44km
+                description:
+                  type: string
+                  x-stoplight:
+                    id: 2obqmczhwg1qq
+                type:
+                  type: string
+                  x-stoplight:
+                    id: t7kuruaa5y9tg
+                category:
+                  type: string
+                  x-stoplight:
+                    id: zwcege9dvnzz8
+                value:
+                  type: integer
+                  x-stoplight:
+                    id: 522njjqfbcnoi
+                  format: int64
+                createdAt:
+                  type: string
+                  x-stoplight:
+                    id: jr2ltkb6mbumj
+              required:
+                - title
+                - type
+                - category
+                - value
+                - createdAt
+      tags:
+        - Transaction
+      description: Update single transaction data by id
+    parameters:
+      - schema:
+          type: string
+        name: transactionId
+        in: path
+        required: true
+  /transaction:
+    post:
+      summary: ''
+      operationId: create-transaction
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      description: Create transaction data
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  x-stoplight:
+                    id: hem63t72x5905
+                description:
+                  type: string
+                  x-stoplight:
+                    id: f2qj24gcyea1j
+                category:
+                  type: string
+                  x-stoplight:
+                    id: vyaet8yhy0yhn
+                value:
+                  type: integer
+                  x-stoplight:
+                    id: m5z6yctf0hyo9
+                  format: int64
+                createdAt:
+                  type: string
+                  x-stoplight:
+                    id: i0dm7xa6dwgdc
+                type:
+                  type: string
+                  x-stoplight:
+                    id: mm6le6yegse5p
+              required:
+                - title
+                - category
+                - value
+                - createdAt
+                - type
+      tags:
+        - Transaction
+  /transactions:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Transaction
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./common.yaml#/components/schemas/Transaction
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-transactions
+      description: Get list oftransaction data
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: startDate
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: endDate
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: category
+        - schema:
+            type: string
+          in: query
+          name: type
+  /transactions/category:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Transaction
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    category:
+                      type: string
+                      x-stoplight:
+                        id: d2suey0rqdzqn
+                    value:
+                      type: integer
+                      x-stoplight:
+                        id: 3bjd7o26b48xk
+                      format: int64
+                  required:
+                    - category
+                    - value
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-transactions-by-category
+      description: Get value of transactions grouped by category
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: startDate
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: endDate
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: type
+components:
+  schemas: {}
+tags:
+  - name: Transaction

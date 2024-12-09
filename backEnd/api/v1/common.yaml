@@ -5,6 +5,7 @@ info:
   title: Common
   version: '1.0'
   contact: {}
+  description: Holds the common model that will be used by other APIs
 servers:
   - url: 'http://localhost:9000'
 paths: {}
@@ -29,10 +30,6 @@ components:
           type: string
           x-stoplight:
             id: 0ho9rcd1l8i0k
-        password:
-          type: string
-          x-stoplight:
-            id: 6e8q5q6rgfbpa
         pin:
           type: string
           x-stoplight:
@@ -46,49 +43,13 @@ components:
           x-stoplight:
             id: 7slfwfn9da1oe
           format: int64
-        records:
-          type: array
-          x-stoplight:
-            id: 0kc70mw2oyyei
-          items:
-            $ref: '#/components/schemas/Transaction'
-        quests:
-          type: array
-          x-stoplight:
-            id: kz2s7ja8gv2j6
-          items:
-            $ref: '#/components/schemas/Quest'
-        pets:
-          type: array
-          x-stoplight:
-            id: dehkxjqqcgz3q
-          items:
-            $ref: '#/components/schemas/Pet'
-        accessories:
-          x-stoplight:
-            id: 39nlxiz9try9r
-          type: array
-          items:
-            $ref: '#/components/schemas/Accessory'
-        themes:
-          type: array
-          x-stoplight:
-            id: 92tefon340mtk
-          items:
-            $ref: '#/components/schemas/Theme'
       required:
         - id
         - email
         - username
-        - password
         - pin
         - coin
         - balance
-        - records
-        - quests
-        - pets
-        - accessories
-        - themes
     Transaction:
       title: Transaction
       x-stoplight:
@@ -105,6 +66,10 @@ components:
           type: string
           x-stoplight:
             id: dp3dv6xbewqdy
+        type:
+          type: string
+          x-stoplight:
+            id: jxcnc4ly2f259
         category:
           type: string
           x-stoplight:
@@ -113,6 +78,7 @@ components:
           type: integer
           x-stoplight:
             id: pnlq3j2xq5lk0
+          format: int64
         url:
           type: string
           x-stoplight:
@@ -125,6 +91,7 @@ components:
         - id
         - title
         - description
+        - type
         - category
         - value
         - url
@@ -189,16 +156,16 @@ components:
           type: boolean
           x-stoplight:
             id: zrdq5shsh42gv
-        url:
+        path:
           type: string
           x-stoplight:
-            id: 62jw1l75f9qhc
+            id: 74xtnyjldv2yl
       required:
         - id
         - name
         - price
         - status
-        - url
+        - path
     Accessory:
       title: Accessory
       x-stoplight:
@@ -219,16 +186,16 @@ components:
           type: boolean
           x-stoplight:
             id: k6r30fagwrh8u
-        url:
+        path:
           type: string
           x-stoplight:
-            id: 2eg5aqwt2ccep
+            id: be3kp29kto4aq
       required:
         - id
         - name
         - price
         - status
-        - url
+        - path
     Theme:
       title: Theme
       x-stoplight:
@@ -237,6 +204,7 @@ components:
       properties:
         id:
           type: string
+          format: int64
         name:
           type: string
           x-stoplight:
@@ -249,16 +217,16 @@ components:
           type: boolean
           x-stoplight:
             id: o71igc49klmup
-        url:
+        path:
           type: string
           x-stoplight:
-            id: rlaohp9kfli04
+            id: 98o8uo2el97o7
       required:
         - id
         - name
         - price
         - status
-        - url
+        - path
     BaseResponse:
       title: BaseResponse
       x-stoplight:

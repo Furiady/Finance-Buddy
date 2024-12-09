@@ -21,7 +21,6 @@ func (c RegisterRequest) ToObModel() obModel.RequestRegister {
 		Password: c.Password,
 		Email:    c.Email,
 		Coin:     0,
-		Balance:  0,
 		Pin:      "000000",
 	}
 }

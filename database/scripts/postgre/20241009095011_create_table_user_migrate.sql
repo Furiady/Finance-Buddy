@@ -7,9 +7,23 @@ CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
     pin VARCHAR(255) NOT NULL,
-    coin INT,
-    balance BIGINT
+    coin INT
 );
+
+-- Create table balance
+CREATE TABLE IF NOT EXISTS balance_categories (
+    id bigserial PRIMARY KEY,
+    category VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS user_balance (
+    user_id BIGINT REFERENCES users(id),
+    category_id BIGINT REFERENCES balance_categories(id),
+    value BIGINT NOT NULL,
+    PRIMARY KEY (user_id, category_id)
+);
+
+CREATE INDEX idx_user_balance_user_id ON user_balance(user_id);
 
 -- Create table transaction
 CREATE TABLE IF NOT EXISTS transactions (
@@ -20,11 +34,12 @@ CREATE TABLE IF NOT EXISTS transactions (
     category VARCHAR(255) NOT NULL,
     value BIGINT NOT NULL,
     url VARCHAR(255),
+    type VARCHAR(10) NOT NULL,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMPTZ NULL
 );
 
-CREATE INDEX idx_transaction_user_id ON transactions(user_id, category);
+CREATE INDEX idx_transaction_user_id_type_category ON transactions(user_id, type, category);
 
 -- Create table quest
 CREATE TABLE IF NOT EXISTS quests (
@@ -52,7 +67,7 @@ CREATE TABLE IF NOT EXISTS pets (
     id bigserial PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     price INT NOT NULL,
-    url VARCHAR(255)
+    path VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS user_pet (
@@ -70,15 +85,15 @@ CREATE TABLE IF NOT EXISTS accessories (
     id bigserial PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     price INT NOT NULL,
-    url VARCHAR(255)
+    path VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS user_accessory (
     user_id BIGINT REFERENCES users(id),
-    accessories_id BIGINT REFERENCES accessories(id),
+    accessory_id BIGINT REFERENCES accessories(id),
     status BOOLEAN NOT NULL,
     updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (user_id, accessories_id)
+    PRIMARY KEY (user_id, accessory_id)
 );
 
 CREATE INDEX idx_user_accessory_user_id ON user_accessory(user_id);
@@ -88,7 +103,7 @@ CREATE TABLE IF NOT EXISTS themes (
     id bigserial PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     price INT NOT NULL,
-    url VARCHAR(255)
+    path VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS user_theme (

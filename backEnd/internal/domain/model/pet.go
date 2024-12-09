@@ -3,7 +3,7 @@ package model
 import obModel "backEnd/internal/outbound/model"
 
 type (
-	Theme struct {
+	Pet struct {
 		Id     int
 		Name   string
 		Price  int
@@ -11,20 +11,20 @@ type (
 		Status bool
 	}
 
-	Themes []Theme
+	Pets []Pet
 )
 
-func (t Themes) FromObModel(datas obModel.Themes) Themes {
-	var result Themes
+func (t Pets) FromObModel(datas obModel.Pets) Pets {
+	var result Pets
 	for _, data := range datas {
-		result = append(result, Theme{}.FromObModel(data))
+		result = append(result, Pet{}.FromObModel(data))
 	}
 
 	return result
 }
 
-func (t Theme) FromObModel(data obModel.Theme) Theme {
-	return Theme{
+func (t Pet) FromObModel(data obModel.Pet) Pet {
+	return Pet{
 		Id:     data.Id,
 		Name:   data.Name,
 		Price:  data.Price,

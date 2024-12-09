@@ -30,7 +30,7 @@ func FromUcModel(data ucModel.Themes) []common.Theme {
 	for _, d := range data {
 		res = append(res, common.Theme{
 			Id:     strconv.Itoa(d.Id),
-			Url:    d.Url,
+			Path:   d.Path,
 			Name:   d.Name,
 			Price:  d.Price,
 			Status: d.Status,
