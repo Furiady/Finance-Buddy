@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  intl: ^0.18.0
 
 
   # The following adds the Cupertino Icons font to your application.
@@ -46,17 +47,27 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^4.0.0
+  fl_chart: ^0.69.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter packages.
 flutter:
-
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
   uses-material-design: true
+
+  assets:
+    - assets/bus.png
+    - assets/calendar (1).png
+    - assets/categories (1).png
+    - assets/categories.png
+    - assets/fast-food.png
+    - assets/joystick.png
+    - assets/medicines.png
+    - assets/money.png
+    - assets/notepad.png
+    - assets/wallet.png
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:
