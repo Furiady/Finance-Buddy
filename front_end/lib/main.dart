@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/pages/login/view.dart';
 import 'package:intl/intl.dart';
 import 'views/add_transaction.dart';
 import 'views/reports_page.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const MyHomePage(),
+      home: const Login(),
     );
   }
 }
