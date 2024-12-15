@@ -12,8 +12,19 @@ paths:
       summary: ''
       operationId: login
       responses:
-        '204':
-          description: No Content
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    x-stoplight:
+                      id: w7i2gq7n3r8lv
+                required:
+                  - token
         default:
           description: Error
           content:

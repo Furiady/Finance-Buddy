@@ -3,7 +3,6 @@ package httpMiddleware
 import (
 	"context"
 	"net/http"
-	"slices"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -15,10 +14,8 @@ import (
 func ValidateToken(env string, secret string) strictgin.StrictGinMiddlewareFunc {
 	return func(f strictgin.StrictGinHandlerFunc, operationID string) strictgin.StrictGinHandlerFunc {
 		return func(c *gin.Context, request interface{}) (response interface{}, err error) {
-			mustValidateTokenFlagsEnv := []string{}
-
-			cookie, err := c.Request.Cookie("token")
-			if err != nil {
+			authHeader := c.GetHeader("Authorization")
+			if authHeader == "" {
 				c.JSON(http.StatusUnauthorized, gin.H{
 					"status":  "fail",
 					"message": "Unauthorized",
@@ -27,18 +24,7 @@ func ValidateToken(env string, secret string) strictgin.StrictGinMiddlewareFunc 
 				return
 			}
 
-			if env != "" && slices.Contains(mustValidateTokenFlagsEnv, env) {
-				if !cookie.HttpOnly || !cookie.Secure {
-					c.JSON(http.StatusUnauthorized, gin.H{
-						"status":  "fail",
-						"message": "Unauthorized",
-					})
-					c.Abort()
-					return
-				}
-			}
-
-			token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
+			token, err := jwt.Parse(authHeader, func(token *jwt.Token) (interface{}, error) {
 				return []byte(secret), nil
 			})
 			if err != nil || !token.Valid {
@@ -69,7 +55,7 @@ func ValidateToken(env string, secret string) strictgin.StrictGinMiddlewareFunc 
 				return
 			}
 
-			if claims["userId"] == 0 || claims["userId"] == nil{
+			if claims["userId"] == 0 || claims["userId"] == nil {
 				c.JSON(http.StatusUnauthorized, gin.H{
 					"status":  "fail",
 					"message": "Invalid token username",
@@ -86,7 +72,6 @@ func ValidateToken(env string, secret string) strictgin.StrictGinMiddlewareFunc 
 			c.Set("userId", strconv.Itoa(int(userId)))
 			c.Request = c.Request.WithContext(ctx)
 			return f(c, request)
-
 		}
 	}
 }

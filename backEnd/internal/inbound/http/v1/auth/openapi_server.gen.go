@@ -164,12 +164,15 @@ type LoginResponseObject interface {
 	VisitLoginResponse(w http.ResponseWriter) error
 }
 
-type Login204Response struct {
+type Login200JSONResponse struct {
+	Token string `json:"token"`
 }
 
-func (response Login204Response) VisitLoginResponse(w http.ResponseWriter) error {
-	w.WriteHeader(204)
-	return nil
+func (response Login200JSONResponse) VisitLoginResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
 }
 
 type LogindefaultJSONResponse struct {

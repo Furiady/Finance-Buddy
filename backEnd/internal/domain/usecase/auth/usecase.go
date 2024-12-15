@@ -5,12 +5,11 @@ import (
 	"backEnd/internal/outbound"
 	"backEnd/pkg/resource"
 	"context"
-	"net/http"
 )
 
 type (
 	UseCase interface {
-		Login(ctx context.Context, request model.LoginRequest) (*http.Cookie, error)
+		Login(ctx context.Context, request model.LoginRequest) (*string, error)
 		Register(ctx context.Context, request model.RegisterRequest) error
 	}
 

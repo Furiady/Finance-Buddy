@@ -7,13 +7,11 @@ import (
 	ucModel "backEnd/internal/domain/model"
 	"backEnd/internal/inbound/http/v1/common"
 	pkgHelper "backEnd/pkg/helper"
-
-	"github.com/gin-gonic/gin"
 )
 
 // Login implements StrictServerInterface.
 func (c *Controller) Login(ctx context.Context, request LoginRequestObject) (LoginResponseObject, error) {
-	cookie, err := c.Domain.UseCases.Auth.Login(ctx, ucModel.LoginRequest{
+	token, err := c.Domain.UseCases.Auth.Login(ctx, ucModel.LoginRequest{
 		Username: request.Body.Username,
 		Password: request.Body.Password,
 	})
@@ -28,7 +26,7 @@ func (c *Controller) Login(ctx context.Context, request LoginRequestObject) (Log
 		}, nil
 	}
 
-	ctx.(*gin.Context).SetCookie(cookie.Name, cookie.Value, cookie.MaxAge, cookie.Path, cookie.Domain, cookie.Secure, cookie.HttpOnly)
-
-	return Login204Response{}, nil
+	return Login200JSONResponse{
+		Token: *token,
+	}, nil
 }

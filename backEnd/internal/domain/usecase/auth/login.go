@@ -6,19 +6,27 @@ import (
 	pkgError "backEnd/pkg/constant/error"
 	pkgHelper "backEnd/pkg/helper"
 	"context"
-	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 )
 
 // Login implements UseCase.
-func (u *useCase) Login(ctx context.Context, request model.LoginRequest) (*http.Cookie, error) {
+func (u *useCase) Login(ctx context.Context, request model.LoginRequest) (*string, error) {
 	user, err := u.outbound.Repositories.User.Get(ctx, obModel.RequestGetUser{
 		Username: &request.Username,
 	})
 	if err != nil {
 		return nil, err
+	}
+
+	if user.Id == 0 {
+		user, err = u.outbound.Repositories.User.Get(ctx, obModel.RequestGetUser{
+			Email: &request.Username,
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if user.Id == 0 {
@@ -42,13 +50,5 @@ func (u *useCase) Login(ctx context.Context, request model.LoginRequest) (*http.
 		return nil, err
 	}
 
-	return &http.Cookie{
-		Name:     "token",
-		Value:    *token,
-		MaxAge:   60 * 60 * 24 * 30,
-		HttpOnly: true,
-		Secure:   true,
-		Path:     "/",
-		SameSite: http.SameSiteNoneMode,
-	}, nil
+	return token, nil
 }
