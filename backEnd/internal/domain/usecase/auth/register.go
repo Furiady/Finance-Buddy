@@ -15,6 +15,18 @@ func (u *useCase) Register(ctx context.Context, request model.RegisterRequest) e
 	if err != nil {
 		return err
 	}
+
+	if user.Id != 0 {
+		return pkgError.ErrBadRequest
+	}
+
+	user, err = u.outbound.Repositories.User.Get(ctx, obModel.RequestGetUser{
+		Email: &request.Email,
+	})
+	if err != nil {
+		return err
+	}
+
 	if user.Id != 0 {
 		return pkgError.ErrBadRequest
 	}
