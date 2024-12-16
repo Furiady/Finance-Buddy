@@ -2,6 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:front_end/components/form-component/view.dart';
 import 'package:front_end/components/text-button-component/view.dart';
 import 'package:front_end/components/wave-component/view.dart';
+import 'package:front_end/model/login-model/model.dart';
+import 'package:front_end/pages/login/view-model.dart';
+import 'package:front_end/pages/register/view.dart';
+import 'package:front_end/views/profile.dart';
+import 'package:front_end/views/reports_page.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -11,8 +16,28 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  bool isEmailValid = false;
   bool isPasswordVisible = false;
+  String username = '';
+  String password = '';
+  final LoginViewModel _viewModel = LoginViewModel();
+
+  void _handleLogin() async {
+    final model = LoginModel(username: username, password: password);
+    bool isSuccess = await _viewModel.login(model);
+
+    if (isSuccess) {
+      // Navigate to the dashboard or next page
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => ProfilePage()),
+      );
+    } else {
+      // Show an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Login failed. Please check your credentials.")),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,15 +83,15 @@ class _LoginState extends State<Login> {
               mainAxisAlignment: MainAxisAlignment.end,
               children: <Widget>[
                 FormComponent(
-                  hintText: 'Email',
+                  hintText: 'Username',
+                  // Updated to Username
                   obscureText: false,
-                  prefixIcon: const Icon(Icons.mail_outline),
-                  suffixIcon: isEmailValid ? const Icon(Icons.check) : null,
+                  prefixIcon: const Icon(Icons.person_outline),
+                  suffixIcon: null,
+                  // Removed email check icon
                   onChanged: (value) {
                     setState(() {
-                      isEmailValid = RegExp(
-                        r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}",
-                      ).hasMatch(value);
+                      username = value;
                     });
                   },
                 ),
@@ -87,11 +112,15 @@ class _LoginState extends State<Login> {
                           });
                         },
                         child: Icon(
-                          isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                          isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
                         ),
                       ),
                       onChanged: (value) {
-                        // Handle password changes if needed
+                        setState(() {
+                          password = value;
+                        });
                       },
                     ),
                     SizedBox(
@@ -110,14 +139,20 @@ class _LoginState extends State<Login> {
                 ),
                 TextButtonComponent(
                   text: 'Login',
-                  onPressed: () {},
+                  onPressed: _handleLogin,
                 ),
                 SizedBox(
                   height: 10.0,
                 ),
                 TextButtonComponent(
                   text: 'Sign Up',
-                  onPressed: () {},
+                  onPressed: () {
+                    // Navigate to the register page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Register()),
+                    );
+                  },
                 ),
               ],
             ),
