@@ -1,7 +1,4 @@
-import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:front_end/constant/api-path.dart';
 import 'package:front_end/model/login-model/model.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front_end/services/login-services/login-services.dart';
@@ -14,10 +11,10 @@ class LoginViewModel {
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   Future<void> login(BuildContext context) async {
-    String username = usernameController.text;
-    String password = passwordController.text;
-
-    LoginModel loginModel = LoginModel(username: username, password: password);
+    final loginModel = LoginModel(
+        username: usernameController.text,
+        password: passwordController.text,
+    );
 
     String? token = await loginService.login(loginModel, context);
 

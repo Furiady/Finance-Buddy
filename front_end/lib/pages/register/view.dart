@@ -2,9 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:front_end/components/form-component/view.dart';
 import 'package:front_end/components/text-button-component/view.dart';
 import 'package:front_end/components/wave-component/view.dart';
-import 'package:front_end/pages/register/view-model.dart';
-import 'package:front_end/model/register-model/model.dart';
 import 'package:front_end/pages/login/view.dart';
+import 'package:front_end/pages/register/view-model.dart';
 
 class Register extends StatefulWidget {
   const Register({super.key});
@@ -14,31 +13,13 @@ class Register extends StatefulWidget {
 }
 
 class _RegisterState extends State<Register> {
-  bool isPasswordVisible = false;
-  String email = '';
-  String username = '';
-  String password = '';
   final RegisterViewModel _viewModel = RegisterViewModel();
+  bool isPasswordVisible = false;
 
-  void _handleRegister() async {
-    final model =
-        RegisterModel(email: email, username: username, password: password);
-    bool isSuccess = await _viewModel.register(model);
-
-    if (isSuccess) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Registration successful")),
-      );
-      // Navigate to login page
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Login()),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Registration failed. Please try again.")),
-      );
-    }
+  @override
+  void dispose() {
+    _viewModel.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,7 +44,7 @@ class _RegisterState extends State<Register> {
               color: Colors.white,
             ),
           ),
-          Padding(
+          const Padding(
             padding: const EdgeInsets.only(top: 100.0),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -88,67 +69,51 @@ class _RegisterState extends State<Register> {
                   hintText: 'Email',
                   obscureText: false,
                   prefixIcon: const Icon(Icons.mail_outline),
-                  onChanged: (value) {
-                    setState(() {
-                      email = value;
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 10.0,
+                  controller: _viewModel.emailController,
                 ),
                 FormComponent(
                   hintText: 'Username',
                   obscureText: false,
                   prefixIcon: const Icon(Icons.person_outline),
-                  onChanged: (value) {
-                    setState(() {
-                      username = value;
-                    });
-                  },
+                  controller: _viewModel.usernameController
                 ),
-                SizedBox(
-                  height: 10.0,
-                ),
-                FormComponent(
-                  hintText: 'Password',
-                  obscureText: !isPasswordVisible,
-                  prefixIcon: const Icon(Icons.lock_outline),
-                  suffixIcon: GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isPasswordVisible = !isPasswordVisible;
-                      });
-                    },
-                    child: Icon(
-                      isPasswordVisible
-                          ? Icons.visibility
-                          : Icons.visibility_off,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: <Widget>[
+                    FormComponent(
+                      hintText: 'Password',
+                      obscureText: !isPasswordVisible,
+                      prefixIcon: const Icon(Icons.lock_outline),
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            isPasswordVisible = !isPasswordVisible;
+                          });
+                        },
+                        child: Icon(
+                          isPasswordVisible
+                              ? Icons.visibility
+                              : Icons.visibility_off,
+                        ),
+                      ),
+                      controller: _viewModel.passwordController,
                     ),
-                  ),
-                  onChanged: (value) {
-                    setState(() {
-                      password = value;
-                    });
-                  },
-                ),
-                SizedBox(
-                  height: 20.0,
+                  ],
                 ),
                 TextButtonComponent(
                   text: 'Register',
-                  onPressed: _handleRegister,
-                ),
-                SizedBox(
-                  height: 10.0,
+                  onPressed: () async {
+                    await _viewModel.register(context);
+                  },
                 ),
                 TextButtonComponent(
                   text: 'Login',
                   onPressed: () {
-                    // Navigate to the register page
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => Login()),
+                      MaterialPageRoute(
+                          builder: (context) => const Login()
+                      ),
                     );
                   },
                 ),

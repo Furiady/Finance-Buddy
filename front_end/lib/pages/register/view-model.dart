@@ -1,25 +1,36 @@
-import 'package:dio/dio.dart';
-import 'package:front_end/constant/api-path.dart';
+import 'dart:ffi';
+
+import 'package:flutter/material.dart';
 import 'package:front_end/model/register-model/model.dart';
+import 'package:front_end/pages/login/view.dart';
+import 'package:front_end/services/register-services/register-services.dart';
 
 class RegisterViewModel {
-  final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
-  Future<bool> register(RegisterModel model) async {
-    try {
-      final response = await _dio.post(registerEndpoint, data: model.toJson());
+  final RegisterService _registerService = RegisterService();
 
-      if (response.statusCode == 204) {
-        // Handle successful registration based on your API response
-        print("Registration successful");
-        return true;
-      } else {
-        print("Registration failed: \${response.data}");
-        return false;
-      }
-    } catch (e) {
-      print("Error during registration: \$e");
-      return false;
+  Future<void> register(BuildContext context) async {
+    final registerModel = RegisterModel(
+      email: emailController.text,
+      username: usernameController.text,
+      password: passwordController.text,
+    );
+
+    bool? success = await _registerService.register(registerModel, context);
+
+    if (success == true) {
+      Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => const Login()),
+      );
     }
+  }
+
+  void dispose() {
+    emailController.dispose();
+    usernameController.dispose();
+    passwordController.dispose();
   }
 }

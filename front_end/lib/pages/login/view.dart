@@ -18,7 +18,7 @@ class _LoginState extends State<Login> {
 
   @override
   void dispose() {
-    _viewModel.dispose(); // Dispose controllers in the view model
+    _viewModel.dispose();
     super.dispose();
   }
 

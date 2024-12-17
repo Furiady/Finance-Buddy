@@ -5,13 +5,13 @@ import 'package:flutter/material.dart';
 
 class LoginService {
   final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
+
   Future<String?> login(LoginModel model, BuildContext context) async {
     try {
       final response = await _dio.post(loginEndpoint, data: model.toJson());
 
-        String token = response.data['token'];
-        return token;
-
+      String token = response.data['token'];
+      return token;
     } on DioException catch (e) {
       String message = e.response?.data['message'];
       ScaffoldMessenger.of(context).showSnackBar(
