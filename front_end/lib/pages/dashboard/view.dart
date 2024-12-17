@@ -1,150 +1,62 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/components/navigation-bar-component/view-model.dart';
+import 'package:front_end/components/app-bar-component/view.dart';
 import 'package:front_end/components/navigation-bar-component/view.dart';
+import 'package:front_end/pages/dashboard/view-model.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class Dashboard extends StatefulWidget {
+  const Dashboard({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<Dashboard> createState() => _DashboardState();
 }
 
-class _MainScreenState extends State<MainScreen> {
-  final homeNavKey = GlobalKey<NavigatorState>();
-  final searchNavKey = GlobalKey<NavigatorState>();
-  final notificationNavKey = GlobalKey<NavigatorState>();
-  final profileNavKey = GlobalKey<NavigatorState>();
-  int selectedTab = 0;
-  List<ModelNavigationBar> items = [];
-
-  @override
-  void initState() {
-    super.initState();
-    items = [
-      ModelNavigationBar(
-        page: const TabPage(tab: 1),
-        navKey: homeNavKey,
-      ),
-      ModelNavigationBar(
-        page: const TabPage(tab: 2),
-        navKey: searchNavKey,
-      ),
-      ModelNavigationBar(
-        page: const TabPage(tab: 3),
-        navKey: notificationNavKey,
-      ),
-      ModelNavigationBar(
-        page: const TabPage(tab: 4),
-        navKey: profileNavKey,
-      ),
-    ];
-  }
+class _DashboardState extends State<Dashboard> {
+  final DashboardViewModel viewModel = DashboardViewModel();
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        if (items[selectedTab].navKey.currentState?.canPop() ?? false) {
-          items[selectedTab].navKey.currentState?.pop();
-          return Future.value(false);
-        } else {
-          return Future.value(true);
+    return PopScope(
+      canPop: !(viewModel.items[viewModel.selectedTab].navKey.currentState?.canPop() ?? true),
+      onPopInvokedWithResult: (bool didPop, Object? result) {
+        if (didPop) return;
+
+        if (viewModel.items[viewModel.selectedTab].navKey.currentState?.canPop() ?? false) {
+          viewModel.items[viewModel.selectedTab].navKey.currentState?.pop();
         }
       },
       child: Scaffold(
+          appBar: AppBar(
+            automaticallyImplyLeading: false, // To remove the default back button (optional)
+            title: AppBarComponent(),  // Place your custom AppBarComponent here
+            backgroundColor: Colors.blue,  // Optional: Customize the background color of the AppBar
+          ),
+
         body: IndexedStack(
-          index: selectedTab,
-          children: items
+          index: viewModel.selectedTab,
+          children: viewModel.items
               .map((page) => Navigator(
             key: page.navKey,
             onGenerateInitialRoutes: (navigator, initialRoute) {
               return [
-                MaterialPageRoute(builder: (context) => page.page)
+                MaterialPageRoute(builder: (context) => page.page),
               ];
             },
           ))
               .toList(),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Container(
-          margin: const EdgeInsets.only(top: 10),
-          height: 64,
-          width: 64,
-          child: FloatingActionButton(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            onPressed: () => debugPrint("Add Button pressed"),
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 3, color: Colors.green),
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: const Icon(
-              Icons.add,
-              color: Colors.green,
-            ),
-          ),
-        ),
         bottomNavigationBar: NavigationBarComponent(
-          pageIndex: selectedTab,
+          pageIndex: viewModel.selectedTab,
           onTap: (index) {
-            if (index == selectedTab) {
-              items[index]
-                  .navKey
-                  .currentState
-                  ?.popUntil((route) => route.isFirst);
+            if (index == viewModel.selectedTab) {
+              viewModel.items[index].navKey.currentState?.popUntil((route) => route.isFirst);
             } else {
               setState(() {
-                selectedTab = index;
+                viewModel.selectedTab = index;
               });
             }
           },
         ),
       ),
-    );
-  }
-}
-
-class TabPage extends StatelessWidget {
-  final int tab;
-
-  const TabPage({Key? key, required this.tab}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Tab $tab')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Tab $tab'),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => Page(tab: tab),
-                  ),
-                );
-              },
-              child: const Text('Go to page'),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class Page extends StatelessWidget {
-  final int tab;
-
-  const Page({super.key, required this.tab});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Page Tab $tab')),
-      body: Center(child: Text('Tab $tab')),
     );
   }
 }

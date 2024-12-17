@@ -1,6 +1,6 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar.dart';
+import 'package:curved_labeled_navigation_bar/curved_navigation_bar_item.dart';
 
 class NavigationBarComponent extends StatelessWidget {
   final int pageIndex;
@@ -14,59 +14,37 @@ class NavigationBarComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.only(
-        left: 16,
-        right: 16,
-        bottom: Platform.isAndroid ? 16 : 0,
-      ),
-      child: BottomAppBar(
-        elevation: 0.0,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Container(
-            height: 60,
-            color: Colors.green,
-            child: Row(
-              children: [
-                navItem(
-                  Icons.home_outlined,
-                  pageIndex == 0,
-                  onTap: () => onTap(0),
-                ),
-                navItem(
-                  Icons.message_outlined,
-                  pageIndex == 1,
-                  onTap: () => onTap(1),
-                ),
-                const SizedBox(width: 80),
-                navItem(
-                  Icons.notifications_none_outlined,
-                  pageIndex == 2,
-                  onTap: () => onTap(2),
-                ),
-                navItem(
-                  Icons.person_outline,
-                  pageIndex == 3,
-                  onTap: () => onTap(3),
-                ),
-              ],
-            ),
-          ),
+    return CurvedNavigationBar(
+      index: pageIndex,
+      color: Colors.white,
+      buttonBackgroundColor: Colors.white,
+      backgroundColor: Colors.blueAccent,
+      animationCurve: Curves.easeInOut,
+      animationDuration: const Duration(milliseconds: 600),
+      items: [
+        const CurvedNavigationBarItem(
+          child: Icon(Icons.home_outlined),
+          label: 'Home',
         ),
-      ),
-    );
-  }
+        const CurvedNavigationBarItem(
+          child: Icon(Icons.book_rounded),
+          label: 'Bills',
+        ),
+        const CurvedNavigationBarItem(
+          child: Icon(Icons.add_circle_outline_rounded),
+          label: 'Create',
+        ),
+        const CurvedNavigationBarItem(
+          child: Icon(Icons.attach_money_rounded),
+          label: 'Assets',
+        ),
 
-  Widget navItem(IconData icon, bool selected, {Function()? onTap}) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        child: Icon(
-          icon,
-          color: selected ? Colors.white : Colors.white.withOpacity(0.4),
+        const CurvedNavigationBarItem(
+          child: Icon(Icons.pets),
+          label: 'Pets',
         ),
-      ),
+      ],
+      onTap: onTap,
     );
   }
 }
