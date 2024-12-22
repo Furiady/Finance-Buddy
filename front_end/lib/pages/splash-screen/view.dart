@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/pages/splash-screen/view-model.dart';
+import 'package:front_end/constant/colors.dart';
+
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
 
@@ -22,12 +24,8 @@ class _SplashScreenState extends State<SplashScreen> {
       body: Container(
         width: double.infinity,
         height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
-            colors: [Color(0xFFFF800B), Color(0xFFCE1010)],
-          ),
+        decoration: BoxDecoration(
+          gradient: blueNavyGradient,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -36,12 +34,12 @@ class _SplashScreenState extends State<SplashScreen> {
             Column(
               children: [
                 Image.asset(
-                  "assets/images/grocery.png",
+                  "assets/images/logo/1024.png",
                   height: 300.0,
                   width: 300.0,
                 ),
                 const Text(
-                  "A whole grocery store\n at your fingertips",
+                  "Your finance tracker companion",
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.white,

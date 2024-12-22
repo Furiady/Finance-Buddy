@@ -61,6 +61,7 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/images/logo/
     - assets/images/
     - assets/bus.png
     - assets/calendar (1).png

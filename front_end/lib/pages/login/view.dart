@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:front_end/components/form-component/view.dart';
 import 'package:front_end/components/text-button-component/view.dart';
 import 'package:front_end/components/wave-component/view.dart';
+import 'package:front_end/constant/colors.dart';
 import 'package:front_end/pages/login/view-model.dart';
 import 'package:front_end/pages/register/view.dart';
 
@@ -18,7 +19,7 @@ class _LoginState extends State<Login> {
 
   @override
   void dispose() {
-    _viewModel.dispose();
+    _viewModel.dispose(); // Dispose controllers in the view model
     super.dispose();
   }
 
@@ -26,54 +27,96 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
     return Scaffold(
+      resizeToAvoidBottomInset: false, // Prevent the screen from resizing
       backgroundColor: Colors.white,
       body: Stack(
         children: <Widget>[
+          // Background container
           Container(
-            height: size.height - 200,
-            color: Colors.blue,
+            height: size.height,
+            decoration: BoxDecoration(gradient: blueNavyGradient),
           ),
+
+          // Wave widget
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
-            curve: Curves.easeOutQuad,
-            top: keyboardOpen ? -size.height / 3.7 : 0.0,
+            curve: Curves.fastEaseInToSlowEaseOut,
+            top: 0.0,
             child: WaveWidget(
               size: size,
-              yOffset: size.height / 3.0,
-              color: Colors.white,
+              yOffset: size.height / 3.25,
+              color: Colors.white, // Make wave subtle
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(top: 100.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Login',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 40.0,
-                    fontWeight: FontWeight.w900,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(30.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: <Widget>[
-                FormComponent(
-                  hintText: 'Username',
-                  obscureText: false,
-                  prefixIcon: const Icon(Icons.person_outline),
-                  controller: _viewModel.usernameController,
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
+
+          // Header text
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 150.0, left: 35, right: 35),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: <Widget>[
+                    Text(
+                      'Login',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Poppins',
+                        fontSize: 40.0,
+                        fontWeight: FontWeight.bold,
+                        letterSpacing: 1,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 8.0,
+                            color: Colors.black.withOpacity(0.5),
+                            offset: Offset(2.0, 2.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 10), // Space between texts
+
+                    Text(
+                      'Welcome back to the BudgetBuddy!',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontFamily: 'Poppins',
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.normal,
+                        letterSpacing: 0,
+                        shadows: [
+                          Shadow(
+                            blurRadius: 5.0,
+                            color: Colors.black.withOpacity(0.5),
+                            offset: Offset(1.0, 1.0),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 30,),
+              // Login form and buttons
+              Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: <Widget>[
+                    // Username field
+                    FormComponent(
+                      hintText: 'Username',
+                      obscureText: false,
+                      prefixIcon: const Icon(Icons.person_outline),
+                      controller: _viewModel.usernameController,
+                    ),
+                    const SizedBox(height: 25),
+
+                    // Password field
                     FormComponent(
                       hintText: 'Password',
                       obscureText: !isPasswordVisible,
@@ -92,28 +135,57 @@ class _LoginState extends State<Login> {
                       ),
                       controller: _viewModel.passwordController,
                     ),
+                    const SizedBox(height: 30),
+
+                    // Login button with custom rounded style
+                    Container(
+                      width: double.infinity,
+                      height: 50,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: blueNavyColor,
+                      ),
+                      child: TextButtonComponent(
+                        text: 'Login',
+                        textColor: Colors.white,
+                        onPressed: () async {
+                          await _viewModel.login(context);
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+
+                    // Sign up button with a more elegant text style
+                    TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const Register(),
+                          ),
+                        );
+                      },
+                      child: Text(
+                        'Don\'t have an account? Register here',
+                        style: TextStyle(
+                          color: blueNavyColor,
+                          fontSize: 16,
+                          // fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 40),
+
+                    Image.asset(
+                      "assets/moneytracing_person.png",
+                      height: 250,
+                      width: 250,
+                    )
                   ],
                 ),
-                TextButtonComponent(
-                  text: 'Login',
-                  onPressed: () async {
-                    await _viewModel.login(context);
-                  },
-                ),
-                TextButtonComponent(
-                  text: 'Sign Up',
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const Register(),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
+              ),
+            ],
+          )
         ],
       ),
     );
