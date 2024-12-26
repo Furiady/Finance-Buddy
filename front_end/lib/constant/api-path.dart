@@ -2,3 +2,5 @@ const String baseUrl = "https://smart-gazelle-capable.ngrok-free.app/public/api/
 
 const String loginEndpoint = "/login";
 const String registerEndpoint = "/register";
+
+const String createRecordEndpoint = "/record";
