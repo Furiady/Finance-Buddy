@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class FormComponent extends StatelessWidget{
   final TextEditingController? controller;
@@ -7,6 +8,8 @@ class FormComponent extends StatelessWidget{
   final bool obscureText;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final String? labelText;
+  final List<TextInputFormatter>? inputFormatters;
   final void Function(String)? onChanged;
 
   const FormComponent({
@@ -18,6 +21,8 @@ class FormComponent extends StatelessWidget{
     this.prefixIcon,
     this.suffixIcon,
     this.onChanged,
+    this.labelText,
+    this.inputFormatters
   });
 
   @override
@@ -27,7 +32,9 @@ class FormComponent extends StatelessWidget{
       keyboardType: keyboardType,
       obscureText: obscureText,
       onChanged: onChanged,
+      inputFormatters: inputFormatters,
       decoration: InputDecoration(
+        labelText: labelText,
         hintText: hintText,
         prefixIcon: prefixIcon,
         suffixIcon: suffixIcon,

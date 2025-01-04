@@ -14,6 +14,21 @@ class _DashboardState extends State<Dashboard> {
   final DashboardViewModel viewModel = DashboardViewModel();
 
   @override
+  void initState() {
+    super.initState();
+
+    // Call _addTransaction during the first rendering
+    viewModel.addTransaction({
+      'tipe': 'Income',
+      'jumlah': 1000,
+    });
+    viewModel.addTransaction({
+      'tipe': 'Expense',
+      'jumlah': 500,
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return PopScope(
       canPop: !(viewModel.items[viewModel.selectedTab].navKey.currentState?.canPop() ?? true),
@@ -25,11 +40,11 @@ class _DashboardState extends State<Dashboard> {
         }
       },
       child: Scaffold(
-          appBar: AppBar(
-            automaticallyImplyLeading: false, // To remove the default back button (optional)
-            title: AppBarComponent(),  // Place your custom AppBarComponent here
-            backgroundColor: Colors.blue,  // Optional: Customize the background color of the AppBar
-          ),
+          // appBar: AppBar(
+          //   automaticallyImplyLeading: false, // To remove the default back button (optional)
+          //   title: const AppBarComponent(),  // Place your custom AppBarComponent here
+          //   backgroundColor: Colors.blue,  // Optional: Customize the background color of the AppBar
+          // ),
 
         body: IndexedStack(
           index: viewModel.selectedTab,

@@ -432,7 +432,6 @@ class _ReportsPageState extends State<ReportsPage> {
     );
   }
 
-  // Fungsi untuk menentukan path gambar berdasarkan kategori
   String _getIconPathByCategory(String category) {
     switch (category.toLowerCase()) {
       case 'food & beverages':
@@ -448,21 +447,6 @@ class _ReportsPageState extends State<ReportsPage> {
     }
   }
 
-  // Icon by category
-  String _getIconByCategory(String category) {
-    switch (category.toLowerCase()) {
-      case 'food & beverages':
-        return 'assets/fast-food.png';
-      case 'transportation':
-        return 'assets/bus.png';
-      case 'medicines':
-        return 'assets/medicines.png';
-      case 'plays':
-        return 'assets/joystick.png';
-      default:
-        return 'assets/wallet.png';
-    }
-  }
 
   // Color by category
   Color _getCategoryColor(String category) {

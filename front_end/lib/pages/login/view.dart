@@ -78,7 +78,7 @@ class _LoginState extends State<Login> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 10), // Space between texts
+                    const SizedBox(height: 10), // Space between texts
 
                     Text(
                       'Welcome back to the BudgetBuddy!',
@@ -92,7 +92,7 @@ class _LoginState extends State<Login> {
                           Shadow(
                             blurRadius: 5.0,
                             color: Colors.black.withOpacity(0.5),
-                            offset: Offset(1.0, 1.0),
+                            offset: const Offset(1.0, 1.0),
                           ),
                         ],
                       ),
@@ -110,6 +110,7 @@ class _LoginState extends State<Login> {
                     // Username field
                     FormComponent(
                       hintText: 'Username',
+                      labelText: 'Username',
                       obscureText: false,
                       prefixIcon: const Icon(Icons.person_outline),
                       controller: _viewModel.usernameController,
@@ -119,6 +120,7 @@ class _LoginState extends State<Login> {
                     // Password field
                     FormComponent(
                       hintText: 'Password',
+                      labelText: 'Password',
                       obscureText: !isPasswordVisible,
                       prefixIcon: const Icon(Icons.lock_outline),
                       suffixIcon: GestureDetector(

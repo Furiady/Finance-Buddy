@@ -40,9 +40,15 @@ class AutocompleteComponent extends StatelessWidget {
           controller: textEditingController,
           focusNode: focusNode,
           onChanged: (value) => controller.text = value,
-          decoration: const InputDecoration(
-            border: OutlineInputBorder(),
+          decoration: InputDecoration(
+            border: const OutlineInputBorder(),
             hintText: 'Type to search',
+            suffixIcon: GestureDetector(
+              onTap: () {
+                focusNode.requestFocus(); // Refocus the field
+              },
+              child: const Icon(Icons.arrow_drop_down),
+            ),
           ),
         );
       },

@@ -15,9 +15,20 @@ class DashboardViewModel {
 
   int selectedTab = 0;
 
-  final List<ModelNavigationBar> items;
+  final List<Map<String, dynamic>> _transactions = [];
+  double _income = 0; // Default value
+  double _expense = 0; // Default value
 
-  DashboardViewModel() : items = [
+  void addTransaction(Map<String, dynamic> transaction) {
+    if (transaction['tipe'] == 'Income') {
+      _income += transaction['jumlah'];
+    } else {
+      _expense += transaction['jumlah'];
+    }
+    _transactions.add(transaction);
+  }
+
+  List<ModelNavigationBar> get items => [
     ModelNavigationBar(
       page: const Home(),
       navKey: homeNavKey,
@@ -31,7 +42,7 @@ class DashboardViewModel {
       navKey: profileNavKey,
     ),
     ModelNavigationBar(
-      page: const Assets(),
+      page: Assets(transactions: _transactions),
       navKey: notificationNavKey,
     ),
     ModelNavigationBar(
