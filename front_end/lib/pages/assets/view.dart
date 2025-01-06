@@ -14,13 +14,11 @@ class Assets extends StatefulWidget {
 class _AssetsState extends State<Assets> {
   DateTime _currentDate = DateTime.now();
 
-  // Format Rupiah
   String formatRupiah(double amount) {
     return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0)
         .format(amount);
   }
 
-  // Format bulan saat ini
   String get formattedDate => DateFormat('MMMM yyyy').format(_currentDate);
 
   void _incrementMonth() {

@@ -17,53 +17,83 @@ class _DashboardState extends State<Dashboard> {
   void initState() {
     super.initState();
 
-    // Call _addTransaction during the first rendering
     viewModel.addTransaction({
-      'tipe': 'Income',
-      'jumlah': 1000,
+      'tipe': 'Expense',
+      'jumlah': 30.toDouble(),
+      'kategori': "Jamal",
+      'note': "sofian",
+      'waktu': DateTime.now(),
+      'warna': Colors.green,
     });
     viewModel.addTransaction({
       'tipe': 'Expense',
-      'jumlah': 500,
+      'jumlah': 100.toDouble(),
+      'kategori': "Jamal",
+      'note': "sofian",
+      'waktu': DateTime.now(),
+      'warna': Colors.blue,
+    });
+    viewModel.addTransaction({
+      'tipe': 'Expense',
+      'jumlah': 500.toDouble(),
+      'kategori': "Jamal",
+      'note': "sofian",
+      'waktu': DateTime.now(),
+      'warna': Colors.red,
+    });
+    viewModel.addTransaction({
+      'tipe': 'Expense',
+      'jumlah': 300.toDouble(),
+      'kategori': "Jamal",
+      'note': "sofian",
+      'waktu': DateTime.now(),
+      'warna': Colors.yellow,
+    });
+    viewModel.addTransaction({
+      'tipe': 'Expense',
+      'jumlah': 50.toDouble(),
+      'kategori': "Jamal",
+      'note': "sofian",
+      'waktu': DateTime.now(),
+      'warna': Colors.brown,
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: !(viewModel.items[viewModel.selectedTab].navKey.currentState?.canPop() ?? true),
+      canPop: !(viewModel.items[viewModel.selectedTab].navKey.currentState
+              ?.canPop() ??
+          true),
       onPopInvokedWithResult: (bool didPop, Object? result) {
         if (didPop) return;
 
-        if (viewModel.items[viewModel.selectedTab].navKey.currentState?.canPop() ?? false) {
+        if (viewModel.items[viewModel.selectedTab].navKey.currentState
+                ?.canPop() ??
+            false) {
           viewModel.items[viewModel.selectedTab].navKey.currentState?.pop();
         }
       },
       child: Scaffold(
-          // appBar: AppBar(
-          //   automaticallyImplyLeading: false, // To remove the default back button (optional)
-          //   title: const AppBarComponent(),  // Place your custom AppBarComponent here
-          //   backgroundColor: Colors.blue,  // Optional: Customize the background color of the AppBar
-          // ),
-
         body: IndexedStack(
           index: viewModel.selectedTab,
           children: viewModel.items
               .map((page) => Navigator(
-            key: page.navKey,
-            onGenerateInitialRoutes: (navigator, initialRoute) {
-              return [
-                MaterialPageRoute(builder: (context) => page.page),
-              ];
-            },
-          ))
+                    key: page.navKey,
+                    onGenerateInitialRoutes: (navigator, initialRoute) {
+                      return [
+                        MaterialPageRoute(builder: (context) => page.page),
+                      ];
+                    },
+                  ))
               .toList(),
         ),
         bottomNavigationBar: NavigationBarComponent(
           pageIndex: viewModel.selectedTab,
           onTap: (index) {
             if (index == viewModel.selectedTab) {
-              viewModel.items[index].navKey.currentState?.popUntil((route) => route.isFirst);
+              viewModel.items[index].navKey.currentState
+                  ?.popUntil((route) => route.isFirst);
             } else {
               setState(() {
                 viewModel.selectedTab = index;
