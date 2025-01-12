@@ -63,12 +63,14 @@ class CreateRecordViewModel {
     deductFromController.dispose();
   }
 
-  Future<void> ocrReaderTotalReceipt(File image, TextEditingController valueController, BuildContext context) async {
+  Future<void> ocrReaderTotalReceipt(File image,
+      TextEditingController valueController, BuildContext context) async {
     final inputImage = InputImage.fromFile(image);
     final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
 
     try {
-      final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+      final RecognizedText recognizedText =
+          await textRecognizer.processImage(inputImage);
       String extractedValue = '';
 
       final String text = recognizedText.text.toLowerCase();

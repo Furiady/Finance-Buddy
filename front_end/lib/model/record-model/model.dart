@@ -38,7 +38,8 @@ class RecordModel {
   // Create a RecordModel from JSON data
   factory RecordModel.fromJson(Map<String, dynamic> json) {
     return RecordModel(
-      type: json['type'], // 'expense' or 'income'
+      type: json['type'],
+      // 'expense' or 'income'
       title: json['title'],
       category: json['category'],
       value: json['value'].toDouble(),
