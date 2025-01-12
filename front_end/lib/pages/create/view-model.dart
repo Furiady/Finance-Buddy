@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/model/record-model/model.dart';
-import 'package:front_end/services/create-record-services/create-record-services.dart';
+import 'package:front_end/services/record-services/create-record-services.dart';
 import 'dart:io';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:intl/intl.dart';

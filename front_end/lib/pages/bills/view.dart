@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/components/pie-chart-component/view.dart';
+import 'package:front_end/pages/bills/view-model.dart';
 import 'pie_chart_widget.dart'; // Adjust the import path as necessary
 import 'view_model.dart'; // Import the view model to fetch the data
 
@@ -11,7 +12,7 @@ class Bills extends StatefulWidget {
 }
 
 class _PieChartViewState extends State<Bills> {
-  late final ViewModel _viewModel;
+  late final ChartViewModel _chartViewModel;
   Map<String, double>? billsChart;
 
   @override

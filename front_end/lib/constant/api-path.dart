@@ -4,4 +4,5 @@ const String loginEndpoint = "/login";
 const String registerEndpoint = "/register";
 
 const String createRecordEndpoint = "/record";
+const String getRecordsEndpoint = "/records";
 const String chartEndpoint = "/records/type/count";
