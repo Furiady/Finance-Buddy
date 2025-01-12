@@ -1,144 +1,84 @@
-import 'package:fl_chart/fl_chart.dart';
+// Reusable PieChartWidget
 import 'package:flutter/material.dart';
-import 'package:front_end/components/pie-chart-component/view-model.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'dart:math';
 
-class PieChartComponent extends StatefulWidget {
-  const PieChartComponent({super.key});
+class PieChartWidget extends StatelessWidget {
+  final Map<String, double> data;
+  final double centerSpaceRadius;
 
-  @override
-  State<PieChartComponent> createState() => _PieChartComponentState();
-}
+  const PieChartWidget({
+    Key? key,
+    required this.data,
+    this.centerSpaceRadius = 40.0,
+  }) : super(key: key);
 
-class _PieChartComponentState extends State<PieChartComponent> {
-  final PieChartViewModel viewModel = PieChartViewModel();
-
-  int touchedIndex = -1;
   @override
   Widget build(BuildContext context) {
-    // Get screen size for responsive sizing
-    final double screenWidth = MediaQuery.of(context).size.width;
+    final totalValue = data.values.fold(0.0, (sum, value) => sum + value);
+    final random = Random();
+    final List<Color> colors = [];
 
-    return AspectRatio(
-      aspectRatio: 1.3,
-      child: Row(
-        children: <Widget>[
-          const SizedBox(
-            height: 18,
-          ),
-          Expanded(
-            child: AspectRatio(
-              aspectRatio: 1,
-              child: PieChart(
-                PieChartData(
-                  pieTouchData: PieTouchData(
-                    touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                      setState(() {
-                        if (!event.isInterestedForInteractions ||
-                            pieTouchResponse == null ||
-                            pieTouchResponse.touchedSection == null) {
-                          touchedIndex = -1;
-                          return;
-                        }
-                        touchedIndex = pieTouchResponse
-                            .touchedSection!.touchedSectionIndex;
-                      });
-                    },
-                  ),
-                  borderData: FlBorderData(
-                    show: false,
-                  ),
-                  sectionsSpace: 0,
-                  centerSpaceRadius: 40,
-                  sections: viewModel.showingSections(touchedIndex),
+    return totalValue > 0
+        ? Column(
+      children: [
+        PieChart(
+          PieChartData(
+            sections: data.entries.map((entry) {
+              final percentage = (entry.value / totalValue) * 100;
+              final color = Color.fromARGB(
+                255,
+                random.nextInt(256),
+                random.nextInt(256),
+                random.nextInt(256),
+              );
+              colors.add(color);
+              return PieChartSectionData(
+                value: entry.value,
+                title: '${percentage.toStringAsFixed(1)}%',
+                color: color,
+                radius: 50,
+                titleStyle: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
-              ),
-            ),
-          ),
-          Column(
-            mainAxisAlignment: MainAxisAlignment.end,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Indicator(
-                color: Colors.blue,
-                text: 'First',
-                isSquare: false, // Circle indicator
-                size: screenWidth * 0.05, // Responsive size (5% of screen width)
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              Indicator(
-                color: Colors.yellow,
-                text: 'Second',
-                isSquare: false, // Circle indicator
-                size: screenWidth * 0.05, // Responsive size (5% of screen width)
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              Indicator(
-                color: Colors.purple,
-                text: 'Third',
-                isSquare: false, // Circle indicator
-                size: screenWidth * 0.05, // Responsive size (5% of screen width)
-              ),
-              SizedBox(
-                height: 4,
-              ),
-              Indicator(
-                color: Colors.green,
-                text: 'Fourth',
-                isSquare: false, // Circle indicator
-                size: screenWidth * 0.05, // Responsive size (5% of screen width)
-              ),
-              const SizedBox(
-                height: 18,
-              ),
-            ],
-          ),
-          const SizedBox(
-            width: 28,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class Indicator extends StatelessWidget {
-  final Color color;
-  final String text;
-  final bool isSquare;
-  final double size; // Added size parameter for responsive design
-
-  const Indicator({
-    required this.color,
-    required this.text,
-    required this.isSquare,
-    required this.size, // Accept size in constructor
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: <Widget>[
-        ClipRRect(
-          borderRadius: BorderRadius.circular(isSquare ? 0 : 50), // Circle or rectangle
-          child: Container(
-            color: color,
-            width: size, // Set width based on the passed size
-            height: size, // Set height based on the passed size
+              );
+            }).toList(),
+            sectionsSpace: 2,
+            centerSpaceRadius: centerSpaceRadius,
           ),
         ),
-        const SizedBox(width: 6),
-        Text(
-          text,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w400,
-          ),
+        const SizedBox(height: 16),
+        Wrap(
+          spacing: 8.0,
+          runSpacing: 4.0,
+          children: data.entries.map((entry) {
+            final colorIndex = data.keys.toList().indexOf(entry.key);
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 16,
+                  height: 16,
+                  color: colors[colorIndex],
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  entry.key,
+                  style: const TextStyle(fontSize: 14),
+                ),
+              ],
+            );
+          }).toList(),
         ),
       ],
+    )
+        : const Center(
+      child: Text(
+        'No data to display.',
+        style: TextStyle(color: Colors.grey),
+      ),
     );
   }
 }
