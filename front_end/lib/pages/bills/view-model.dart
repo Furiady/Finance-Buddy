@@ -4,17 +4,13 @@ import 'package:front_end/model/record-model/model.dart';
 import 'package:front_end/services/chart-services/chart-services.dart';
 import 'package:front_end/services/record-services/get-record-services.dart';
 
-class ChartViewModel extends ChangeNotifier {
-  final ChartService chartService;
-  final RecordService recordService;
-  List<ChartModel> _chartData = [];
-  List<RecordModel> _recordsData = [];
+class BillsViewModel {
+  final ChartService chartService = ChartService();
+  final RecordService recordService = RecordService();
+  List<ChartModel> chartData = [];
+  List<RecordModel> recordsData = [];
   String? _errorMessage;
-
-  ChartViewModel(this.chartService, this.recordService);
-
-  List<ChartModel> get chartData => _chartData;
-  List<RecordModel> get recordsData => _recordsData;
+  DateTime currentDate = DateTime.now();
   String? get errorMessage => _errorMessage;
 
   Future<void> fetchChartData({
@@ -23,11 +19,11 @@ class ChartViewModel extends ChangeNotifier {
   }) async {
     try {
       _errorMessage = null;
-      _chartData = await chartService.getChartData(type: "Income", month: month, year: year);
-      notifyListeners();
+      chartData = await chartService.getChartData(type: "Income", month: month, year: year);
+
     } catch (e) {
       _errorMessage = e.toString();
-      notifyListeners();
+
     }
   }
 
@@ -40,17 +36,17 @@ class ChartViewModel extends ChangeNotifier {
   }) async {
     try {
       _errorMessage = null;
-      _recordsData = await recordService.getRecords(
+      recordsData = await recordService.getRecords(
         year: year,
         month: month,
         type: type,
         category: category,
         deductFrom: deductFrom,
       );
-      notifyListeners();
     } catch (e) {
       _errorMessage = e.toString();
-      notifyListeners();
     }
   }
 }
+
+

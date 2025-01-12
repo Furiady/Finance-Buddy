@@ -22,10 +22,9 @@ class ChartService {
 
       _dio.options.headers['Authorization'] = token;
 
-      final DateTime now = DateTime.now();
-      final int year = now.year;
+
       final DateTime startDate = DateTime(year, month, 1);
-      final DateTime endDate = DateTime(year, month + 1, 0).subtract(Duration(days: 1));
+      final DateTime endDate = DateTime(year, month + 1, 0).subtract(const Duration(days: 1));
 
       String formattedStartDate = DateFormat('yyyyMMdd').format(startDate);
       String formattedEndDate = DateFormat('yyyyMMdd').format(endDate);

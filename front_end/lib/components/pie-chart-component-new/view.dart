@@ -1,20 +1,33 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:front_end/components/pie-chart-component-new/view-model.dart';
+import 'package:front_end/model/chart-model/model.dart';
 
 class PieChartComponent extends StatelessWidget {
-  final double totalExpense;
-  final Map<String, double> categoryBreakdown;
+  final List<ChartModel> data;
 
   const PieChartComponent({
     super.key,
-    required this.totalExpense,
-    required this.categoryBreakdown,
+    required this.data,
   });
 
   @override
   Widget build(BuildContext context) {
     final PieChartComponentViewModel viewModel = PieChartComponentViewModel();
+    final totalValue = data.fold(0, (sum, item) => sum + item.value);
+    final random = Random();
+    final Map<String, Color> categoryColors = {
+      for (var item in data)
+        item.key: Color.fromARGB(
+          255,
+          random.nextInt(256),
+          random.nextInt(256),
+          random.nextInt(256),
+        ),
+    };
+
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
       decoration: BoxDecoration(
@@ -43,7 +56,7 @@ class PieChartComponent extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            viewModel.formatCurrency(totalExpense),
+            viewModel.formatCurrency(totalValue),
             style: const TextStyle(
               fontSize: 36,
               fontWeight: FontWeight.bold,
@@ -53,30 +66,58 @@ class PieChartComponent extends StatelessWidget {
           const SizedBox(height: 16),
           SizedBox(
             height: 200,
-            child: totalExpense > 0
-                ? PieChart(
-              PieChartData(
-                sections: categoryBreakdown.entries.map((entry) {
-                  final percentage = (entry.value / totalExpense) * 100;
-                  return PieChartSectionData(
-                    value: entry.value,
-                    title: '${percentage.toStringAsFixed(1)}%',
-                    color: viewModel.getCategoryColor(entry.key),
-                    radius: 50,
-                    titleStyle: const TextStyle(
-                      fontSize: 12,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                    ),
-                  );
-                }).toList(),
-                sectionsSpace: 2,
-                centerSpaceRadius: 40,
-              ),
+            child: totalValue > 0
+                ? Column(
+              children: [
+                PieChart(
+                  PieChartData(
+                    sections: data.map((entry) {
+                      final percentage = (entry.value / totalValue) * 100;
+                      final color = categoryColors[entry.key]!;
+                      return PieChartSectionData(
+                        value: entry.value.toDouble(),
+                        title: '${percentage.toStringAsFixed(1)}%',
+                        color: color,
+                        radius: 50,
+                        titleStyle: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      );
+                    }).toList(),
+                    sectionsSpace: 2,
+                    centerSpaceRadius: 40.0,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                Wrap(
+                  spacing: 8.0,
+                  runSpacing: 4.0,
+                  children: data.map((entry) {
+                    final color = categoryColors[entry.key]!;
+                    return Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 16,
+                          height: 16,
+                          color: color,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          entry.key,
+                          style: const TextStyle(fontSize: 14),
+                        ),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ],
             )
                 : const Center(
               child: Text(
-                'No expenses to display.',
+                'No data to display.',
                 style: TextStyle(color: Colors.grey),
               ),
             ),
@@ -84,7 +125,8 @@ class PieChartComponent extends StatelessWidget {
           const SizedBox(height: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: categoryBreakdown.entries.map((entry) {
+            children: data.map((entry) {
+              final color = categoryColors[entry.key]!;
               return Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: Row(
@@ -93,7 +135,7 @@ class PieChartComponent extends StatelessWidget {
                       width: 40,
                       height: 40,
                       decoration: BoxDecoration(
-                        color: viewModel.getCategoryColor(entry.key),
+                        color: color,
                         shape: BoxShape.circle,
                       ),
                       child: Center(
@@ -108,8 +150,7 @@ class PieChartComponent extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
-                        '${entry.key}: ${viewModel.formatCurrency(
-                            entry.value)}',
+                        '${entry.key}: ${viewModel.formatCurrency(entry.value)}',
                         style: const TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.bold,
@@ -127,3 +168,5 @@ class PieChartComponent extends StatelessWidget {
     );
   }
 }
+
+

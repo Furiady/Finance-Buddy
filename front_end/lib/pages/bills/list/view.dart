@@ -1,29 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/pages/assets/asset-records-list/component.dart';
 import 'package:front_end/pages/assets/asset-records-list/view-model.dart';
+import 'package:front_end/pages/bills/list/component.dart';
+import 'package:front_end/pages/bills/list/view-model.dart';
 
-class AssetRecordsList extends StatefulWidget {
-  final List<Map<String, dynamic>> transactions;
+class ListComponent extends StatefulWidget {
+  final List<Map<String, dynamic>> records;
 
-  const AssetRecordsList({
+  const ListComponent({
     super.key,
-    required this.transactions,
+    required this.records,
   });
 
   @override
-  State<AssetRecordsList> createState() => _AssetRecordsListState();
+  State<ListComponent> createState() => _ListComponentState();
 }
 
-class _AssetRecordsListState extends State<AssetRecordsList> {
-  final AssetRecordListViewModel viewModel = AssetRecordListViewModel();
-  late List<Map<String, dynamic>> filteredTransactions;
+class _ListComponentState extends State<ListComponent> {
+  final ListViewModel viewModel = ListViewModel();
+  late List<Map<String, dynamic>> filteredRecords;
   late Map<String, double> dailyTotals;
 
   @override
   void initState() {
     super.initState();
-    filteredTransactions = viewModel.filterTransactionsByMonth(widget.transactions);
-    dailyTotals = viewModel.groupTransactionsByDate(filteredTransactions);
+    filteredRecords = viewModel.filterRecordsByMonth(widget.records);
+    dailyTotals = viewModel.groupRecordsByDate(filteredRecords);
   }
 
   @override
@@ -81,8 +83,8 @@ class _AssetRecordsListState extends State<AssetRecordsList> {
                   children: [
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: TransactionList(
-                          date: date, transactions: widget.transactions),
+                      child: RecordList(
+                          date: date, records: widget.records),
                     ),
                   ],
                 ),
