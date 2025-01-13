@@ -1,12 +1,15 @@
 import 'package:intl/intl.dart';
 
-class MonthlyHeaderComponentViewModel{
-  DateTime currentDate = DateTime.now();
-  String get formattedDate => DateFormat('MMMM yyyy').format(currentDate);
-  void incrementMonth() {
-      currentDate = DateTime(currentDate.year, currentDate.month + 1);
+class MonthlyHeaderComponentViewModel {
+  String formattedDate(DateTime currentDate) {
+    return DateFormat('MMMM yyyy').format(currentDate);
   }
-  void decrementMonth() {
-      currentDate = DateTime(currentDate.year, currentDate.month - 1);
+
+  DateTime incrementMonth(DateTime currentDate) {
+    return DateTime(currentDate.year, currentDate.month + 1);
+  }
+
+  DateTime decrementMonth(DateTime currentDate) {
+    return DateTime(currentDate.year, currentDate.month - 1);
   }
 }

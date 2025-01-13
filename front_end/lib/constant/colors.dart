@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
-LinearGradient redColorGradient = LinearGradient(colors: [Color(0xFFFF0000), Color(0xFFFF6666)]);
-LinearGradient blueNavyGradient = LinearGradient(colors: [Color(0xFF003459), Color(0xFF006f8e), Color(0xff00a7ff)]);
+LinearGradient redColorGradient =
+    LinearGradient(colors: [Color(0xFFFF0000), Color(0xFFFF6666)]);
+LinearGradient blueNavyGradient = LinearGradient(
+    colors: [Color(0xFF0D47A1), Color(0xFF42A5F5), Color(0xFFE3F2FD)]);
 
 // Primary Color
 Color blueNavyColor = Color(0xFF003459);

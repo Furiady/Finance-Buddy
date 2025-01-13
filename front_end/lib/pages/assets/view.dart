@@ -50,7 +50,7 @@ class _AssetsState extends State<Assets> {
             top: 75,
             left: 0,
             right: 0,
-            child: MonthlyHeaderComponent(),
+            child: Text(""), //MonthlyHeaderComponent(),
           ),
         ],
       ),

@@ -21,4 +21,3 @@ class _ReportsHeaderComponentState extends State<ReportsHeaderComponent> {
     );
   }
 }
-

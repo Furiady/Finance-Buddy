@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/pages/dashboard/view.dart';
+import 'package:front_end/pages/bills/view-model.dart';
 import 'package:front_end/pages/splash-screen/view.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp( const MyApp());
 }
 
 class MyApp extends StatelessWidget {

@@ -10,8 +10,7 @@ class ChartService {
 
   Future<List<ChartModel>> getChartData({
     required String type,
-    required int month,
-    required int year,
+    required DateTime date,
   }) async {
     try {
       String? token = await secureStorage.read(key: 'token');
@@ -23,8 +22,8 @@ class ChartService {
       _dio.options.headers['Authorization'] = token;
 
 
-      final DateTime startDate = DateTime(year, month, 1);
-      final DateTime endDate = DateTime(year, month + 1, 0).subtract(const Duration(days: 1));
+      final DateTime startDate = DateTime(date.year, date.month, 1);
+      final DateTime endDate = DateTime(date.year, date.month + 1, 0);
 
       String formattedStartDate = DateFormat('yyyyMMdd').format(startDate);
       String formattedEndDate = DateFormat('yyyyMMdd').format(endDate);

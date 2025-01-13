@@ -153,7 +153,7 @@ class _RegisterState extends State<Register> {
                       height: 50,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
-                        color: blueNavyColor,
+                        color: Colors.blue,
                       ),
                       child: TextButtonComponent(
                         text: 'Register',
