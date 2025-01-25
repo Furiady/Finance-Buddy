@@ -1,38 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/model/record-response-model/model.dart';
 import 'package:intl/intl.dart';
 
-class ListViewModel{
-  DateTime currentDate = DateTime.now();
-  List<Map<String, dynamic>> recordsForDate(
-      List<Map<String, dynamic>> records, String date) {
-    return records
-        .where((record) =>
-    DateFormat.yMMMMd().format(record['waktu'] as DateTime) == date &&
-        record['tipe'] == 'Expense')
-        .toList();
-  }
-  Map<String, double> groupRecordsByDate(
-      List<Map<String, dynamic>> records) {
-    final Map<String, double> dailyTotals = {};
-    for (var record in records) {
-      final date = DateFormat.yMMMMd().format(record['waktu']);
-      final amount = record['jumlah'];
-      if (record['tipe'] == 'Expense') {
-        dailyTotals[date] = (dailyTotals[date] ?? 0) + amount;
-      }
-    }
-    return dailyTotals;
-  }
-  List<Map<String, dynamic>> filterRecordsByMonth(List<Map<String, dynamic>> records) {
+class AssetsListViewModel {
+
+  List<RecordModel> filterRecordsByMonth(List<RecordModel> records, DateTime currentDate) {
     return records.where((record) {
-      final recordDate = record['waktu'] as DateTime;
+      final recordDate = record.date;
       return recordDate.year == currentDate.year &&
           recordDate.month == currentDate.month;
     }).toList();
   }
 
+  Map<String, int> groupRecordsByDate(List<RecordModel> records,DateTime currentDate) {
+    final Map<String, int> dailyTotals = {};
+    for (var record in records) {
+      final date = DateFormat.yMMMMd().format(record.date);
+      dailyTotals[date] = (dailyTotals[date] ?? 0) + record.value;
+    }
+    return dailyTotals;
+  }
 
-  String formatCurrency(double amount) {
+  List<RecordModel> recordsForDate(List<RecordModel> records, String date) {
+    return records
+        .where((record) => DateFormat.yMMMMd().format(record.date) == date)
+        .toList();
+  }
+
+  String formatCurrency(int amount) {
     return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0)
         .format(amount);
   }
@@ -52,6 +47,7 @@ class ListViewModel{
     }
   }
 
+  /// Returns the path to the icon for each category
   String getIconPathByCategory(String category) {
     switch (category.toLowerCase()) {
       case 'food & beverages':

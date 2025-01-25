@@ -8,7 +8,7 @@ class LoginService {
 
   Future<String?> login(LoginModel model, BuildContext context) async {
     try {
-      final response = await _dio.post(loginEndpoint, data: model.toJson());
+      final response = await _dio.post(loginEndPoint, data: model.toJson());
 
       String token = response.data['token'];
       return token;

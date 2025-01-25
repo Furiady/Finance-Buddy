@@ -4,18 +4,34 @@ import 'package:front_end/components/date-picker-component/view.dart';
 import 'package:front_end/components/elevated-button-component/view.dart';
 import 'package:front_end/components/form-component/view.dart';
 import 'package:front_end/components/image-picker-component/view.dart';
-import 'package:front_end/pages/create/view-model.dart';
+import 'package:front_end/model/record-response-model/model.dart';
+import 'package:front_end/pages/home/home-detail/view-model.dart';
+import 'package:intl/intl.dart';
 
-class Create extends StatefulWidget {
-  const Create({super.key});
+class HomeDetail extends StatefulWidget {
+  final RecordModel record;
+  const HomeDetail({super.key, required this.record});
 
   @override
-  State<Create> createState() => _CreateState();
+  State<HomeDetail> createState() => _HomeDetailState();
 }
 
-class _CreateState extends State<Create> {
-  final CreateRecordViewModel viewModel = CreateRecordViewModel();
+class _HomeDetailState extends State<HomeDetail> {
+  final HomeDetailViewModel viewModel = HomeDetailViewModel();
   bool isExpense = true;
+  @override
+  void initState() {
+    super.initState();
+    viewModel.categoryController.text = widget.record.category;
+    viewModel.deductFromController.text = widget.record.deductFrom ?? '';
+    viewModel.descriptionController.text = widget.record.description ?? '';
+    viewModel.titleController.text = widget.record.title;
+    viewModel.valueController.text = widget.record.value.toString();
+    viewModel.typeController.text = widget.record.type;
+    viewModel.dateController.text = DateFormat('dd/MM/yyyy').format(widget.record.date);
+    isExpense = widget.record.type == "Expense";
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,69 +40,31 @@ class _CreateState extends State<Create> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
-            "Add Transaction",
+            "Transaction Record Detail",
             style: TextStyle(
               color: Colors.white,
               fontSize: 18,
               fontWeight: FontWeight.w600,
             ),
           ),
+          iconTheme: const IconThemeData(color: Colors.white),
+          centerTitle: true,
           backgroundColor: Colors.blue,
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.delete),
+              color: Colors.white, // Red color for the delete icon
+              onPressed: () {
+                // Handle the delete action
+              },
+            ),
+          ],
         ),
         body: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Expense/Income Toggle Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButtonComponent(
-                    width: MediaQuery.of(context).size.width * 0.45,
-                    height: 50,
-                    text: "Expense",
-                    onPressed: () => setState(() => isExpense = true),
-                    color: isExpense ? Colors.red : Colors.white,
-                    textColor: isExpense ? Colors.white : Colors.red,
-                    fontSize: isExpense ? 18 : 16,
-                    style: ButtonStyle(
-                        foregroundColor: isExpense
-                            ? MaterialStateProperty.all<Color>(Colors.white)
-                            : MaterialStateProperty.all<Color>(Colors.red),
-                        backgroundColor: isExpense
-                            ? MaterialStateProperty.all<Color>(Colors.red)
-                            : MaterialStateProperty.all<Color>(Colors.white),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    side:
-                                        const BorderSide(color: Colors.red)))),
-                  ),
-                  ElevatedButtonComponent(
-                    text: "Income",
-                    width: MediaQuery.of(context).size.width * 0.45,
-                    height: 50,
-                    onPressed: () => setState(() => isExpense = false),
-                    color: isExpense ? Colors.white : Colors.green,
-                    textColor: isExpense ? Colors.green : Colors.white,
-                    fontSize: isExpense ? 16 : 18,
-                    style: ButtonStyle(
-                        foregroundColor: isExpense
-                            ? MaterialStateProperty.all<Color>(Colors.green)
-                            : MaterialStateProperty.all<Color>(Colors.white),
-                        backgroundColor: isExpense
-                            ? MaterialStateProperty.all<Color>(Colors.white)
-                            : MaterialStateProperty.all<Color>(Colors.green),
-                        shape: MaterialStateProperty
-                            .all<RoundedRectangleBorder>(RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(8),
-                                side: const BorderSide(color: Colors.green)))),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
               if (isExpense)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -151,7 +129,7 @@ class _CreateState extends State<Create> {
                                     selectedImage: viewModel.selectedImage,
                                     onImageChanged: (newImage) {
                                       setState(() =>
-                                          viewModel.selectedImage = newImage);
+                                      viewModel.selectedImage = newImage);
                                       if (newImage != null) {
                                         viewModel.ocrReaderTotalReceipt(
                                             newImage,
@@ -183,6 +161,11 @@ class _CreateState extends State<Create> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  FormComponent(
+                    controller : viewModel.typeController,
+                    labelText: "Type",
+                    hintText: "Type",
+                  ),
                   const SizedBox(height: 16),
                   FormComponent(
                     controller: viewModel.titleController,
@@ -192,6 +175,7 @@ class _CreateState extends State<Create> {
                   const SizedBox(height: 16),
                   DatePickerComponent(
                     labelText: "Date",
+                    controller: viewModel.dateController,
                     onChanged: (date) => setState(() => date = date),
                   ),
                   const SizedBox(height: 16),
@@ -201,9 +185,10 @@ class _CreateState extends State<Create> {
                       if (!isExpense)
                         AutocompleteComponent(
                           labelText: "Category",
+                          hintText: "Select or type",
                           controller: viewModel.categoryController,
                           options: viewModel.optionsCategory,
-                          hintText: "Select or type",
+                          initialValue: viewModel.categoryController.value,
                         )
                       else
                         Row(
@@ -211,18 +196,20 @@ class _CreateState extends State<Create> {
                             Expanded(
                               child: AutocompleteComponent(
                                 labelText: "Category",
+                                hintText: "Select or type",
                                 controller: viewModel.categoryController,
                                 options: viewModel.optionsCategory,
-                                hintText: "Select or type",
+                                initialValue: viewModel.categoryController.value,
                               ),
                             ),
                             const SizedBox(width: 16),
                             Expanded(
                               child: AutocompleteComponent(
                                 labelText: "Source of fund",
+                                hintText: "Source of fund",
                                 controller: viewModel.deductFromController,
                                 options: viewModel.optionsCategory,
-                                hintText: "Source of fund",
+                                initialValue: viewModel.deductFromController.value,
                               ),
                             ),
                           ],
@@ -258,17 +245,17 @@ class _CreateState extends State<Create> {
                 height: 50,
                 style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
+                    WidgetStateProperty.all<Color>(Colors.blue),
                     foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    WidgetStateProperty.all<Color>(Colors.blue),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                             side: const BorderSide(color: Colors.blue)))),
                 color: Colors.blue,
                 textColor: Colors.white,
                 padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 120),
+                const EdgeInsets.symmetric(vertical: 15, horizontal: 120),
               ),
               const SizedBox(height: 30),
             ],

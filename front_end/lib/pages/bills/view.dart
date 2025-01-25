@@ -1,7 +1,9 @@
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:front_end/components/monthly-header-component/view.dart';
 import 'package:front_end/components/pie-chart-component-new/view.dart';
 import 'package:front_end/components/reports-header-component/view.dart';
+import 'package:front_end/pages/bills/bills-list/view.dart';
 import 'package:front_end/pages/bills/view-model.dart';
 
 class Bills extends StatefulWidget {
@@ -14,6 +16,7 @@ class Bills extends StatefulWidget {
 class _BillsState extends State<Bills> {
   final BillsViewModel viewModel = BillsViewModel();
   DateTime currentDate = DateTime.now();
+
   Future<void> fetchChartData({
     required DateTime date,
   }) async {
@@ -22,7 +25,7 @@ class _BillsState extends State<Bills> {
         viewModel.isLoading = true;
         viewModel.errorMessage = null;
       });
-      viewModel.chartData = await viewModel.chartService.getChartData(type: "Income", date: date);
+      viewModel.chartData = await viewModel.chartService.getChartData(type: "Expense", date: date);
     } catch (e) {
       setState(() {
         viewModel.errorMessage = e.toString();
@@ -34,13 +37,8 @@ class _BillsState extends State<Bills> {
     }
   }
 
-
   Future<void> fetchRecordsData({
-    required int month,
-    required int year,
-    String? type,
-    String? category,
-    String? deductFrom,
+    required DateTime date
   }) async {
     try {
       setState(() {
@@ -48,11 +46,8 @@ class _BillsState extends State<Bills> {
         viewModel.isLoading = true;
       });
       viewModel.recordsData = await viewModel.recordService.getRecords(
-        year: year,
-        month: month,
-        type: type,
-        category: category,
-        deductFrom: deductFrom,
+        date: currentDate,
+        type: "Expense",
       );
     } catch (e) {
       setState(() {
@@ -64,10 +59,12 @@ class _BillsState extends State<Bills> {
       });
     }
   }
+
   @override
   void initState() {
     super.initState();
     fetchChartData(date: currentDate);
+    fetchRecordsData(date: currentDate);
   }
 
   void handleDateChange(DateTime newDate) {
@@ -75,8 +72,8 @@ class _BillsState extends State<Bills> {
       currentDate = newDate;
     });
     fetchChartData(date: newDate);
+    fetchRecordsData(date: newDate);
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,16 +84,18 @@ class _BillsState extends State<Bills> {
               const ReportsHeaderComponent(),
               Expanded(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      const SizedBox(height: 45),
-                      viewModel.isLoading
-                          ? const Center(child: CircularProgressIndicator()) // Show loading spinner
-                          : PieChartComponent(data: viewModel.chartData),
-                      const SizedBox(height: 20),
-                      //ListComponent(transactions: widget.transactions),
-                    ],
-                  ),
+                  child: viewModel.isLoading
+                      ? const Center(
+                          child:
+                              CircularProgressIndicator()) // Show loading spinner
+                      : Column(
+                          children: [
+                            const SizedBox(height: 45),
+                            PieChartComponent(data: viewModel.chartData),
+                            const SizedBox(height: 20),
+                            BillsListComponent(records: viewModel.recordsData, date: currentDate),
+                          ],
+                        ),
                 ),
               ),
             ],
@@ -107,7 +106,8 @@ class _BillsState extends State<Bills> {
             right: 0,
             child: MonthlyHeaderComponent(
               date: currentDate,
-              onDateChanged: handleDateChange, // Pass the callback to the MonthlyHeaderComponent
+              onDateChanged:
+                  handleDateChange, // Pass the callback to the MonthlyHeaderComponent
             ),
           ),
         ],

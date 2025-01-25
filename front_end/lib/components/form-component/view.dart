@@ -9,6 +9,9 @@ class FormComponent extends StatelessWidget{
   final Widget? prefixIcon;
   final Widget? suffixIcon;
   final String? labelText;
+  final bool expands;
+  final int? maxLines;
+  final int? minLines;
   final List<TextInputFormatter>? inputFormatters;
   final void Function(String)? onChanged;
 
@@ -22,7 +25,10 @@ class FormComponent extends StatelessWidget{
     this.suffixIcon,
     this.onChanged,
     this.labelText,
-    this.inputFormatters
+    this.inputFormatters,
+    this.expands=false,
+    this.maxLines,
+    this.minLines,
   });
 
   @override
@@ -33,6 +39,9 @@ class FormComponent extends StatelessWidget{
       obscureText: obscureText,
       onChanged: onChanged,
       inputFormatters: inputFormatters,
+      maxLines: obscureText ? 1 : maxLines,
+      minLines: minLines,
+      expands: expands,
       decoration: InputDecoration(
         labelText: labelText,
         hintText: hintText,

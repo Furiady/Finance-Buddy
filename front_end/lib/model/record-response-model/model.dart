@@ -3,7 +3,7 @@ class RecordModel {
   final String title;
   final String category;
   final int value;
-  final String date; // String representation in YYYYMMDD format (derived from createdAt)
+  final DateTime date; // Parsed from createdAt
   final String? description;
   final String? deductFrom; // Only for 'expense'
   final String? url;
@@ -13,21 +13,11 @@ class RecordModel {
     required this.title,
     required this.category,
     required this.value,
-    required String createdAt, // Use this to create date
+    required this.date,
     this.description,
     this.deductFrom,
     this.url,
-  }) : date = _parseDateFromCreatedAt(createdAt);
-
-  static String _parseDateFromCreatedAt(String createdAt) {
-    // Handle potential parsing errors (e.g., invalid format)
-    try {
-      return createdAt.substring(0, 8); // Extract YYYYMMDD from createdAt
-    } catch (e) {
-      print('Error parsing date from createdAt: $e');
-      return ''; // Return empty string on error
-    }
-  }
+  });
 
   // Convert to JSON for API request or local storage
   Map<String, dynamic> toJson() {
@@ -36,7 +26,7 @@ class RecordModel {
       'title': title,
       'category': category,
       'value': value,
-      'date': date,
+      'date': date.toIso8601String(),
       'description': description,
       'deductFrom': deductFrom,
       'url': url,
@@ -49,8 +39,8 @@ class RecordModel {
       type: json['type'],
       title: json['title'],
       category: json['category'],
-      value: json['value'].toDouble(),
-      createdAt: json['createdAt'], // Use createdAt to create date
+      value: json['value'],
+      date: DateTime.parse(json['createdAt']), // Convert YYYYMMDD to DateTime
       description: json['description'],
       deductFrom: json['deductFrom'],
       url: json['url'],

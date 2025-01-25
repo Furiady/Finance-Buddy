@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/components/app-bar-component/view.dart';
 import 'package:front_end/components/navigation-bar-component/view.dart';
 import 'package:front_end/pages/dashboard/view-model.dart';
 
@@ -13,51 +12,7 @@ class Dashboard extends StatefulWidget {
 class _DashboardState extends State<Dashboard> {
   final DashboardViewModel viewModel = DashboardViewModel();
 
-  @override
-  void initState() {
-    super.initState();
 
-    viewModel.addTransaction({
-      'tipe': 'Expense',
-      'jumlah': 30.toDouble(),
-      'kategori': "Jamal",
-      'note': "sofian",
-      'waktu': DateTime.now(),
-      'warna': Colors.green,
-    });
-    viewModel.addTransaction({
-      'tipe': 'Expense',
-      'jumlah': 100.toDouble(),
-      'kategori': "Jamal",
-      'note': "sofian",
-      'waktu': DateTime.now(),
-      'warna': Colors.blue,
-    });
-    viewModel.addTransaction({
-      'tipe': 'Expense',
-      'jumlah': 500.toDouble(),
-      'kategori': "Jamal",
-      'note': "sofian",
-      'waktu': DateTime.now(),
-      'warna': Colors.red,
-    });
-    viewModel.addTransaction({
-      'tipe': 'Expense',
-      'jumlah': 300.toDouble(),
-      'kategori': "Jamal",
-      'note': "sofian",
-      'waktu': DateTime.now(),
-      'warna': Colors.yellow,
-    });
-    viewModel.addTransaction({
-      'tipe': 'Expense',
-      'jumlah': 50.toDouble(),
-      'kategori': "Jamal",
-      'note': "sofian",
-      'waktu': DateTime.now(),
-      'warna': Colors.brown,
-    });
-  }
 
   @override
   Widget build(BuildContext context) {

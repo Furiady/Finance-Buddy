@@ -4,11 +4,11 @@ import 'package:front_end/constant/api-path.dart';
 import 'package:front_end/model/record-model/model.dart';
 import 'package:flutter/material.dart';
 
-class CreateRecordService {
+class UpdateRecordService {
   final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
-  Future<void> createRecord(RecordModel record, BuildContext context) async {
+  Future<void> updateRecord(RecordModel record, BuildContext context) async {
     try {
       String? token = await secureStorage.read(key: 'token');
 

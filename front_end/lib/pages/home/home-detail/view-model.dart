@@ -1,18 +1,20 @@
-import 'package:flutter/material.dart';
-import 'package:front_end/model/record-model/model.dart';
-import 'package:front_end/services/record-services/create-record-services.dart';
 import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:front_end/services/record-services/update-record-services.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:intl/intl.dart';
+import '../../../model/record-model/model.dart';
 
-class CreateRecordViewModel {
-  final CreateRecordService recordService = CreateRecordService();
+class HomeDetailViewModel {
+  final UpdateRecordService recordService = UpdateRecordService();
   final formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final categoryController = TextEditingController();
   final valueController = TextEditingController();
   final descriptionController = TextEditingController();
   final deductFromController = TextEditingController();
+  final typeController = TextEditingController();
+  final dateController = TextEditingController();
   late String selectedType = 'Expense';
   late DateTime date = DateTime.now();
   File? selectedImage;
@@ -42,7 +44,7 @@ class CreateRecordViewModel {
       deductFrom: selectedType == 'expense' ? deductFromController.text : null,
     );
 
-    await recordService.createRecord(record, context);
+    await recordService.updateRecord(record, context);
     formKey.currentState!.reset();
     selectedType = 'Expense';
     date = DateTime.now();
@@ -68,7 +70,7 @@ class CreateRecordViewModel {
 
     try {
       final RecognizedText recognizedText =
-          await textRecognizer.processImage(inputImage);
+      await textRecognizer.processImage(inputImage);
       String extractedValue = '';
 
       final String text = recognizedText.text.toLowerCase();

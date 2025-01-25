@@ -3,7 +3,6 @@ import 'package:front_end/components/navigation-bar-component/view-model.dart';
 import 'package:front_end/pages/assets/view.dart';
 import 'package:front_end/pages/bills/view.dart';
 import 'package:front_end/pages/create/view.dart';
-import 'package:front_end/pages/game/view.dart';
 import 'package:front_end/pages/home/view.dart';
 import 'package:front_end/pages/profile/view.dart';
 
@@ -17,17 +16,8 @@ class DashboardViewModel {
   int selectedTab = 0;
 
   final List<Map<String, dynamic>> _transactions = [];
-  double _income = 0; // Default value
-  double _expense = 0; // Default value
 
-  void addTransaction(Map<String, dynamic> transaction) {
-    if (transaction['tipe'] == 'Income') {
-      _income += transaction['jumlah'];
-    } else {
-      _expense += transaction['jumlah'];
-    }
-    _transactions.add(transaction);
-  }
+
 
   List<ModelNavigationBar> get items => [
     ModelNavigationBar(
@@ -35,7 +25,7 @@ class DashboardViewModel {
       navKey: homeNavKey,
     ),
     ModelNavigationBar(
-      page: const Bills(),
+    page: const Bills(),
       navKey: searchNavKey,
     ),
     ModelNavigationBar(
@@ -43,7 +33,7 @@ class DashboardViewModel {
       navKey: profileNavKey,
     ),
     ModelNavigationBar(
-      page: Assets(transactions: _transactions),
+     page: Assets(),
       navKey: notificationNavKey,
     ),
     ModelNavigationBar(

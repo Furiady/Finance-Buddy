@@ -1,35 +1,15 @@
-class AssetViewModel {
-  DateTime currentDate = DateTime.now();
 
-  List<Map<String, dynamic>> filterTransactionsByMonth(
-      List<Map<String, dynamic>> transactions) {
-    return transactions.where((transaction) {
-      final transactionDate = transaction['waktu'] as DateTime;
-      return transactionDate.year == currentDate.year &&
-          transactionDate.month == currentDate.month;
-    }).toList();
-  }
+import 'package:front_end/model/chart-model/model.dart';
+import 'package:front_end/model/record-response-model/model.dart';
+import 'package:front_end/services/chart-services/chart-services.dart';
+import 'package:front_end/services/record-services/get-record-services.dart';
 
-  double totalExpense(List<Map<String, dynamic>> transactions) {
-    return filterTransactionsByMonth(transactions)
-        .where((transaction) => transaction['tipe'] == 'Expense')
-        .fold(0.0, (sum, item) => sum + (item['jumlah'] as double));
-  }
+class AssetsViewModel {
+  final ChartService chartService = ChartService();
+  final RecordService recordService = RecordService();
 
-  Map<String, double> getCategoryBreakdown(List<Map<String, dynamic>> transactions) {
-    final filteredTransactions = filterTransactionsByMonth(transactions);
-    Map<String, double> categoryBreakdown = {};
-
-    for (var transaction in filteredTransactions) {
-      if (transaction['tipe'] == 'Expense') {
-        final category = transaction['kategori'] as String;
-        final amount = transaction['jumlah'] as double;
-
-        categoryBreakdown[category] =
-            (categoryBreakdown[category] ?? 0) + amount;
-      }
-    }
-
-    return categoryBreakdown;
-  }
+  List<ChartModel> chartData = [];
+  List<RecordModel> recordsData = [];
+  String? errorMessage;
+  bool isLoading = false;
 }

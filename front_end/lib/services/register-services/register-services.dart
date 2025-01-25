@@ -8,7 +8,7 @@ class RegisterService {
 
   Future<bool?> register(RegisterModel model, BuildContext context) async {
     try {
-      final response = await _dio.post(registerEndpoint, data: model.toJson());
+      final response = await _dio.post(registerEndPoint, data: model.toJson());
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Account created successfully')),
       );

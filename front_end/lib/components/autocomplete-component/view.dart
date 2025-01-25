@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 
 class AutocompleteComponent extends StatelessWidget {
-  final String label;
   final TextEditingController controller;
   final List<String> options;
   final String hintText;
+  final String labelText;
+  final TextEditingValue? initialValue;
 
   const AutocompleteComponent({
-    required this.label,
     required this.controller,
     required this.options,
     required this.hintText,
+    required this.labelText,
+    this.initialValue,
     super.key,
   });
 
@@ -30,6 +32,7 @@ class AutocompleteComponent extends StatelessWidget {
       onSelected: (String selection) {
         controller.text = selection;
       },
+      initialValue: initialValue,
       fieldViewBuilder: (
         BuildContext context,
         TextEditingController textEditingController,
@@ -42,7 +45,8 @@ class AutocompleteComponent extends StatelessWidget {
           onChanged: (value) => controller.text = value,
           decoration: InputDecoration(
             border: const OutlineInputBorder(),
-            hintText: 'Type to search',
+            labelText: labelText,
+            hintText: hintText,
             suffixIcon: GestureDetector(
               onTap: () {
                 focusNode.requestFocus(); // Refocus the field

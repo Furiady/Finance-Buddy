@@ -19,27 +19,23 @@ class _LoginState extends State<Login> {
 
   @override
   void dispose() {
-    _viewModel.dispose(); // Dispose controllers in the view model
+    _viewModel.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Prevent the screen from resizing
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Stack(
         children: <Widget>[
-          // Background container
           Container(
             height: size.height,
             decoration: BoxDecoration(gradient: blueNavyGradient),
           ),
-
-          // Wave widget
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
             curve: Curves.fastEaseInToSlowEaseOut,
@@ -50,8 +46,6 @@ class _LoginState extends State<Login> {
               color: Colors.white, // Make wave subtle
             ),
           ),
-
-          // Header text
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -73,13 +67,12 @@ class _LoginState extends State<Login> {
                           Shadow(
                             blurRadius: 8.0,
                             color: Colors.black.withOpacity(0.5),
-                            offset: Offset(2.0, 2.0),
+                            offset: const Offset(2.0, 2.0),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10), // Space between texts
-
+                    const SizedBox(height: 10),
                     Text(
                       'Welcome back to the BudgetBuddy!',
                       style: TextStyle(
@@ -100,14 +93,12 @@ class _LoginState extends State<Login> {
                   ],
                 ),
               ),
-              const SizedBox(height: 30,),
-              // Login form and buttons
+              const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.all(30.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    // Username field
                     FormComponent(
                       hintText: 'Username',
                       labelText: 'Username',
@@ -116,8 +107,6 @@ class _LoginState extends State<Login> {
                       controller: _viewModel.usernameController,
                     ),
                     const SizedBox(height: 25),
-
-                    // Password field
                     FormComponent(
                       hintText: 'Password',
                       labelText: 'Password',
@@ -138,8 +127,6 @@ class _LoginState extends State<Login> {
                       controller: _viewModel.passwordController,
                     ),
                     const SizedBox(height: 30),
-
-                    // Login button with custom rounded style
                     Container(
                       width: double.infinity,
                       height: 50,
@@ -156,8 +143,6 @@ class _LoginState extends State<Login> {
                       ),
                     ),
                     const SizedBox(height: 5),
-
-                    // Sign up button with a more elegant text style
                     TextButton(
                       onPressed: () {
                         Navigator.push(
@@ -172,12 +157,10 @@ class _LoginState extends State<Login> {
                         style: TextStyle(
                           color: blueNavyColor,
                           fontSize: 16,
-                          // fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     const SizedBox(height: 40),
-
                   ],
                 ),
               ),

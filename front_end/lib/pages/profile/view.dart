@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
-  const Profile({Key? key}) : super(key: key);
+  const Profile({super.key});
 
   @override
   _ProfileState createState() => _ProfileState();
@@ -25,24 +25,23 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Blue Box with Profile Content
             Container(
               padding: const EdgeInsets.all(15.0),
               decoration: BoxDecoration(
                 color: Colors.blue,
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: Row(
+              child: const Row(
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 40,
                     backgroundColor: Colors.orange,
                     child: Icon(Icons.person, size: 50, color: Colors.white),
                   ),
-                  const SizedBox(width: 20),
+                  SizedBox(width: 20),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
+                    children: [
                       Text(
                         "CALVIN",
                         style: TextStyle(
@@ -65,7 +64,6 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             const SizedBox(height: 30),
-            // Settings Section
             const SizedBox(height: 10),
             SwitchListTile(
               value: isPinEnabled,
@@ -102,7 +100,6 @@ class _ProfileState extends State<Profile> {
               secondary: const Icon(Icons.fingerprint),
             ),
             const Divider(),
-            // Other Options Section
             const Text(
               "More",
               style: TextStyle(fontSize: 18, color: Color.fromARGB(255, 74, 74, 74)),
@@ -118,23 +115,7 @@ class _ProfileState extends State<Profile> {
                 "Change Passcode Lock to Open the App",
                 style: TextStyle(color: Colors.grey),
               ),
-              onTap: () {
-                // Implement functionality here
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.restart_alt),
-              title: const Text(
-                "Reset App",
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              subtitle: const Text(
-                "Restart the Application",
-                style: TextStyle(color: Colors.grey),
-              ),
-              onTap: () {
-                // Implement functionality here
-              },
+              onTap: () {},
             ),
             ListTile(
               leading: const Icon(Icons.logout),
@@ -146,9 +127,7 @@ class _ProfileState extends State<Profile> {
                 "Log Account Out from the App",
                 style: TextStyle(color: Colors.grey),
               ),
-              onTap: () {
-                // Implement functionality here
-              },
+              onTap: () {},
             ),
           ],
         ),

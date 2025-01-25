@@ -28,145 +28,134 @@ class PieChartComponent extends StatelessWidget {
         ),
     };
 
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
-            spreadRadius: 1,
-            blurRadius: 5,
-            offset: const Offset(0, 3),
-          ),
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          const Text(
-            'This Month Total Spend',
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+    return IntrinsicHeight(
+      // Ensures the height adjusts to the content
+      child: Container(
+        margin: const EdgeInsets.symmetric(horizontal: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.3),
+              spreadRadius: 1,
+              blurRadius: 5,
+              offset: const Offset(0, 3),
             ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            viewModel.formatCurrency(totalValue),
-            style: const TextStyle(
-              fontSize: 36,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
-            ),
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            height: 200,
-            child: totalValue > 0
-                ? Column(
-              children: [
-                PieChart(
-                  PieChartData(
-                    sections: data.map((entry) {
-                      final percentage = (entry.value / totalValue) * 100;
-                      final color = categoryColors[entry.key]!;
-                      return PieChartSectionData(
-                        value: entry.value.toDouble(),
-                        title: '${percentage.toStringAsFixed(1)}%',
-                        color: color,
-                        radius: 50,
-                        titleStyle: const TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      );
-                    }).toList(),
-                    sectionsSpace: 2,
-                    centerSpaceRadius: 40.0,
-                  ),
-                ),
-                const SizedBox(height: 16),
-                Wrap(
-                  spacing: 8.0,
-                  runSpacing: 4.0,
-                  children: data.map((entry) {
-                    final color = categoryColors[entry.key]!;
-                    return Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          width: 16,
-                          height: 16,
-                          color: color,
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          entry.key,
-                          style: const TextStyle(fontSize: 14),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                ),
-              ],
-            )
-                : const Center(
-              child: Text(
-                'No data to display.',
-                style: TextStyle(color: Colors.grey),
+          ],
+        ),
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min, // Allows dynamic resizing
+          children: [
+            const Text(
+              'This Month Total Spend',
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: data.map((entry) {
-              final color = categoryColors[entry.key]!;
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 4),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
-                        color: color,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                          viewModel.getIconPathByCategory(entry.key),
-                          width: 24,
-                          height: 24,
-                          fit: BoxFit.cover,
+            const SizedBox(height: 8),
+            Text(
+              viewModel.formatCurrency(totalValue),
+              style: const TextStyle(
+                fontSize: 36,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 24),
+            Expanded(
+              flex: 4,
+              child: SizedBox(
+                height: 200,
+                width: double.infinity,
+                child: totalValue > 0
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Expanded(
+                            child: PieChart(
+                              PieChartData(
+                                sections: data.map((entry) {
+                                  final percentage =
+                                      (entry.value / totalValue) * 100;
+                                  final color = categoryColors[entry.key]!;
+                                  return PieChartSectionData(
+                                    value: entry.value.toDouble(),
+                                    title: '${percentage.toStringAsFixed(1)}%',
+                                    color: color,
+                                    radius: 50,
+                                    titleStyle: const TextStyle(
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                }).toList(),
+                                sectionsSpace: 2,
+                                centerSpaceRadius: 40.0,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : const Center(
+                        child: Text(
+                          'No data to display.',
+                          style: TextStyle(color: Colors.grey),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        '${entry.key}: ${viewModel.formatCurrency(entry.value)}',
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 16),
+            Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: data.map((entry) {
+                final color = categoryColors[entry.key]!;
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 4),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        decoration: BoxDecoration(
+                          color: color,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Image.asset(
+                            viewModel.getIconPathByCategory(entry.key),
+                            width: 24,
+                            height: 24,
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }).toList(),
-          ),
-        ],
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          '${entry.key}: ${viewModel.formatCurrency(entry.value)}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-
