@@ -19,26 +19,14 @@ class _CreateState extends State<Create> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => FocusScope.of(context).unfocus(),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text(
-            "Add Transaction",
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 18,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          backgroundColor: Colors.blue,
-        ),
-        body: SingleChildScrollView(
+    return SafeArea(
+      child: GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Expense/Income Toggle Buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -47,40 +35,36 @@ class _CreateState extends State<Create> {
                     height: 50,
                     text: "Expense",
                     onPressed: () => setState(() => isExpense = true),
-                    color: isExpense ? Colors.red : Colors.white,
                     textColor: isExpense ? Colors.white : Colors.red,
                     fontSize: isExpense ? 18 : 16,
                     style: ButtonStyle(
                         foregroundColor: isExpense
-                            ? MaterialStateProperty.all<Color>(Colors.white)
-                            : MaterialStateProperty.all<Color>(Colors.red),
+                            ? WidgetStateProperty.all<Color>(Colors.white)
+                            : WidgetStateProperty.all<Color>(Colors.red),
                         backgroundColor: isExpense
-                            ? MaterialStateProperty.all<Color>(Colors.red)
-                            : MaterialStateProperty.all<Color>(Colors.white),
-                        shape:
-                            MaterialStateProperty.all<RoundedRectangleBorder>(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    side:
-                                        const BorderSide(color: Colors.red)))),
+                            ? WidgetStateProperty.all<Color>(Colors.red)
+                            : WidgetStateProperty.all<Color>(Colors.white),
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: const BorderSide(color: Colors.red)))),
                   ),
                   ElevatedButtonComponent(
                     text: "Income",
                     width: MediaQuery.of(context).size.width * 0.45,
                     height: 50,
                     onPressed: () => setState(() => isExpense = false),
-                    color: isExpense ? Colors.white : Colors.green,
                     textColor: isExpense ? Colors.green : Colors.white,
                     fontSize: isExpense ? 16 : 18,
                     style: ButtonStyle(
                         foregroundColor: isExpense
-                            ? MaterialStateProperty.all<Color>(Colors.green)
-                            : MaterialStateProperty.all<Color>(Colors.white),
+                            ? WidgetStateProperty.all<Color>(Colors.green)
+                            : WidgetStateProperty.all<Color>(Colors.white),
                         backgroundColor: isExpense
-                            ? MaterialStateProperty.all<Color>(Colors.white)
-                            : MaterialStateProperty.all<Color>(Colors.green),
-                        shape: MaterialStateProperty
-                            .all<RoundedRectangleBorder>(RoundedRectangleBorder(
+                            ? WidgetStateProperty.all<Color>(Colors.white)
+                            : WidgetStateProperty.all<Color>(Colors.green),
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                            RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(8),
                                 side: const BorderSide(color: Colors.green)))),
                   ),
@@ -118,61 +102,18 @@ class _CreateState extends State<Create> {
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 24.0, horizontal: 20.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                height: 220,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                    color: Colors.grey[300]!,
-                                    width: 2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.1),
-                                      blurRadius: 12,
-                                      offset: const Offset(0, 6),
-                                    ),
-                                  ],
-                                  gradient: LinearGradient(
-                                    colors: [Colors.white, Colors.grey[200]!],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(16),
-                                  child: ImagePickerComponent(
-                                    width: double.infinity,
-                                    height: 220,
-                                    selectedImage: viewModel.selectedImage,
-                                    onImageChanged: (newImage) {
-                                      setState(() =>
-                                          viewModel.selectedImage = newImage);
-                                      if (newImage != null) {
-                                        viewModel.ocrReaderTotalReceipt(
-                                            newImage,
-                                            viewModel.valueController,
-                                            context);
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              const Text(
-                                "Upload your receipt to an easier way of recording transaction",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.grey,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                          child: ImagePickerComponent(
+                            width: double.infinity,
+                            height: 220,
+                            selectedImage: viewModel.selectedImage,
+                            onImageChanged: (newImage) {
+                              setState(
+                                  () => viewModel.selectedImage = newImage);
+                              if (newImage != null) {
+                                viewModel.ocrReaderTotalReceipt(newImage,
+                                    viewModel.valueController, context);
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -248,7 +189,6 @@ class _CreateState extends State<Create> {
                   const SizedBox(height: 24),
                 ],
               ),
-
               ElevatedButtonComponent(
                 text: "Save Transaction",
                 onPressed: () {
@@ -258,14 +198,13 @@ class _CreateState extends State<Create> {
                 height: 50,
                 style: ButtonStyle(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
+                        WidgetStateProperty.all<Color>(Colors.blue),
                     foregroundColor:
-                        MaterialStateProperty.all<Color>(Colors.blue),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        WidgetStateProperty.all<Color>(Colors.blue),
+                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
                             side: const BorderSide(color: Colors.blue)))),
-                color: Colors.blue,
                 textColor: Colors.white,
                 padding:
                     const EdgeInsets.symmetric(vertical: 15, horizontal: 120),

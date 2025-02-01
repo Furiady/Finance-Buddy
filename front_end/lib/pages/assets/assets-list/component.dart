@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/model/record-response-model/model.dart';
 import 'package:front_end/pages/assets/assets-list/view-model.dart';
+import 'package:front_end/pages/home/home-detail/view.dart';
 
 class AssetsRecordListComponent extends StatefulWidget {
   final String date;
@@ -44,60 +45,71 @@ class _AssetsRecordListComponentState extends State<AssetsRecordListComponent> {
         final record = filteredRecords[index];
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 4),
-          child: Row(
-            children: [
-              // Category Icon with Background Color
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: viewModel.getCategoryColor(record.category),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Center(
-                  child: Image.asset(
-                    viewModel.getIconPathByCategory(record.category),
-                    width: 24,
-                    height: 24,
+          child: GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HomeDetail(
+                    record: filteredRecords[index],
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
-
-              // Record Details
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      record.title,
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
+              );
+            },
+            child: Row(
+              children: [
+                Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: viewModel.getCategoryColor(record.category),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Center(
+                    child: Image.asset(
+                      viewModel.getIconPathByCategory(record.category),
+                      width: 24,
+                      height: 24,
                     ),
-                    const SizedBox(height: 4),
-                    Text(
-                      record.category,
-                      style: const TextStyle(
-                        fontSize: 12,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8),
 
-              // Record Amount
-              Text(
-                viewModel.formatCurrency(record.value),
-                style: const TextStyle(
-                  fontSize: 14,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.green,
+                // Record Details
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        record.title,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        record.category,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+
+                // Record Amount
+                Text(
+                  viewModel.formatCurrency(record.value),
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.green,
+                  ),
+                ),
+              ],
+            ),
           ),
         );
       },

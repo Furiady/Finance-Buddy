@@ -5,7 +5,12 @@ import 'package:front_end/utils/format-currency/format-currency.dart';
 import 'package:intl/intl.dart';
 
 class HomeListComponent extends StatefulWidget {
-  const HomeListComponent({super.key});
+  final String? type;
+  final String? category;
+  final String headerTitle;
+
+  const HomeListComponent({super.key, this.type, this.category, required this.headerTitle});
+
   @override
   State<HomeListComponent> createState() => _HomeListComponentState();
 }
@@ -36,7 +41,13 @@ class _HomeListComponentState extends State<HomeListComponent> {
         });
       }
 
-      final newRecords = await viewModel.recordService.getRecords(date: date, page: page, limit: limit);
+      final newRecords = await viewModel.recordService.getRecords(
+        date: date,
+        page: page,
+        limit: limit,
+        type: widget.type,
+        category: widget.category,
+      );
 
       setState(() {
         if (isPagination) {
@@ -58,11 +69,16 @@ class _HomeListComponentState extends State<HomeListComponent> {
   }
 
   void _onScroll() {
-    if (_scrollController.position.pixels >= _scrollController.position.maxScrollExtent &&
+    if (_scrollController.position.pixels >=
+            _scrollController.position.maxScrollExtent &&
         !isLoadingMore &&
         !viewModel.isLoading) {
       currentPage++;
-      fetchRecordsData(date: currentDate, page: currentPage, limit: pageSize, isPagination: true);
+      fetchRecordsData(
+          date: currentDate,
+          page: currentPage,
+          limit: pageSize,
+          isPagination: true);
     }
   }
 
@@ -81,12 +97,13 @@ class _HomeListComponentState extends State<HomeListComponent> {
 
   @override
   Widget build(BuildContext context) {
-    final filteredRecords = viewModel.filterRecordsByMonth(viewModel.recordsData, currentDate);
+    final filteredRecords =
+        viewModel.filterRecordsByMonth(viewModel.recordsData, currentDate);
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          "Recent Transaction Records",
-          style: TextStyle(
+        title: Text(
+          widget.headerTitle,
+          style: const TextStyle(
             color: Colors.white,
             fontSize: 18,
             fontWeight: FontWeight.w600,
@@ -99,76 +116,84 @@ class _HomeListComponentState extends State<HomeListComponent> {
       body: viewModel.isLoading && viewModel.recordsData.isEmpty
           ? const Center(child: CircularProgressIndicator())
           : ListView.builder(
-        controller: _scrollController,
-        itemCount: filteredRecords.length + 1,
-        itemBuilder: (context, index) {
-          if (index == filteredRecords.length) {
-            return isLoadingMore
-                ? const Padding(
-              padding: EdgeInsets.all(16.0),
-              child: Center(child: CircularProgressIndicator()),
-            )
-                : const SizedBox.shrink();
-          }
-          final record = filteredRecords[index];
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (index == 0 ||
-                  (index > 0 &&
-                      DateFormat('MMMM yyyy').format(filteredRecords[index].date) !=
-                          DateFormat('MMMM yyyy').format(filteredRecords[index - 1].date)))
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  child: Text(
-                    DateFormat('MMMM yyyy').format(record.date),
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black54,
-                    ),
-                  ),
-                ),
-              Card(
-                margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => HomeDetail(record: record),
+              controller: _scrollController,
+              itemCount: filteredRecords.length + 1,
+              itemBuilder: (context, index) {
+                if (index == filteredRecords.length) {
+                  return isLoadingMore
+                      ? const Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Center(child: CircularProgressIndicator()),
+                        )
+                      : const SizedBox.shrink();
+                }
+                final record = filteredRecords[index];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (index == 0 ||
+                        (index > 0 &&
+                            DateFormat('MMMM yyyy')
+                                    .format(filteredRecords[index].date) !=
+                                DateFormat('MMMM yyyy')
+                                    .format(filteredRecords[index - 1].date)))
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 16.0),
+                        child: Text(
+                          DateFormat('MMMM yyyy').format(record.date),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black54,
+                          ),
+                        ),
                       ),
-                    );
-                  },
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.red.withOpacity(0.1),
-                    child: Icon(
-                      Icons.fastfood,
-                      color: record.type == "Expense" ? Colors.red : Colors.green,
-                    ),
-                  ),
-                  title: Text(record.title),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(record.category),
-                      Text(DateFormat('dd MMMM yyyy').format(record.date)),
-                    ],
-                  ),
-                  trailing: Text(
-                    formatCurrency(record.value),
-                    style: TextStyle(
-                      color: record.type == "Expense" ? Colors.red : Colors.green,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                    ),
-                  ),
-                ),
-              )
-            ],
-          );
-        },
-      ),
+                    Card(
+                      margin: const EdgeInsets.symmetric(
+                          vertical: 8.0, horizontal: 16.0),
+                      child: ListTile(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => HomeDetail(record: record),
+                            ),
+                          );
+                        },
+                        leading: CircleAvatar(
+                          backgroundColor: Colors.red.withOpacity(0.1),
+                          child: Icon(
+                            Icons.fastfood,
+                            color: record.type == "Expense"
+                                ? Colors.red
+                                : Colors.green,
+                          ),
+                        ),
+                        title: Text(record.title),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(record.category),
+                            Text(
+                                DateFormat('dd MMMM yyyy').format(record.date)),
+                          ],
+                        ),
+                        trailing: Text(
+                          formatCurrency(record.value),
+                          style: TextStyle(
+                            color: record.type == "Expense"
+                                ? Colors.red
+                                : Colors.green,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                );
+              },
+            ),
     );
   }
 }

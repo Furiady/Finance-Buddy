@@ -2,10 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class PieChartComponentViewModel{
-  String formatCurrency(int amount) {
-    return NumberFormat.currency(locale: 'id_ID', symbol: 'Rp', decimalDigits: 0)
-        .format(amount);
-  }
 
   Color getCategoryColor(String category) {
     switch (category.toLowerCase()) {

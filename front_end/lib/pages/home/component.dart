@@ -107,8 +107,7 @@ class _RecentListComponentState extends State<RecentListComponent> {
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           child: ListTile(
             onTap: () {
-              Navigator.push(
-                context,
+              Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => HomeDetail(record: widget.records[index]),
                 ),

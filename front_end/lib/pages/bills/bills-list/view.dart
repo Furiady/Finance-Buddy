@@ -83,7 +83,6 @@ class _BillsListComponentState extends State<BillsListComponent> {
             itemBuilder: (context, index) {
               final date = sortedDailyTotals[index].key;
               final totalAmount = sortedDailyTotals[index].value;
-
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                 child: Card(

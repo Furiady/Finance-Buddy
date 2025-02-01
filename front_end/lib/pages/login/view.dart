@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:front_end/components/form-component/view.dart';
 import 'package:front_end/components/text-button-component/view.dart';
@@ -142,22 +143,27 @@ class _LoginState extends State<Login> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 5),
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Register(),
+                    const SizedBox(height: 15),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: "Don't have an account? ",
+                        style: const TextStyle(color: Colors.black, fontSize: 16),
+                        children: [
+                          TextSpan(
+                            text: 'Register here',
+                            style: const TextStyle(color: Colors.blue, fontSize: 16),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const Register(),
+                                  ),
+                                );
+                              },
                           ),
-                        );
-                      },
-                      child: Text(
-                        'Don\'t have an account? Register here',
-                        style: TextStyle(
-                          color: blueNavyColor,
-                          fontSize: 16,
-                        ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 40),

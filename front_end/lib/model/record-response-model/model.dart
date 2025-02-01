@@ -1,11 +1,12 @@
 class RecordModel {
-  final String type; // 'Expense' or 'Income'
+  final String type;
+  final String id;
   final String title;
   final String category;
   final int value;
-  final DateTime date; // Parsed from createdAt
+  final DateTime date;
   final String? description;
-  final String? deductFrom; // Only for 'expense'
+  final String? deductFrom;
   final String? url;
 
   RecordModel({
@@ -15,6 +16,7 @@ class RecordModel {
     required this.value,
     required this.date,
     this.description,
+    required this.id,
     this.deductFrom,
     this.url,
   });
@@ -29,6 +31,7 @@ class RecordModel {
       'date': date.toIso8601String(),
       'description': description,
       'deductFrom': deductFrom,
+      'id': id,
       'url': url,
     };
   }
@@ -40,7 +43,8 @@ class RecordModel {
       title: json['title'],
       category: json['category'],
       value: json['value'],
-      date: DateTime.parse(json['createdAt']), // Convert YYYYMMDD to DateTime
+      id: json['id'],
+      date: DateTime.parse(json['createdAt']),
       description: json['description'],
       deductFrom: json['deductFrom'],
       url: json['url'],

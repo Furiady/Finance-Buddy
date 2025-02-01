@@ -2,17 +2,17 @@
 import 'dart:io';
 
 class RecordModel {
-  final String type; // 'expense' or 'income'
+  final String type;
   final String title;
   final String category;
   final int value;
-  final String date; // String representation in YYYYMMDD format
+  final String date;
   final String? description;
-  final String? deductFrom; // Only for 'expense'
+  final String? deductFrom;
   final File? image;
 
   RecordModel({
-    required this.type, // 'expense' or 'income'
+    required this.type,
     required this.title,
     required this.category,
     required this.value,
@@ -22,15 +22,14 @@ class RecordModel {
     this.deductFrom,
   });
 
-  // Convert to JSON for API request or local storage
   Map<String, dynamic> toJson() {
     return {
-      'type': type, // 'expense' or 'income'
+      'type': type,
       'title': title,
       'category': category,
       'value': value,
       'description': description,
-      'date': date, // Already in YYYYMMDD format
+      'date': date,
       'deductFrom': deductFrom,
     };
   }
@@ -39,7 +38,6 @@ class RecordModel {
   factory RecordModel.fromJson(Map<String, dynamic> json) {
     return RecordModel(
       type: json['type'],
-      // 'expense' or 'income'
       title: json['title'],
       category: json['category'],
       value: json['value'].toDouble(),

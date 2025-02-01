@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 
 class HomeDetail extends StatefulWidget {
   final RecordModel record;
+
   const HomeDetail({super.key, required this.record});
 
   @override
@@ -19,6 +20,58 @@ class HomeDetail extends StatefulWidget {
 class _HomeDetailState extends State<HomeDetail> {
   final HomeDetailViewModel viewModel = HomeDetailViewModel();
   bool isExpense = true;
+  bool editable = false;
+
+  void showDeleteConfirmationDialog(
+      {required BuildContext context, required String id}) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Delete Record"),
+              content: viewModel.loading
+                  ? const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        CircularProgressIndicator(),
+                        SizedBox(height: 16),
+                        Text("Deleting record..."),
+                      ],
+                    )
+                  : const Text("Are you sure you want to delete this record?"),
+              actions: [
+                if (!viewModel.loading)
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: const Text("Cancel"),
+                  ),
+                TextButton(
+                  onPressed: viewModel.loading
+                      ? null
+                      : () async {
+                          setState(() {
+                            viewModel.loading = true;
+                          });
+                          await viewModel.deleteRecordService
+                              .deleteRecord(context: context, id: id);
+                          setState(() {
+                            viewModel.loading = false;
+                          });
+                        },
+                  child: const Text("OK"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -30,7 +83,6 @@ class _HomeDetailState extends State<HomeDetail> {
     viewModel.typeController.text = widget.record.type;
     viewModel.dateController.text = DateFormat('dd/MM/yyyy').format(widget.record.date);
     isExpense = widget.record.type == "Expense";
-
   }
 
   @override
@@ -53,10 +105,9 @@ class _HomeDetailState extends State<HomeDetail> {
           actions: [
             IconButton(
               icon: const Icon(Icons.delete),
-              color: Colors.white, // Red color for the delete icon
-              onPressed: () {
-                // Handle the delete action
-              },
+              color: Colors.white,
+              onPressed: () => showDeleteConfirmationDialog(
+                  context: context, id: widget.record.id),
             ),
           ],
         ),
@@ -65,10 +116,38 @@ class _HomeDetailState extends State<HomeDetail> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              if (!editable)
+                ElevatedButtonComponent(
+                  text: "Edit Transaction",
+                  prefixIcon: const Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      editable = true;
+                    });
+                  },
+                  width: MediaQuery.of(context).size.width,
+                  height: 50,
+                  style: ButtonStyle(
+                      backgroundColor:
+                          WidgetStateProperty.all<Color>(Colors.green),
+                      foregroundColor:
+                          WidgetStateProperty.all<Color>(Colors.green),
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: const BorderSide(color: Colors.green)))),
+                  textColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 120),
+                ),
+              const SizedBox(height: 15),
               if (isExpense)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    if(editable)
                     const Text(
                       "Scan Your Transaction Bill",
                       style: TextStyle(
@@ -94,63 +173,18 @@ class _HomeDetailState extends State<HomeDetail> {
                           ),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 24.0, horizontal: 20.0),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                width: double.infinity,
-                                height: 220,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                    color: Colors.grey[300]!,
-                                    width: 2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withOpacity(0.1),
-                                      blurRadius: 12,
-                                      offset: const Offset(0, 6),
-                                    ),
-                                  ],
-                                  gradient: LinearGradient(
-                                    colors: [Colors.white, Colors.grey[200]!],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                ),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(16),
-                                  child: ImagePickerComponent(
-                                    width: double.infinity,
-                                    height: 220,
-                                    selectedImage: viewModel.selectedImage,
-                                    onImageChanged: (newImage) {
-                                      setState(() =>
-                                      viewModel.selectedImage = newImage);
-                                      if (newImage != null) {
-                                        viewModel.ocrReaderTotalReceipt(
-                                            newImage,
-                                            viewModel.valueController,
-                                            context);
-                                      }
-                                    },
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 5),
-                              const Text(
-                                "Upload your receipt to an easier way of recording transaction",
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.grey,
-                                ),
-                                textAlign: TextAlign.center,
-                              ),
-                            ],
+                          padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 20.0),
+                          child: ImagePickerComponent(
+                            width: double.infinity,
+                            height: 220,
+                            selectedImage: viewModel.selectedImage,
+                            onImageChanged: (newImage) {
+                              setState(() => viewModel.selectedImage = newImage);
+                              if (newImage != null) {
+                                viewModel.ocrReaderTotalReceipt(newImage,
+                                    viewModel.valueController, context);
+                              }
+                            },
                           ),
                         ),
                       ),
@@ -162,21 +196,24 @@ class _HomeDetailState extends State<HomeDetail> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   FormComponent(
-                    controller : viewModel.typeController,
+                    controller: viewModel.typeController,
                     labelText: "Type",
                     hintText: "Type",
+                    readOnly: true,
                   ),
                   const SizedBox(height: 16),
                   FormComponent(
                     controller: viewModel.titleController,
                     labelText: "Title",
                     hintText: "Title",
+                    readOnly: !editable,
                   ),
                   const SizedBox(height: 16),
                   DatePickerComponent(
                     labelText: "Date",
                     controller: viewModel.dateController,
                     onChanged: (date) => setState(() => date = date),
+                    readOnly: !editable,
                   ),
                   const SizedBox(height: 16),
                   Column(
@@ -189,6 +226,7 @@ class _HomeDetailState extends State<HomeDetail> {
                           controller: viewModel.categoryController,
                           options: viewModel.optionsCategory,
                           initialValue: viewModel.categoryController.value,
+                          readOnly: !editable,
                         )
                       else
                         Row(
@@ -199,7 +237,9 @@ class _HomeDetailState extends State<HomeDetail> {
                                 hintText: "Select or type",
                                 controller: viewModel.categoryController,
                                 options: viewModel.optionsCategory,
-                                initialValue: viewModel.categoryController.value,
+                                initialValue:
+                                    viewModel.categoryController.value,
+                                readOnly: !editable,
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -209,7 +249,9 @@ class _HomeDetailState extends State<HomeDetail> {
                                 hintText: "Source of fund",
                                 controller: viewModel.deductFromController,
                                 options: viewModel.optionsCategory,
-                                initialValue: viewModel.deductFromController.value,
+                                initialValue:
+                                    viewModel.deductFromController.value,
+                                readOnly: !editable,
                               ),
                             ),
                           ],
@@ -222,6 +264,7 @@ class _HomeDetailState extends State<HomeDetail> {
                     labelText: "Amount",
                     hintText: "Amount",
                     keyboardType: TextInputType.number,
+                    readOnly: !editable,
                   ),
                   const SizedBox(height: 16),
                   FormComponent(
@@ -231,32 +274,63 @@ class _HomeDetailState extends State<HomeDetail> {
                     keyboardType: TextInputType.multiline,
                     minLines: 3,
                     maxLines: 6,
+                    readOnly: !editable,
                   ),
                   const SizedBox(height: 24),
                 ],
               ),
-
-              ElevatedButtonComponent(
-                text: "Save Transaction",
-                onPressed: () {
-                  viewModel.createRecord(context);
-                },
-                width: MediaQuery.of(context).size.width,
-                height: 50,
-                style: ButtonStyle(
-                    backgroundColor:
-                    WidgetStateProperty.all<Color>(Colors.blue),
-                    foregroundColor:
-                    WidgetStateProperty.all<Color>(Colors.blue),
-                    shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
+              if (editable)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    ElevatedButtonComponent(
+                      text: "Cancel",
+                      onPressed: () {
+                        setState(() {
+                          editable = false;
+                        });
+                      },
+                      width: MediaQuery.of(context).size.width/2.5,
+                      height: 50,
+                      style: ButtonStyle(
+                        backgroundColor:
+                            WidgetStateProperty.all<Color>(Colors.red),
+                        foregroundColor:
+                            WidgetStateProperty.all<Color>(Colors.red),
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
-                            side: const BorderSide(color: Colors.blue)))),
-                color: Colors.blue,
-                textColor: Colors.white,
-                padding:
-                const EdgeInsets.symmetric(vertical: 15, horizontal: 120),
-              ),
+                            side: const BorderSide(color: Colors.red),
+                          ),
+                        ),
+                      ),
+                      textColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 120),
+                    ),
+                    ElevatedButtonComponent(
+                      text: "Save",
+                      onPressed: () {
+                        viewModel.updateRecord(context);
+                      },
+                      width: MediaQuery.of(context).size.width/2.5,
+                      height: 50,
+                      style: ButtonStyle(
+                        backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                        foregroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                        shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: const BorderSide(color: Colors.blue),
+                          ),
+                        ),
+                      ),
+                      textColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 120),
+                    ),
+                  ],
+                ),
               const SizedBox(height: 30),
             ],
           ),

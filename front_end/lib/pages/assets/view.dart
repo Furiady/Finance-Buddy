@@ -1,10 +1,10 @@
-
 import 'package:flutter/material.dart';
 import 'package:front_end/components/monthly-header-component/view.dart';
 import 'package:front_end/components/pie-chart-component-new/view.dart';
 import 'package:front_end/components/reports-header-component/view.dart';
 import 'package:front_end/pages/assets/assets-list/view.dart';
 import 'package:front_end/pages/assets/view-model.dart';
+import 'package:front_end/pages/home/home-list/view.dart';
 
 class Assets extends StatefulWidget {
   const Assets({super.key});
@@ -25,7 +25,8 @@ class _AssetsState extends State<Assets> {
         viewModel.isLoading = true;
         viewModel.errorMessage = null;
       });
-      viewModel.chartData = await viewModel.chartService.getChartData(type: "Income", date: date);
+      viewModel.chartData =
+          await viewModel.chartService.getChartData(type: "Income", date: date);
     } catch (e) {
       setState(() {
         viewModel.errorMessage = e.toString();
@@ -74,6 +75,7 @@ class _AssetsState extends State<Assets> {
     fetchChartData(date: newDate);
     fetchRecordsData(date: newDate);
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,20 +85,35 @@ class _AssetsState extends State<Assets> {
             children: [
               const ReportsHeaderComponent(),
               Expanded(
-                child: SingleChildScrollView(
-                  child: viewModel.isLoading
-                      ? const Center(
-                      child:
-                      CircularProgressIndicator()) // Show loading spinner
-                      : Column(
-                    children: [
-                      const SizedBox(height: 45),
-                      PieChartComponent(data: viewModel.chartData),
-                      const SizedBox(height: 20),
-                      AssetsListComponent(records: viewModel.recordsData, date: currentDate),
-                    ],
-                  ),
-                ),
+                child: viewModel.isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 45),
+                            PieChartComponent(
+                              data: viewModel.chartData,
+                              onTap: (value) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HomeListComponent(
+                                      type: "Income",
+                                      category: value,
+                                      headerTitle: value[0].toUpperCase() + value.substring(1),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            AssetsListComponent(
+                              records: viewModel.recordsData,
+                              date: currentDate,
+                            ),
+                          ],
+                        ),
+                      ),
               ),
             ],
           ),
@@ -106,8 +123,7 @@ class _AssetsState extends State<Assets> {
             right: 0,
             child: MonthlyHeaderComponent(
               date: currentDate,
-              onDateChanged:
-              handleDateChange, // Pass the callback to the MonthlyHeaderComponent
+              onDateChanged: handleDateChange,
             ),
           ),
         ],

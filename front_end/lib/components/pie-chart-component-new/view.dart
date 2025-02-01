@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:front_end/components/pie-chart-component-new/view-model.dart';
 import 'package:front_end/model/chart-model/model.dart';
+import 'package:front_end/utils/format-currency/format-currency.dart';
 
 class PieChartComponent extends StatelessWidget {
   final List<ChartModel> data;
+  final void Function(String)? onTap;
 
   const PieChartComponent({
     super.key,
+    required this.onTap,
     required this.data,
   });
 
@@ -59,7 +62,7 @@ class PieChartComponent extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              viewModel.formatCurrency(totalValue),
+              formatCurrency(totalValue),
               style: const TextStyle(
                 fontSize: 36,
                 fontWeight: FontWeight.bold,
@@ -118,37 +121,42 @@ class PieChartComponent extends StatelessWidget {
                 final color = categoryColors[entry.key]!;
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 4),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: color,
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Image.asset(
-                            viewModel.getIconPathByCategory(entry.key),
-                            width: 24,
-                            height: 24,
-                            fit: BoxFit.cover,
+                  child: GestureDetector(
+                    onTap: () {
+                      onTap!(entry.key);
+                    },
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 40,
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(
+                            child: Image.asset(
+                              viewModel.getIconPathByCategory(entry.key),
+                              width: 24,
+                              height: 24,
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Text(
-                          '${entry.key}: ${viewModel.formatCurrency(entry.value)}',
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            '${entry.key}: ${formatCurrency(entry.value)}',
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 );
               }).toList(),

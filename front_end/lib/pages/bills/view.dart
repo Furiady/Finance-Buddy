@@ -5,6 +5,7 @@ import 'package:front_end/components/pie-chart-component-new/view.dart';
 import 'package:front_end/components/reports-header-component/view.dart';
 import 'package:front_end/pages/bills/bills-list/view.dart';
 import 'package:front_end/pages/bills/view-model.dart';
+import 'package:front_end/pages/home/home-list/view.dart';
 
 class Bills extends StatefulWidget {
   const Bills({super.key});
@@ -25,7 +26,8 @@ class _BillsState extends State<Bills> {
         viewModel.isLoading = true;
         viewModel.errorMessage = null;
       });
-      viewModel.chartData = await viewModel.chartService.getChartData(type: "Expense", date: date);
+      viewModel.chartData = await viewModel.chartService
+          .getChartData(type: "Expense", date: date);
     } catch (e) {
       setState(() {
         viewModel.errorMessage = e.toString();
@@ -37,9 +39,7 @@ class _BillsState extends State<Bills> {
     }
   }
 
-  Future<void> fetchRecordsData({
-    required DateTime date
-  }) async {
+  Future<void> fetchRecordsData({required DateTime date}) async {
     try {
       setState(() {
         viewModel.errorMessage = null;
@@ -74,44 +74,57 @@ class _BillsState extends State<Bills> {
     fetchChartData(date: newDate);
     fetchRecordsData(date: newDate);
   }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(
-        children: [
-          Column(
-            children: [
-              const ReportsHeaderComponent(),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: viewModel.isLoading
-                      ? const Center(
-                          child:
-                              CircularProgressIndicator()) // Show loading spinner
-                      : Column(
-                          children: [
-                            const SizedBox(height: 45),
-                            PieChartComponent(data: viewModel.chartData),
-                            const SizedBox(height: 20),
-                            BillsListComponent(records: viewModel.recordsData, date: currentDate),
-                          ],
-                        ),
-                ),
-              ),
-            ],
-          ),
-          Positioned(
-            top: 75,
-            left: 0,
-            right: 0,
-            child: MonthlyHeaderComponent(
-              date: currentDate,
-              onDateChanged:
-                  handleDateChange, // Pass the callback to the MonthlyHeaderComponent
+    return Stack(
+      children: [
+        Column(
+          children: [
+            const ReportsHeaderComponent(),
+            Expanded(
+              child: viewModel.isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: 45),
+                          PieChartComponent(
+                            data: viewModel.chartData,
+                            onTap: (value) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HomeListComponent(
+                                    type: "Expense",
+                                    category: value,
+                                    headerTitle: value[0].toUpperCase() + value.substring(1),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 20),
+                          BillsListComponent(
+                            records: viewModel.recordsData,
+                            date: currentDate,
+                          ),
+                        ],
+                      ),
+                    ),
             ),
+          ],
+        ),
+        Positioned(
+          top: 75,
+          left: 0,
+          right: 0,
+          child: MonthlyHeaderComponent(
+            date: currentDate,
+            onDateChanged: handleDateChange,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

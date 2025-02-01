@@ -1,12 +1,15 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:front_end/services/record-services/delete-record-services.dart';
 import 'package:front_end/services/record-services/update-record-services.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:intl/intl.dart';
 import '../../../model/record-model/model.dart';
 
 class HomeDetailViewModel {
-  final UpdateRecordService recordService = UpdateRecordService();
+  final UpdateRecordService updateRecordService = UpdateRecordService();
+  final DeleteRecordService deleteRecordService = DeleteRecordService();
+  late bool loading = false;
   final formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final categoryController = TextEditingController();
@@ -33,7 +36,7 @@ class HomeDetailViewModel {
     'Wallet'
   ];
 
-  Future<void> createRecord(BuildContext context) async {
+  Future<void> updateRecord(BuildContext context) async {
     final record = RecordModel(
       type: selectedType,
       title: titleController.text,
@@ -43,12 +46,12 @@ class HomeDetailViewModel {
       description: descriptionController.text,
       deductFrom: selectedType == 'expense' ? deductFromController.text : null,
     );
-
-    await recordService.updateRecord(record, context);
+    await updateRecordService.updateRecord(record, context);
     formKey.currentState!.reset();
     selectedType = 'Expense';
     date = DateTime.now();
   }
+
 
   String _formatDate(DateTime date) {
     final DateFormat formatter = DateFormat('yyyyMMdd');
@@ -67,10 +70,9 @@ class HomeDetailViewModel {
       TextEditingController valueController, BuildContext context) async {
     final inputImage = InputImage.fromFile(image);
     final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
-
     try {
       final RecognizedText recognizedText =
-      await textRecognizer.processImage(inputImage);
+          await textRecognizer.processImage(inputImage);
       String extractedValue = '';
 
       final String text = recognizedText.text.toLowerCase();
@@ -103,7 +105,7 @@ class HomeDetailViewModel {
 
             if (totalStringOnlyDigits.isNotEmpty) {
               extractedValue = totalStringOnlyDigits;
-              break; // Stop after finding the first match
+              break;
             }
           }
         }

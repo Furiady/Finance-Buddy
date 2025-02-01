@@ -8,4 +8,4 @@ const String deleteRecordEndPoint = "/record/";
 const String getRecordsEndPoint = "/records";
 const String chartEndPoint = "/records/type/count";
 const String incomeExpenseEndPoint = "/records/total";
-const String userEndPoint = "/user";
+const String profileEndPoint = "/user";

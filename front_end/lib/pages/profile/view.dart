@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:front_end/components/elevated-button-component/view.dart';
+import 'package:front_end/components/text-button-component/view.dart';
+import 'package:front_end/pages/profile/view-model.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -8,19 +11,38 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  bool isPinEnabled = false;
-  bool isSmartLoginEnabled = false;
+  ProfileViewModel viewModel = ProfileViewModel();
+
+  Future<void> fetchProfileData() async {
+    try {
+      setState(() {
+        viewModel.errorMessage = null;
+        viewModel.isLoading = true;
+      });
+      viewModel.profileData = await viewModel.profileService.getUser(context: context);
+      debugPrint(viewModel.profileData as String?);
+    } catch (e) {
+      setState(() {
+        viewModel.errorMessage = e.toString();
+      });
+    } finally {
+      setState(() {
+        viewModel.isLoading = false;
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    fetchProfileData();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text(
-          'Profile',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      body: SingleChildScrollView(
+    return SafeArea(
+      child: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,45 +53,50 @@ class _ProfileState extends State<Profile> {
                 color: Colors.blue,
                 borderRadius: BorderRadius.circular(30),
               ),
-              child: const Row(
-                children: [
-                  CircleAvatar(
-                    radius: 40,
-                    backgroundColor: Colors.orange,
-                    child: Icon(Icons.person, size: 50, color: Colors.white),
-                  ),
-                  SizedBox(width: 20),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "CALVIN",
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
+              child: viewModel.isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 40,
+                          backgroundColor: Colors.orange,
+                          child:
+                              Icon(Icons.person, size: 50, color: Colors.white),
                         ),
-                      ),
-                      SizedBox(height: 4),
-                      Text(
-                        "calvinos@email.com",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: Colors.white70,
+                        const SizedBox(width: 20),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              viewModel.profileData?.username ?? "-",
+                              style: const TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              viewModel.profileData?.email ?? "-",
+                              style: const TextStyle(
+                                fontSize: 16,
+                                color: Colors.white70,
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+                      ],
+                    ),
             ),
             const SizedBox(height: 30),
             const SizedBox(height: 10),
             SwitchListTile(
-              value: isPinEnabled,
+              value: viewModel.isPinEnabled,
               onChanged: (bool value) {
                 setState(() {
-                  isPinEnabled = value;
+                  viewModel.isPinEnabled = value;
                 });
               },
               title: const Text(
@@ -83,10 +110,10 @@ class _ProfileState extends State<Profile> {
               secondary: const Icon(Icons.lock),
             ),
             SwitchListTile(
-              value: isSmartLoginEnabled,
+              value: viewModel.isSmartLoginEnabled,
               onChanged: (bool value) {
                 setState(() {
-                  isSmartLoginEnabled = value;
+                  viewModel.isSmartLoginEnabled = value;
                 });
               },
               title: const Text(
@@ -102,7 +129,8 @@ class _ProfileState extends State<Profile> {
             const Divider(),
             const Text(
               "More",
-              style: TextStyle(fontSize: 18, color: Color.fromARGB(255, 74, 74, 74)),
+              style:
+                  TextStyle(fontSize: 18, color: Color.fromARGB(255, 74, 74, 74)),
             ),
             const SizedBox(height: 10),
             ListTile(
@@ -127,11 +155,45 @@ class _ProfileState extends State<Profile> {
                 "Log Account Out from the App",
                 style: TextStyle(color: Colors.grey),
               ),
-              onTap: () {},
+              onTap: () {
+                showLogoutConfirmationDialog(context);
+              },
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void showLogoutConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text("Log Out"),
+          content: const Text("Are you sure want to log out?"),
+          actions: [
+            TextButtonComponent(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              text: "Cancel",
+              textColor: Colors.red,
+            ),
+            ElevatedButtonComponent(
+              onPressed: () {
+                Navigator.of(context).pop();
+                viewModel.logout(context);
+              },
+              text: "Yes",
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                foregroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
