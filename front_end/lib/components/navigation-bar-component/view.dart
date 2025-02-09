@@ -18,7 +18,7 @@ class NavigationBarComponent extends StatelessWidget {
       index: pageIndex,
       color: Colors.blue,
       buttonBackgroundColor: Colors.blue,
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.transparent,
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 600),
       items: const [
