@@ -184,12 +184,6 @@ class _RegisterState extends State<Register> {
                       ),
                     ),
                     const SizedBox(height: 40),
-
-                    Image.asset(
-                      "assets/moneytracing_person.png",
-                      height: 250,
-                      width: 250,
-                    ),
                   ],
                 ),
               ),

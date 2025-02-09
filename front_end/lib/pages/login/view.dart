@@ -26,7 +26,6 @@ class _LoginState extends State<Login> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
-    final bool keyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
     return Scaffold(
       resizeToAvoidBottomInset: false, // Prevent the screen from resizing
