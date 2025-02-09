@@ -16,33 +16,47 @@ class NavigationBarComponent extends StatelessWidget {
   Widget build(BuildContext context) {
     return CurvedNavigationBar(
       index: pageIndex,
-      color: Colors.white,
-      buttonBackgroundColor: Colors.white,
-      backgroundColor: Colors.blueAccent,
+      color: Colors.blue,
+      buttonBackgroundColor: Colors.blue,
+      backgroundColor: Colors.transparent,
       animationCurve: Curves.easeInOut,
       animationDuration: const Duration(milliseconds: 600),
-      items: [
-        const CurvedNavigationBarItem(
-          child: Icon(Icons.home_outlined),
-          label: 'Home',
-        ),
-        const CurvedNavigationBarItem(
-          child: Icon(Icons.book_rounded),
-          label: 'Bills',
-        ),
-        const CurvedNavigationBarItem(
-          child: Icon(Icons.add_circle_outline_rounded),
-          label: 'Create',
-        ),
-        const CurvedNavigationBarItem(
-          child: Icon(Icons.attach_money_rounded),
-          label: 'Assets',
-        ),
-
-        const CurvedNavigationBarItem(
-          child: Icon(Icons.pets),
-          label: 'Pets',
-        ),
+      items: const [
+        CurvedNavigationBarItem(
+            child: Icon(
+              Icons.home_outlined,
+              color: Colors.white,
+            ),
+            label: 'Home',
+            labelStyle: TextStyle(color: Colors.white)),
+        CurvedNavigationBarItem(
+            child: Icon(
+              Icons.book_rounded,
+              color: Colors.white,
+            ),
+            label: 'Bills',
+            labelStyle: TextStyle(color: Colors.white)),
+        CurvedNavigationBarItem(
+            child: Icon(
+              Icons.add_circle_outline_rounded,
+              color: Colors.white,
+            ),
+            label: 'Create',
+            labelStyle: TextStyle(color: Colors.white)),
+        CurvedNavigationBarItem(
+            child: Icon(
+              Icons.attach_money_rounded,
+              color: Colors.white,
+            ),
+            label: 'Assets',
+            labelStyle: TextStyle(color: Colors.white)),
+        CurvedNavigationBarItem(
+            child: Icon(
+              Icons.person_outline_rounded,
+              color: Colors.white,
+            ),
+            label: 'Profile',
+            labelStyle: TextStyle(color: Colors.white)),
       ],
       onTap: onTap,
     );

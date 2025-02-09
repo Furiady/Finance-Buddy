@@ -29,7 +29,7 @@ class ChartService {
       String formattedEndDate = DateFormat('yyyyMMdd').format(endDate);
 
       final response = await _dio.get(
-        chartEndpoint,
+        chartEndPoint,
         queryParameters: {
           'type': type,
           'startDate': formattedStartDate,

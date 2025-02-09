@@ -33,7 +33,7 @@ class CreateRecordService {
           'image': await MultipartFile.fromFile(record.image!.path),
       });
 
-      await _dio.post(createRecordEndpoint, data: formData);
+      await _dio.post(createRecordEndPoint, data: formData);
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Record created successfully!')),

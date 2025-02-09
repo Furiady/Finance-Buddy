@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:front_end/components/form-component/view.dart';
 import 'package:front_end/components/text-button-component/view.dart';
@@ -19,7 +20,7 @@ class _LoginState extends State<Login> {
 
   @override
   void dispose() {
-    _viewModel.dispose(); // Dispose controllers in the view model
+    _viewModel.dispose();
     super.dispose();
   }
 
@@ -28,17 +29,14 @@ class _LoginState extends State<Login> {
     final size = MediaQuery.of(context).size;
 
     return Scaffold(
-      resizeToAvoidBottomInset: false, // Prevent the screen from resizing
+      resizeToAvoidBottomInset: false,
       backgroundColor: Colors.white,
       body: Stack(
         children: <Widget>[
-          // Background container
           Container(
             height: size.height,
             decoration: BoxDecoration(gradient: blueNavyGradient),
           ),
-
-          // Wave widget
           AnimatedPositioned(
             duration: const Duration(milliseconds: 500),
             curve: Curves.fastEaseInToSlowEaseOut,
@@ -49,8 +47,6 @@ class _LoginState extends State<Login> {
               color: Colors.white, // Make wave subtle
             ),
           ),
-
-          // Header text
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -72,13 +68,12 @@ class _LoginState extends State<Login> {
                           Shadow(
                             blurRadius: 8.0,
                             color: Colors.black.withOpacity(0.5),
-                            offset: Offset(2.0, 2.0),
+                            offset: const Offset(2.0, 2.0),
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 10), // Space between texts
-
+                    const SizedBox(height: 10),
                     Text(
                       'Welcome back to the BudgetBuddy!',
                       style: TextStyle(
@@ -99,14 +94,12 @@ class _LoginState extends State<Login> {
                   ],
                 ),
               ),
-              const SizedBox(height: 30,),
-              // Login form and buttons
+              const SizedBox(height: 30),
               Padding(
                 padding: const EdgeInsets.all(30.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    // Username field
                     FormComponent(
                       hintText: 'Username',
                       labelText: 'Username',
@@ -115,8 +108,6 @@ class _LoginState extends State<Login> {
                       controller: _viewModel.usernameController,
                     ),
                     const SizedBox(height: 25),
-
-                    // Password field
                     FormComponent(
                       hintText: 'Password',
                       labelText: 'Password',
@@ -137,8 +128,6 @@ class _LoginState extends State<Login> {
                       controller: _viewModel.passwordController,
                     ),
                     const SizedBox(height: 30),
-
-                    // Login button with custom rounded style
                     Container(
                       width: double.infinity,
                       height: 50,
@@ -154,29 +143,30 @@ class _LoginState extends State<Login> {
                         },
                       ),
                     ),
-                    const SizedBox(height: 5),
-
-                    // Sign up button with a more elegant text style
-                    TextButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const Register(),
+                    const SizedBox(height: 15),
+                    RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        text: "Don't have an account? ",
+                        style: const TextStyle(color: Colors.black, fontSize: 16),
+                        children: [
+                          TextSpan(
+                            text: 'Register here',
+                            style: const TextStyle(color: Colors.blue, fontSize: 16),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const Register(),
+                                  ),
+                                );
+                              },
                           ),
-                        );
-                      },
-                      child: Text(
-                        'Don\'t have an account? Register here',
-                        style: TextStyle(
-                          color: blueNavyColor,
-                          fontSize: 16,
-                          // fontWeight: FontWeight.bold,
-                        ),
+                        ],
                       ),
                     ),
                     const SizedBox(height: 40),
-
                   ],
                 ),
               ),

@@ -1,16 +1,20 @@
 import 'package:flutter/material.dart';
 
 class AutocompleteComponent extends StatelessWidget {
-  final String label;
   final TextEditingController controller;
   final List<String> options;
   final String hintText;
+  final String labelText;
+  final bool readOnly;
+  final TextEditingValue? initialValue;
 
   const AutocompleteComponent({
-    required this.label,
     required this.controller,
     required this.options,
     required this.hintText,
+    required this.labelText,
+    this.readOnly = false,
+    this.initialValue,
     super.key,
   });
 
@@ -30,6 +34,7 @@ class AutocompleteComponent extends StatelessWidget {
       onSelected: (String selection) {
         controller.text = selection;
       },
+      initialValue: initialValue,
       fieldViewBuilder: (
         BuildContext context,
         TextEditingController textEditingController,
@@ -39,10 +44,22 @@ class AutocompleteComponent extends StatelessWidget {
         return TextField(
           controller: textEditingController,
           focusNode: focusNode,
+          readOnly: readOnly,
           onChanged: (value) => controller.text = value,
           decoration: InputDecoration(
-            border: const OutlineInputBorder(),
-            hintText: 'Type to search',
+            labelText: labelText,
+            hintText: hintText,
+            fillColor: readOnly ? Colors.grey[200] : null,
+            filled: readOnly,
+            focusedBorder: readOnly
+                ? OutlineInputBorder(
+                    borderSide: const BorderSide(color: Colors.black),
+                    borderRadius: BorderRadius.circular(8.0),
+                  )
+                : Theme.of(context).inputDecorationTheme.focusedBorder,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.0),
+            ),
             suffixIcon: GestureDetector(
               onTap: () {
                 focusNode.requestFocus(); // Refocus the field
@@ -55,6 +72,3 @@ class AutocompleteComponent extends StatelessWidget {
     );
   }
 }
-
-
-

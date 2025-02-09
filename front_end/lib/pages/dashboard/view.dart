@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:front_end/components/app-bar-component/view.dart';
 import 'package:front_end/components/navigation-bar-component/view.dart';
 import 'package:front_end/pages/dashboard/view-model.dart';
 
@@ -14,93 +13,16 @@ class _DashboardState extends State<Dashboard> {
   final DashboardViewModel viewModel = DashboardViewModel();
 
   @override
-  void initState() {
-    super.initState();
-
-    viewModel.addTransaction({
-      'tipe': 'Expense',
-      'jumlah': 30.toDouble(),
-      'kategori': "Jamal",
-      'note': "sofian",
-      'waktu': DateTime.now(),
-      'warna': Colors.green,
-    });
-    viewModel.addTransaction({
-      'tipe': 'Expense',
-      'jumlah': 100.toDouble(),
-      'kategori': "Jamal",
-      'note': "sofian",
-      'waktu': DateTime.now(),
-      'warna': Colors.blue,
-    });
-    viewModel.addTransaction({
-      'tipe': 'Expense',
-      'jumlah': 500.toDouble(),
-      'kategori': "Jamal",
-      'note': "sofian",
-      'waktu': DateTime.now(),
-      'warna': Colors.red,
-    });
-    viewModel.addTransaction({
-      'tipe': 'Expense',
-      'jumlah': 300.toDouble(),
-      'kategori': "Jamal",
-      'note': "sofian",
-      'waktu': DateTime.now(),
-      'warna': Colors.yellow,
-    });
-    viewModel.addTransaction({
-      'tipe': 'Expense',
-      'jumlah': 50.toDouble(),
-      'kategori': "Jamal",
-      'note': "sofian",
-      'waktu': DateTime.now(),
-      'warna': Colors.brown,
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return PopScope(
-      canPop: !(viewModel.items[viewModel.selectedTab].navKey.currentState
-              ?.canPop() ??
-          true),
-      onPopInvokedWithResult: (bool didPop, Object? result) {
-        if (didPop) return;
-
-        if (viewModel.items[viewModel.selectedTab].navKey.currentState
-                ?.canPop() ??
-            false) {
-          viewModel.items[viewModel.selectedTab].navKey.currentState?.pop();
-        }
-      },
-      child: Scaffold(
-        body: IndexedStack(
-          index: viewModel.selectedTab,
-          children: viewModel.items
-              .map((page) => Navigator(
-                    key: page.navKey,
-                    onGenerateInitialRoutes: (navigator, initialRoute) {
-                      return [
-                        MaterialPageRoute(builder: (context) => page.page),
-                      ];
-                    },
-                  ))
-              .toList(),
-        ),
-        bottomNavigationBar: NavigationBarComponent(
-          pageIndex: viewModel.selectedTab,
-          onTap: (index) {
-            if (index == viewModel.selectedTab) {
-              viewModel.items[index].navKey.currentState
-                  ?.popUntil((route) => route.isFirst);
-            } else {
-              setState(() {
-                viewModel.selectedTab = index;
-              });
-            }
-          },
-        ),
+    return Scaffold(
+      body:  viewModel.screen[viewModel.selectedTab],
+      bottomNavigationBar: NavigationBarComponent(
+        pageIndex: viewModel.selectedTab,
+        onTap: (index) {
+          setState(() {
+            viewModel.selectedTab = index;
+          });
+        },
       ),
     );
   }

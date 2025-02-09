@@ -1,7 +1,9 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front_end/constant/api-path.dart';
-import 'package:front_end/model/record-model/model.dart';
+import 'package:front_end/model/record-response-model/model.dart';
 import 'package:intl/intl.dart';
 
 class RecordService {
@@ -9,11 +11,12 @@ class RecordService {
   final FlutterSecureStorage secureStorage = const FlutterSecureStorage();
 
   Future<List<RecordModel>> getRecords({
-    required int year,
-    required int month,
+    required DateTime date,
     String? type,
     String? category,
     String? deductFrom,
+    int? page,
+    int? limit,
   }) async {
     try {
       String? token = await secureStorage.read(key: 'token');
@@ -24,26 +27,33 @@ class RecordService {
 
       _dio.options.headers['Authorization'] = token;
 
-      final DateTime startDate = DateTime(year, month, 1);
-      final DateTime endDate = DateTime(year, month + 1, 0).subtract(Duration(days: 1));
+      final DateTime startDate = DateTime(date.year, date.month, 1);
+      final DateTime endDate = DateTime(date.year, date.month + 1, 0)
+          .subtract(const Duration(days: 1));
 
       String formattedStartDate = DateFormat('yyyyMMdd').format(startDate);
       String formattedEndDate = DateFormat('yyyyMMdd').format(endDate);
 
       final response = await _dio.get(
-        getRecordsEndpoint,
+        getRecordsEndPoint,
         queryParameters: {
-          'startDate': startDate,
-          'endDate': endDate,
+          'startDate': formattedStartDate,
+          'endDate': formattedEndDate,
           if (type != null) 'type': type,
           if (category != null) 'category': category,
           if (deductFrom != null) 'deductFrom': deductFrom,
+          if (page != null) 'page': page,
+          if (limit != null) 'limit': limit
         },
       );
 
-      List<dynamic> data = response.data as List<dynamic>;
-
-      return data.map((item) => RecordModel.fromJson(item)).toList();
+      if (response.statusCode == 200 && response.data is List) {
+        return (response.data as List)
+            .map((item) => RecordModel.fromJson(item))
+            .toList();
+      } else {
+        throw Exception('Unexpected response format');
+      }
     } on DioException catch (e) {
       String message = e.response?.data['message'] ?? 'Unknown error';
       throw Exception('Error: $message');

@@ -17,20 +17,18 @@ class CreateRecordViewModel {
   late DateTime date = DateTime.now();
   File? selectedImage;
   final List<String> optionsCategory = [
-    'Apple',
-    'Banana',
-    'Grapes',
-    'Orange',
-    'Pineapple',
-    'Watermelon',
+    'Food',
+    'Transportation',
+    'Entertainment',
+    'Shopping',
+    'Health',
+    'Others'
   ];
   final List<String> optionsDeductForm = [
-    'Apple',
-    'Banana',
-    'Grapes',
-    'Orange',
-    'Pineapple',
-    'Watermelon',
+    'Cash',
+    'Credit Card',
+    'Bank Transfer',
+    'Wallet'
   ];
 
   Future<void> createRecord(BuildContext context) async {
@@ -74,25 +72,41 @@ class CreateRecordViewModel {
       String extractedValue = '';
 
       final String text = recognizedText.text.toLowerCase();
+
       if (text.contains("total")) {
-        final startIndex = text.indexOf("total") + "total".length;
+        for (TextBlock block in recognizedText.blocks) {
+          final String blockText = block.text.toLowerCase();
 
-        String totalString = "";
-        for (int i = startIndex; i < text.length; i++) {
-          if (text.substring(i, i + 3) == ",00" || text[i] == '\n') {
-            break;
+          if (blockText.contains("total")) {
+            final startIndex = blockText.indexOf("total") + "total".length;
+
+            String totalString = "";
+            for (int i = startIndex; i < blockText.length; i++) {
+              if (i + 3 <= blockText.length &&
+                  blockText.substring(i, i + 3) == ",00") {
+                break;
+              }
+              if (blockText[i] == '\n') {
+                break;
+              }
+              totalString += blockText[i];
+            }
+
+            String totalStringOnlyDigits = "";
+            for (int i = 0; i < totalString.length; i++) {
+              if (RegExp(r'[0-9]').hasMatch(totalString[i])) {
+                totalStringOnlyDigits += totalString[i];
+              }
+            }
+
+            if (totalStringOnlyDigits.isNotEmpty) {
+              extractedValue = totalStringOnlyDigits;
+              break; // Stop after finding the first match
+            }
           }
-          totalString += text[i];
         }
 
-        String totalStringOnlyDigits = "";
-        for (int i = 0; i < totalString.length; i++) {
-          if (totalString[i].contains(RegExp(r'[0-9]'))) {
-            totalStringOnlyDigits += totalString[i];
-          }
-        }
-
-        int totalInt = int.tryParse(totalStringOnlyDigits) ?? 0;
+        int totalInt = int.tryParse(extractedValue) ?? 0;
 
         if (totalInt != 0) {
           valueController.text = totalInt.toString();

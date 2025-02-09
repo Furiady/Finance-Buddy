@@ -67,18 +67,8 @@ flutter:
   uses-material-design: true
 
   assets:
+    - assets/
     - assets/images/logo/
-    - assets/images/
-    - assets/bus.png
-    - assets/calendar (1).png
-    - assets/categories (1).png
-    - assets/categories.png
-    - assets/fast-food.png
-    - assets/joystick.png
-    - assets/medicines.png
-    - assets/money.png
-    - assets/notepad.png
-    - assets/wallet.png
 
 
   # To add assets to your application, add an assets section, like this:
@@ -93,9 +83,9 @@ flutter:
   # https://flutter.dev/to/asset-from-package
 
   # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
+  # in this "flutter" section. Each entry in this bills-list should have a
   # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
+  # bills-list giving the asset and other descriptors for the font. For
   # example:
   # fonts:
   #   - family: Schyler
