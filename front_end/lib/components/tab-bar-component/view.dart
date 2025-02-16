@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class TabBarComponent extends StatefulWidget {
   final List<String> tabTitles;
+  final List<Widget> tabPages;
 
-  const TabBarComponent({super.key, required this.tabTitles});
+  const TabBarComponent({super.key, required this.tabTitles, required this.tabPages});
 
   @override
   State<TabBarComponent> createState() => _TabBarComponentState();
@@ -62,9 +63,7 @@ class _TabBarComponentState extends State<TabBarComponent>
         Expanded(
           child: TabBarView(
             controller: _tabController,
-            children: widget.tabTitles
-                .map((title) => Center(child: Text(title)))
-                .toList(),
+            children: widget.tabPages,
           ),
         ),
       ],

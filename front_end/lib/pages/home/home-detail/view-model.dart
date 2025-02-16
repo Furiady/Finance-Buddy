@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:front_end/model/record-response-model/model.dart';
 import 'package:front_end/services/record-services/delete-record-services.dart';
 import 'package:front_end/services/record-services/update-record-services.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:intl/intl.dart';
-import '../../../model/record-model/model.dart';
 
 class HomeDetailViewModel {
   final UpdateRecordService updateRecordService = UpdateRecordService();
@@ -36,15 +36,16 @@ class HomeDetailViewModel {
     'Wallet'
   ];
 
-  Future<void> updateRecord(BuildContext context) async {
+  Future<void> updateRecord(BuildContext context, String id) async {
     final record = RecordModel(
       type: selectedType,
       title: titleController.text,
       category: categoryController.text,
       value: int.parse(valueController.text),
-      date: _formatDate(date),
+      date: date,
       description: descriptionController.text,
       deductFrom: selectedType == 'expense' ? deductFromController.text : null,
+      id: id,
     );
     await updateRecordService.updateRecord(record, context);
     formKey.currentState!.reset();

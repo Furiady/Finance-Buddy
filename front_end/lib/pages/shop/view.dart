@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/components/tab-bar-component/view.dart';
+import 'package:front_end/pages/shop/component.dart';
 
 class Shop extends StatefulWidget {
   const Shop({super.key});
@@ -84,6 +85,11 @@ class _ShopState extends State<Shop> {
                 "Pet",
                 "Accessory",
                 "Theme",
+              ],
+              tabPages: [
+                ListItem(type: "/pets"),
+                ListItem(type: "/accessories"),
+                ListItem(type: "/themes")
               ],
             ),
           ),

@@ -97,7 +97,11 @@ class _HomeState extends State<Home> {
                         ),
                         child: IconButton(
                           onPressed: () {
-                            // Add your quest button logic here
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) =>
+                                  const PopUpQuest(),
+                            );
                           },
                           icon: const Icon(
                             Icons.task,

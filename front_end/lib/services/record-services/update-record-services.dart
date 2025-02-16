@@ -1,8 +1,8 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front_end/constant/api-path.dart';
-import 'package:front_end/model/record-model/model.dart';
 import 'package:flutter/material.dart';
+import 'package:front_end/model/record-response-model/model.dart';
 
 class UpdateRecordService {
   final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
@@ -33,10 +33,10 @@ class UpdateRecordService {
           'image': await MultipartFile.fromFile(record.image!.path),
       });
 
-      await _dio.post(createRecordEndPoint, data: formData);
+      await _dio.put(updateRecordEndPoint + record.id, data: formData);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Record created successfully!')),
+        const SnackBar(content: Text('Record updated successfully!')),
       );
     } on DioException catch (e) {
       String message = e.response?.data['message'] ?? 'Unknown error';

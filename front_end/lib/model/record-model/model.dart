@@ -1,4 +1,3 @@
-// Model class for record data
 import 'dart:io';
 
 class RecordModel {

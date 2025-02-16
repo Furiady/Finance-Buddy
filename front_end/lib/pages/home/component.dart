@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:front_end/model/home-model/model.dart';
+import 'package:front_end/model/quest-model/model.dart';
 import 'package:front_end/model/record-response-model/model.dart';
 import 'package:front_end/pages/home/home-detail/view.dart';
 import 'package:front_end/utils/format-currency/format-currency.dart';
@@ -74,7 +75,7 @@ class _IncomeExpenseCardComponentState
               ),
               const SizedBox(height: 5),
               Text(
-               formatCurrency(widget.value.expense),
+                formatCurrency(widget.value.expense),
                 style: const TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
@@ -89,10 +90,11 @@ class _IncomeExpenseCardComponentState
   }
 }
 
-
 class RecentListComponent extends StatefulWidget {
   final List<RecordModel> records;
+
   const RecentListComponent({super.key, required this.records});
+
   @override
   State<RecentListComponent> createState() => _RecentListComponentState();
 }
@@ -109,7 +111,8 @@ class _RecentListComponentState extends State<RecentListComponent> {
             onTap: () {
               Navigator.of(context).push(
                 MaterialPageRoute(
-                  builder: (context) => HomeDetail(record: widget.records[index]),
+                  builder: (context) =>
+                      HomeDetail(record: widget.records[index]),
                 ),
               );
             },
@@ -142,6 +145,128 @@ class _RecentListComponentState extends State<RecentListComponent> {
           ),
         );
       },
+    );
+  }
+}
+
+class RowQuest extends StatelessWidget {
+  final QuestModel questData;
+
+  const RowQuest({super.key, required this.questData});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Icon(questData.icon, size: 32, color: Colors.blueAccent),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      questData.title,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Row(
+                      children: [
+                        Icon(Icons.monetization_on, color: Colors.amber, size: 16),
+                        const SizedBox(width: 4),
+                        const Text('x5'),
+                      ],
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Text('${questData.completed}/${questData.total}'),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: questData.canClaim ? () {} : null,
+                      child: const Text('Claim'),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class PopUpQuest extends StatefulWidget {
+  const PopUpQuest({super.key});
+
+  @override
+  State<PopUpQuest> createState() => _PopUpQuestState();
+}
+
+class _PopUpQuestState extends State<PopUpQuest> {
+  final List<QuestModel> quests = [
+    QuestModel(
+        title: 'Login',
+        completed: 1,
+        total: 1,
+        icon: Icons.calendar_today,
+        canClaim: true),
+    QuestModel(
+        title: 'Create record',
+        completed: 0,
+        total: 3,
+        icon: Icons.edit_note,
+        canClaim: false),
+    QuestModel(
+        title: 'Scan bills',
+        completed: 0,
+        total: 1,
+        icon: Icons.camera_alt,
+        canClaim: false),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.0),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                const Text(
+                  'Quest',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            ...quests.map((quest) => RowQuest(questData: quest)).toList(),
+          ],
+        ),
+      ),
     );
   }
 }

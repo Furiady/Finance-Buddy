@@ -1,3 +1,5 @@
+import 'dart:io';
+
 class RecordModel {
   final String type;
   final String id;
@@ -8,6 +10,7 @@ class RecordModel {
   final String? description;
   final String? deductFrom;
   final String? url;
+  final File? image;
 
   RecordModel({
     required this.type,
@@ -19,6 +22,7 @@ class RecordModel {
     required this.id,
     this.deductFrom,
     this.url,
+    this.image,
   });
 
   // Convert to JSON for API request or local storage
@@ -33,6 +37,7 @@ class RecordModel {
       'deductFrom': deductFrom,
       'id': id,
       'url': url,
+      'image':image
     };
   }
 
@@ -48,6 +53,7 @@ class RecordModel {
       description: json['description'],
       deductFrom: json['deductFrom'],
       url: json['url'],
+      image: json['image']
     );
   }
 }

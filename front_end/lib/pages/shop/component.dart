@@ -1,91 +1,193 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:front_end/components/elevated-button-component/view.dart';
+import 'package:front_end/pages/shop/view-model.dart';
 
 class ListItem extends StatefulWidget {
-  const ListItem({Key? key}) : super(key: key);
+  final String type;
+
+  const ListItem({super.key, required this.type});
 
   @override
   State<ListItem> createState() => _ListItemState();
 }
 
 class _ListItemState extends State<ListItem> {
-  final List<Map<String, dynamic>> items = [
-    {"title": "Minotaurus", "price": 50, "imagePath": "assets/minotaurus.png"},
-    {"title": "Troll", "price": 50, "imagePath": "assets/troll.png"},
-    {"title": "Ogre", "price": 50, "imagePath": "assets/ogre.png"},
-  ];
+  ShopViewModel viewModel = ShopViewModel();
 
-  Color getRandomColor() {
-    Random random = Random();
-    return Color.fromARGB(
-      255,
-      random.nextInt(256),
-      random.nextInt(256),
-      random.nextInt(256),
+  Future<void> fetchShopItems({required String type}) async {
+    try {
+      setState(() {
+        viewModel.isLoading = true;
+      });
+      viewModel.shopItems = await viewModel.shopService
+          .getShopItemsByType(context: context, type: type);
+    } catch (e) {
+      setState(() {
+        viewModel.errorMessage = e.toString();
+      });
+    } finally {
+      setState(() {
+        viewModel.isLoading = false;
+      });
+    }
+  }
+
+  void buyItem(String itemId) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              title: const Text("Confirmation"),
+              content: viewModel.isBuying
+                  ? const SizedBox(
+                      height: 50,
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  : const Text("Are you sure you want to buy this item?"),
+              actions: [
+                TextButton(
+                  onPressed: viewModel.isBuying
+                      ? null
+                      : () {
+                          Navigator.of(context).pop(); // Close the dialog
+                        },
+                  child: const Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.red),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: viewModel.isBuying
+                      ? null
+                      : () async {
+                          setState(() {
+                            viewModel.isBuying = true;
+                          });
+
+                          await viewModel.shopService.buyShopItemByType(
+                            type: widget.type,
+                            itemId: itemId,
+                            context: context,
+                          );
+
+                          setState(() {
+                            viewModel.isBuying = false;
+                          });
+
+                          if (mounted) {
+                            Navigator.of(context).pop(); // Close dialog
+                          }
+                        },
+                  style: ElevatedButton.styleFrom(backgroundColor: Colors.blue),
+                  child: const Text(
+                    "Yes",
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ],
+            );
+          },
+        );
+      },
     );
   }
 
   @override
+  void initState() {
+    super.initState();
+    fetchShopItems(type: widget.type);
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Item List"),
-      ),
-      body: GridView.builder(
-        padding: const EdgeInsets.all(8.0),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.75,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-        ),
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          final item = items[index];
-          return Container(
-            decoration: BoxDecoration(
-              color: getRandomColor(),
-              borderRadius: BorderRadius.circular(12),
+    return viewModel.isLoading
+        ? const Center(child: CircularProgressIndicator())
+        : GridView.builder(
+            padding: const EdgeInsets.all(8.0),
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2,
+              childAspectRatio: 0.75,
+              crossAxisSpacing: 8,
+              mainAxisSpacing: 8,
             ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Image.asset(
-                  item["imagePath"],
-                  height: 100,
-                  fit: BoxFit.cover,
+            itemCount: viewModel.shopItems.length,
+            itemBuilder: (context, index) {
+              return Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                Text(
-                  item["title"],
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                color: Colors.white,
+                elevation: 4,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(top: 20.0),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Container(
+                          color: viewModel.shopItems[index].status
+                              ? Colors.green
+                              : Colors.red,
+                          child: Image.asset(
+                            viewModel.shopItems[index].path,
+                            height: 120,
+                            width: 120,
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Text(
+                        viewModel.shopItems[index].name,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.only(bottom: 16.0),
+                        child: ElevatedButtonComponent(
+                          text: viewModel.shopItems[index].status
+                              ? "Use"
+                              : viewModel.shopItems[index].price.toString(),
+                          onPressed: () {
+                            if (!viewModel.shopItems[index].status) {
+                              buyItem(viewModel.shopItems[index].id);
+                            }
+                          },
+                          suffixIcon: viewModel.shopItems[index].status
+                              ? null
+                              : const Icon(
+                                  CupertinoIcons.money_dollar_circle_fill,
+                                  color: Colors.yellowAccent,
+                                ),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                WidgetStateProperty.all<Color>(Colors.blue),
+                            shape:
+                                WidgetStateProperty.all<RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                                side: const BorderSide(color: Colors.blue),
+                              ),
+                            ),
+                          ),
+                          textColor: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-                ElevatedButton.icon(
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Purchased ${item["title"]}!")),
-                    );
-                  },
-                  icon: Image.asset(
-                    "assets/coin.png",
-                    height: 20,
-                    width: 20,
-                  ),
-                  label: Text(
-                    "${item["price"]}",
-                    style: const TextStyle(fontSize: 16),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.black,
-                    backgroundColor: Colors.white,
-                    elevation: 2,
-                  ),
-                ),
-              ],
-            ),
+              );
+            },
           );
-        },
-      ),
-    );
   }
 }

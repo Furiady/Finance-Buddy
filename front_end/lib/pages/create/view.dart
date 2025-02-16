@@ -206,8 +206,6 @@ class _CreateState extends State<Create> {
                             borderRadius: BorderRadius.circular(8),
                             side: const BorderSide(color: Colors.blue)))),
                 textColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 15, horizontal: 120),
               ),
               const SizedBox(height: 30),
             ],

@@ -5,7 +5,6 @@ class ElevatedButtonComponent extends StatelessWidget {
   final VoidCallback onPressed;
   final Color? textColor;
   final double? fontSize;
-  final EdgeInsetsGeometry? padding;
   final double? elevation;
   final Clip? clipBehavior;
   final double? width;
@@ -20,7 +19,6 @@ class ElevatedButtonComponent extends StatelessWidget {
     required this.onPressed,
     this.textColor,
     this.fontSize,
-    this.padding,
     this.elevation,
     this.clipBehavior,
     this.height,

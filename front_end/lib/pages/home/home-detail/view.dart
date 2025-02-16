@@ -81,7 +81,8 @@ class _HomeDetailState extends State<HomeDetail> {
     viewModel.titleController.text = widget.record.title;
     viewModel.valueController.text = widget.record.value.toString();
     viewModel.typeController.text = widget.record.type;
-    viewModel.dateController.text = DateFormat('dd/MM/yyyy').format(widget.record.date);
+    viewModel.dateController.text =
+        DateFormat('dd/MM/yyyy').format(widget.record.date);
     isExpense = widget.record.type == "Expense";
   }
 
@@ -140,23 +141,22 @@ class _HomeDetailState extends State<HomeDetail> {
                               borderRadius: BorderRadius.circular(8),
                               side: const BorderSide(color: Colors.green)))),
                   textColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 120),
                 ),
               const SizedBox(height: 15),
               if (isExpense)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if(editable)
-                    const Text(
-                      "Scan Your Transaction Bill",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black87,
-                        letterSpacing: 0.1,
+                    if (editable)
+                      const Text(
+                        "Scan Your Transaction Bill",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black87,
+                          letterSpacing: 0.1,
+                        ),
                       ),
-                    ),
                     const SizedBox(height: 5),
                     Card(
                       elevation: 10,
@@ -173,13 +173,15 @@ class _HomeDetailState extends State<HomeDetail> {
                           ),
                         ),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 24.0, horizontal: 20.0),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 24.0, horizontal: 20.0),
                           child: ImagePickerComponent(
                             width: double.infinity,
                             height: 220,
                             selectedImage: viewModel.selectedImage,
                             onImageChanged: (newImage) {
-                              setState(() => viewModel.selectedImage = newImage);
+                              setState(
+                                  () => viewModel.selectedImage = newImage);
                               if (newImage != null) {
                                 viewModel.ocrReaderTotalReceipt(newImage,
                                     viewModel.valueController, context);
@@ -290,7 +292,7 @@ class _HomeDetailState extends State<HomeDetail> {
                           editable = false;
                         });
                       },
-                      width: MediaQuery.of(context).size.width/2.5,
+                      width: MediaQuery.of(context).size.width / 2.5,
                       height: 50,
                       style: ButtonStyle(
                         backgroundColor:
@@ -305,19 +307,19 @@ class _HomeDetailState extends State<HomeDetail> {
                         ),
                       ),
                       textColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 120),
                     ),
                     ElevatedButtonComponent(
                       text: "Save",
                       onPressed: () {
-                        viewModel.updateRecord(context);
+                        viewModel.updateRecord(context, widget.record.id);
                       },
-                      width: MediaQuery.of(context).size.width/2.5,
+                      width: MediaQuery.of(context).size.width / 2.5,
                       height: 50,
                       style: ButtonStyle(
-                        backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
-                        foregroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                        backgroundColor:
+                            WidgetStateProperty.all<Color>(Colors.blue),
+                        foregroundColor:
+                            WidgetStateProperty.all<Color>(Colors.blue),
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),
@@ -326,8 +328,6 @@ class _HomeDetailState extends State<HomeDetail> {
                         ),
                       ),
                       textColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 120),
                     ),
                   ],
                 ),
