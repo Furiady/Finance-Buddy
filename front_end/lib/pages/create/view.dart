@@ -4,7 +4,9 @@ import 'package:front_end/components/date-picker-component/view.dart';
 import 'package:front_end/components/elevated-button-component/view.dart';
 import 'package:front_end/components/form-component/view.dart';
 import 'package:front_end/components/image-picker-component/view.dart';
+import 'package:front_end/model/record-model/model.dart';
 import 'package:front_end/pages/create/view-model.dart';
+import 'package:intl/intl.dart';
 
 class Create extends StatefulWidget {
   const Create({super.key});
@@ -15,8 +17,27 @@ class Create extends StatefulWidget {
 
 class _CreateState extends State<Create> {
   final CreateRecordViewModel viewModel = CreateRecordViewModel();
-  bool isExpense = true;
 
+  Future<void> createRecord(BuildContext context) async {
+    setState(() {
+      viewModel.isLoading = true;
+    });
+    final DateFormat formatter = DateFormat('yyyyMMdd');
+    final record = RecordModel(
+        type: viewModel.selectedType,
+        title: viewModel.titleController.text,
+        category: viewModel.categoryController.text,
+        value: int.parse(viewModel.valueController.text),
+        date: formatter.format(viewModel.date),
+        description: viewModel.descriptionController.text,
+        deductFrom: viewModel.selectedType == 'expense' ? viewModel.deductFromController.text : null,
+        image: viewModel.selectedImage
+    );
+    await viewModel.recordService.createRecord(record, context);
+    setState(() {
+      viewModel.isLoading = false;
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -34,14 +55,14 @@ class _CreateState extends State<Create> {
                     width: MediaQuery.of(context).size.width * 0.45,
                     height: 50,
                     text: "Expense",
-                    onPressed: () => setState(() => isExpense = true),
-                    textColor: isExpense ? Colors.white : Colors.red,
-                    fontSize: isExpense ? 18 : 16,
+                    onPressed: () => setState(() => viewModel.isExpense = true),
+                    textColor: viewModel.isExpense ? Colors.white : Colors.red,
+                    fontSize: viewModel.isExpense ? 18 : 16,
                     style: ButtonStyle(
-                        foregroundColor: isExpense
+                        foregroundColor: viewModel.isExpense
                             ? WidgetStateProperty.all<Color>(Colors.white)
                             : WidgetStateProperty.all<Color>(Colors.red),
-                        backgroundColor: isExpense
+                        backgroundColor: viewModel.isExpense
                             ? WidgetStateProperty.all<Color>(Colors.red)
                             : WidgetStateProperty.all<Color>(Colors.white),
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -53,14 +74,14 @@ class _CreateState extends State<Create> {
                     text: "Income",
                     width: MediaQuery.of(context).size.width * 0.45,
                     height: 50,
-                    onPressed: () => setState(() => isExpense = false),
-                    textColor: isExpense ? Colors.green : Colors.white,
-                    fontSize: isExpense ? 16 : 18,
+                    onPressed: () => setState(() => viewModel.isExpense = false),
+                    textColor: viewModel.isExpense ? Colors.green : Colors.white,
+                    fontSize: viewModel.isExpense ? 16 : 18,
                     style: ButtonStyle(
-                        foregroundColor: isExpense
+                        foregroundColor: viewModel.isExpense
                             ? WidgetStateProperty.all<Color>(Colors.green)
                             : WidgetStateProperty.all<Color>(Colors.white),
-                        backgroundColor: isExpense
+                        backgroundColor: viewModel.isExpense
                             ? WidgetStateProperty.all<Color>(Colors.white)
                             : WidgetStateProperty.all<Color>(Colors.green),
                         shape: WidgetStateProperty.all<RoundedRectangleBorder>(
@@ -71,7 +92,7 @@ class _CreateState extends State<Create> {
                 ],
               ),
               const SizedBox(height: 20),
-              if (isExpense)
+              if (viewModel.isExpense)
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -139,7 +160,7 @@ class _CreateState extends State<Create> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (!isExpense)
+                      if (!viewModel.isExpense)
                         AutocompleteComponent(
                           labelText: "Category",
                           controller: viewModel.categoryController,
@@ -190,9 +211,10 @@ class _CreateState extends State<Create> {
                 ],
               ),
               ElevatedButtonComponent(
+                isLoading: viewModel.isLoading,
                 text: "Save Transaction",
-                onPressed: () {
-                  viewModel.createRecord(context);
+                onPressed: viewModel.isLoading ? null:() {
+                  createRecord(context);
                 },
                 width: MediaQuery.of(context).size.width,
                 height: 50,

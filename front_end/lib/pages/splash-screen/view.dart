@@ -34,7 +34,7 @@ class _SplashScreenState extends State<SplashScreen> {
             Column(
               children: [
                 Image.asset(
-                  "assets/images/logo/1024.png",
+                  "assets/images/logo/splash_screen.png",
                   height: 300.0,
                   width: 300.0,
                 ),

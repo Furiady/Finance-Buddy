@@ -16,6 +16,8 @@ class CreateRecordViewModel {
   late String selectedType = 'Expense';
   late DateTime date = DateTime.now();
   File? selectedImage;
+  bool isExpense = true;
+  bool isLoading= false;
   final List<String> optionsCategory = [
     'Food',
     'Transportation',
@@ -31,28 +33,8 @@ class CreateRecordViewModel {
     'Wallet'
   ];
 
-  Future<void> createRecord(BuildContext context) async {
-    final record = RecordModel(
-      type: selectedType,
-      title: titleController.text,
-      category: categoryController.text,
-      value: int.parse(valueController.text),
-      date: _formatDate(date),
-      description: descriptionController.text,
-      deductFrom: selectedType == 'expense' ? deductFromController.text : null,
-      image: selectedImage
-    );
 
-    await recordService.createRecord(record, context);
-    formKey.currentState!.reset();
-    selectedType = 'Expense';
-    date = DateTime.now();
-  }
 
-  String _formatDate(DateTime date) {
-    final DateFormat formatter = DateFormat('yyyyMMdd');
-    return formatter.format(date);
-  }
 
   void dispose() {
     titleController.dispose();

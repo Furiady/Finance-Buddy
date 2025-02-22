@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front_end/constant/api-path.dart';
 import 'package:front_end/pages/dashboard/view.dart';
-import 'package:front_end/pages/home/view.dart';
 import 'package:front_end/utils/pop-up-error/pop-up-error.dart';
 import 'package:front_end/utils/pop-up-success/pop-up-success.dart';
 
