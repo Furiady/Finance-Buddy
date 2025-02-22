@@ -1,35 +1,43 @@
 import 'package:flutter/material.dart';
 
 class QuestModel {
-  String title; int completed; int total; IconData icon; bool canClaim;
+  String title;
+  int count;
+  int limit;
+  bool status;
+  int reward;
+  String id;
 
   QuestModel({
     required this.title,
-    required this.completed,
-    required this.total,
-    required this.icon,
-    required this.canClaim,
+    required this.count,
+    required this.limit,
+    required this.status,
+    required this.reward,
+    required this.id,
   });
 
   // Convert to JSON for API request or local storage
   Map<String, dynamic> toJson() {
     return {
       'title': title,
-      'completed': completed,
-      'total': total,
-      'icon': icon,
-      'canClaim': canClaim,
+      'count': count,
+      'limit': limit,
+      'status': status,
+      'reward': reward,
+      'id': id,
     };
   }
 
   // Create a RecordModel from JSON data
   factory QuestModel.fromJson(Map<String, dynamic> json) {
     return QuestModel(
-        title: json['title'],
-        completed: json['completed'],
-        total: json['total'],
-        icon: json['icon'],
-        canClaim: json['canClaim'],
+      title: json['title'],
+      count: json['count'],
+      limit: json['limit'],
+      status: json['status'],
+      reward: json['reward'],
+      id: json['id'],
     );
   }
 }

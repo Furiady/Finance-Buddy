@@ -20,7 +20,6 @@ class _ProfileState extends State<Profile> {
         viewModel.isLoading = true;
       });
       viewModel.profileData = await viewModel.profileService.getUser(context: context);
-      debugPrint(viewModel.profileData as String?);
     } catch (e) {
       setState(() {
         viewModel.errorMessage = e.toString();

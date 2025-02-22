@@ -9,3 +9,5 @@ const String getRecordsEndPoint = "/records";
 const String chartEndPoint = "/records/type/count";
 const String incomeExpenseEndPoint = "/records/total";
 const String profileEndPoint = "/user";
+const String questEndPoint = "/quests";
+const String claimQuestEndPoint = "/quest";

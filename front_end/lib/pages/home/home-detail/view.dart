@@ -3,7 +3,6 @@ import 'package:front_end/components/autocomplete-component/view.dart';
 import 'package:front_end/components/date-picker-component/view.dart';
 import 'package:front_end/components/elevated-button-component/view.dart';
 import 'package:front_end/components/form-component/view.dart';
-import 'package:front_end/components/image-picker-component/view.dart';
 import 'package:front_end/model/record-response-model/model.dart';
 import 'package:front_end/pages/home/home-detail/view-model.dart';
 import 'package:intl/intl.dart';
@@ -81,8 +80,7 @@ class _HomeDetailState extends State<HomeDetail> {
     viewModel.titleController.text = widget.record.title;
     viewModel.valueController.text = widget.record.value.toString();
     viewModel.typeController.text = widget.record.type;
-    viewModel.dateController.text =
-        DateFormat('dd/MM/yyyy').format(widget.record.date);
+    viewModel.dateController.text = DateFormat('dd/MM/yyyy').format(widget.record.date);
     isExpense = widget.record.type == "Expense";
   }
 
@@ -132,66 +130,45 @@ class _HomeDetailState extends State<HomeDetail> {
                   width: MediaQuery.of(context).size.width,
                   height: 50,
                   style: ButtonStyle(
-                      backgroundColor:
-                          WidgetStateProperty.all<Color>(Colors.green),
-                      foregroundColor:
-                          WidgetStateProperty.all<Color>(Colors.green),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: const BorderSide(color: Colors.green)))),
+                      backgroundColor: WidgetStateProperty.all<Color>(Colors.green),
+                      foregroundColor: WidgetStateProperty.all<Color>(Colors.green),
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: Colors.green)))),
                   textColor: Colors.white,
                 ),
               const SizedBox(height: 15),
-              if (isExpense)
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (editable)
-                      const Text(
-                        "Scan Your Transaction Bill",
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black87,
-                          letterSpacing: 0.1,
-                        ),
-                      ),
-                    const SizedBox(height: 5),
-                    Card(
-                      elevation: 10,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(24),
-                      ),
-                      shadowColor: Colors.black26,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            colors: [Colors.white, Colors.blueGrey[50]!],
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 24.0, horizontal: 20.0),
-                          child: ImagePickerComponent(
-                            width: double.infinity,
-                            height: 220,
-                            selectedImage: viewModel.selectedImage,
-                            onImageChanged: (newImage) {
-                              setState(
-                                  () => viewModel.selectedImage = newImage);
-                              if (newImage != null) {
-                                viewModel.ocrReaderTotalReceipt(newImage,
-                                    viewModel.valueController, context);
-                              }
-                            },
-                          ),
-                        ),
+              if (isExpense && widget.record.url != null)
+                Card(
+                  elevation: 10,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24),
+                  ),
+                  shadowColor: Colors.black26,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [Colors.white, Colors.blueGrey[50]!],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
                       ),
                     ),
-                  ],
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 24.0,
+                        horizontal: 20.0,
+                      ),
+                      child: Image.network(
+                        widget.record.url!, // Load image from URL
+                        fit: BoxFit.cover, // Ensures proper scaling
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return const Center(child: CircularProgressIndicator());
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          return const Icon(Icons.broken_image, size: 50, color: Colors.red);
+                        },
+                      ),
+                    ),
+                  ),
                 ),
               const SizedBox(height: 10),
               Column(

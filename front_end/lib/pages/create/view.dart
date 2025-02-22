@@ -197,10 +197,8 @@ class _CreateState extends State<Create> {
                 width: MediaQuery.of(context).size.width,
                 height: 50,
                 style: ButtonStyle(
-                    backgroundColor:
-                        WidgetStateProperty.all<Color>(Colors.blue),
-                    foregroundColor:
-                        WidgetStateProperty.all<Color>(Colors.blue),
+                    backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                    foregroundColor: WidgetStateProperty.all<Color>(Colors.blue),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

@@ -68,6 +68,7 @@ flutter:
 
   assets:
     - assets/
+    - assets/images/gamification/
     - assets/images/logo/
     - assets/images/pets/
     - assets/images/themes/

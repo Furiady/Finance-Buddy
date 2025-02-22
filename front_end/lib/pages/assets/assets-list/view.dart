@@ -8,11 +8,8 @@ class AssetsListComponent extends StatefulWidget {
   final List<RecordModel> records;
   final DateTime date;
 
-  const AssetsListComponent({
-    super.key,
-    required this.records,
-    required this.date
-  });
+  const AssetsListComponent(
+      {super.key, required this.records, required this.date});
 
   @override
   _AssetsListComponentState createState() => _AssetsListComponentState();
@@ -38,7 +35,7 @@ class _AssetsListComponentState extends State<AssetsListComponent> {
 
   void _updateData(List<RecordModel> records) {
     final AssetsListViewModel viewModel = AssetsListViewModel();
-    filteredRecords = viewModel.filterRecordsByMonth(records,widget.date);
+    filteredRecords = viewModel.filterRecordsByMonth(records, widget.date);
     dailyTotals = viewModel.groupRecordsByDate(filteredRecords, widget.date);
   }
 
@@ -52,7 +49,7 @@ class _AssetsListComponentState extends State<AssetsListComponent> {
     return Column(
       children: [
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.only(left: 16),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -76,22 +73,29 @@ class _AssetsListComponentState extends State<AssetsListComponent> {
             ),
           )
         else
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: sortedDailyTotals.length,
-            itemBuilder: (context, index) {
-              final date = sortedDailyTotals[index].key;
-              final totalAmount = sortedDailyTotals[index].value;
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: Card(
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0, right: 12),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: sortedDailyTotals.length,
+              itemBuilder: (context, index) {
+                final date = sortedDailyTotals[index].key;
+                final totalAmount = sortedDailyTotals[index].value;
+                return Card(
                   elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   color: Colors.white,
                   child: ExpansionTile(
+                    collapsedShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    collapsedBackgroundColor: Colors.white,
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -123,9 +127,9 @@ class _AssetsListComponentState extends State<AssetsListComponent> {
                       ),
                     ],
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
       ],
     );

@@ -150,6 +150,7 @@ class _HomeListComponentState extends State<HomeListComponent> {
                         ),
                       ),
                     Card(
+                      color: Colors.white,
                       margin: const EdgeInsets.symmetric(
                           vertical: 8.0, horizontal: 16.0),
                       child: ListTile(
@@ -161,13 +162,13 @@ class _HomeListComponentState extends State<HomeListComponent> {
                           );
                         },
                         leading: CircleAvatar(
-                          backgroundColor: Colors.red.withOpacity(0.1),
-                          child: Icon(
-                            Icons.fastfood,
-                            color: record.type == "Expense"
-                                ? Colors.red
-                                : Colors.green,
-                          ),
+                          backgroundColor: record.type == "Expense"
+                              ? Colors.red.withOpacity(0.1)
+                              : Colors.green.withOpacity(0.1),
+                          child: Icon(Icons.attach_money_rounded,
+                              color: record.type == "Expense"
+                                  ? Colors.red
+                                  : Colors.green),
                         ),
                         title: Text(record.title),
                         subtitle: Column(

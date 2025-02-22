@@ -3,6 +3,7 @@ import 'package:front_end/model/home-model/model.dart';
 import 'package:front_end/model/quest-model/model.dart';
 import 'package:front_end/model/record-response-model/model.dart';
 import 'package:front_end/pages/home/home-detail/view.dart';
+import 'package:front_end/pages/home/view-model.dart';
 import 'package:front_end/utils/format-currency/format-currency.dart';
 import 'package:intl/intl.dart';
 
@@ -106,6 +107,7 @@ class _RecentListComponentState extends State<RecentListComponent> {
       itemCount: widget.records.length,
       itemBuilder: (context, index) {
         return Card(
+          color: Colors.white,
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           child: ListTile(
             onTap: () {
@@ -117,8 +119,10 @@ class _RecentListComponentState extends State<RecentListComponent> {
               );
             },
             leading: CircleAvatar(
-              backgroundColor: Colors.red.withOpacity(0.1),
-              child: Icon(Icons.fastfood,
+              backgroundColor: widget.records[index].type == "Expense"
+                  ? Colors.red.withOpacity(0.1)
+                  : Colors.green.withOpacity(0.1),
+              child: Icon(Icons.attach_money_rounded,
                   color: widget.records[index].type == "Expense"
                       ? Colors.red
                       : Colors.green),
@@ -149,10 +153,43 @@ class _RecentListComponentState extends State<RecentListComponent> {
   }
 }
 
-class RowQuest extends StatelessWidget {
+class RowQuest extends StatefulWidget {
   final QuestModel questData;
+  final VoidCallback onClaimSuccess; // Callback function
 
-  const RowQuest({super.key, required this.questData});
+  const RowQuest(
+      {super.key, required this.questData, required this.onClaimSuccess});
+
+  @override
+  State<RowQuest> createState() => _RowQuestState();
+}
+
+class _RowQuestState extends State<RowQuest> {
+  final HomeViewModel viewModel = HomeViewModel();
+
+  Future<void> claimQuest() async {
+    try {
+      setState(() {
+        viewModel.errorMessage = null;
+        viewModel.isLoadingClaim = true;
+      });
+      await viewModel.questServices
+          .claimQuest(context: context, questId: widget.questData.id);
+      if (mounted) {
+        widget.onClaimSuccess(); // Notify PopUpQuest and Home to refresh data
+      }
+    } catch (e) {
+      setState(() {
+        viewModel.errorMessage = e.toString();
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          viewModel.isLoadingClaim = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,7 +197,7 @@ class RowQuest extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         children: [
-          Icon(questData.icon, size: 32, color: Colors.blueAccent),
+          const Icon(Icons.calendar_month, size: 32, color: Colors.blueAccent),
           const SizedBox(width: 12),
           Expanded(
             child: Row(
@@ -170,29 +207,46 @@ class RowQuest extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      questData.title,
+                      widget.questData.title,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     const SizedBox(height: 4),
-                    const Row(
+                    Row(
                       children: [
-                        Icon(Icons.monetization_on, color: Colors.amber, size: 16),
+                        const Icon(Icons.monetization_on,
+                            color: Colors.amber, size: 16),
                         const SizedBox(width: 4),
-                        const Text('x5'),
+                        Text('${widget.questData.reward}'),
                       ],
                     ),
                   ],
                 ),
                 Column(
                   children: [
-                    Text('${questData.completed}/${questData.total}'),
+                    Text('${widget.questData.count}/${widget.questData.limit}'),
                     const SizedBox(width: 8),
                     ElevatedButton(
-                      onPressed: questData.canClaim ? () {} : null,
-                      child: const Text('Claim'),
+                      onPressed: widget.questData.status ? claimQuest : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor:
+                            widget.questData.status ? Colors.blue : Colors.grey,
+                      ),
+                      child: viewModel.isLoadingClaim
+                          ? const SizedBox(
+                              width: 20,
+                              height: 20,
+                              child: CircularProgressIndicator(
+                                color: Colors.white,
+                                strokeWidth: 2,
+                              ),
+                            )
+                          : const Text(
+                              'Claim',
+                              style: TextStyle(color: Colors.white),
+                            ),
                     ),
                   ],
                 ),
@@ -206,33 +260,47 @@ class RowQuest extends StatelessWidget {
 }
 
 class PopUpQuest extends StatefulWidget {
-  const PopUpQuest({super.key});
+  final VoidCallback onClaimSuccess; // Callback function
+
+  const PopUpQuest({super.key, required this.onClaimSuccess});
 
   @override
   State<PopUpQuest> createState() => _PopUpQuestState();
 }
 
 class _PopUpQuestState extends State<PopUpQuest> {
-  final List<QuestModel> quests = [
-    QuestModel(
-        title: 'Login',
-        completed: 1,
-        total: 1,
-        icon: Icons.calendar_today,
-        canClaim: true),
-    QuestModel(
-        title: 'Create record',
-        completed: 0,
-        total: 3,
-        icon: Icons.edit_note,
-        canClaim: false),
-    QuestModel(
-        title: 'Scan bills',
-        completed: 0,
-        total: 1,
-        icon: Icons.camera_alt,
-        canClaim: false),
-  ];
+  final HomeViewModel viewModel = HomeViewModel();
+
+  Future<void> fetchData() async {
+    try {
+      setState(() {
+        viewModel.errorMessage = null;
+        viewModel.isLoadingQuest = true;
+      });
+      viewModel.quests =
+          await viewModel.questServices.getQuest(context: context);
+
+    } catch (e) {
+      setState(() {
+        viewModel.errorMessage = e.toString();
+      });
+    } finally {
+      setState(() {
+        viewModel.isLoadingQuest = false;
+      });
+    }
+  }
+
+  void refreshData() {
+    fetchData();
+    widget.onClaimSuccess(); // Refresh profile data in Home
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    fetchData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -247,11 +315,15 @@ class _PopUpQuestState extends State<PopUpQuest> {
           children: [
             Row(
               children: [
-                const Text(
-                  'Quest',
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
+                const Expanded(
+                  child: Center(
+                    child: Text(
+                      'Quest',
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
                 ),
                 IconButton(
@@ -263,7 +335,21 @@ class _PopUpQuestState extends State<PopUpQuest> {
               ],
             ),
             const SizedBox(height: 16),
-            ...quests.map((quest) => RowQuest(questData: quest)).toList(),
+            viewModel.isLoadingQuest
+                ? const Center(child: CircularProgressIndicator())
+                : SizedBox(
+                    height: 300, // Adjust height based on UI needs
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: viewModel.quests.length,
+                      itemBuilder: (context, index) {
+                        return RowQuest(
+                          questData: viewModel.quests[index],
+                          onClaimSuccess: refreshData, // Pass the callback
+                        );
+                      },
+                    ),
+                  ),
           ],
         ),
       ),

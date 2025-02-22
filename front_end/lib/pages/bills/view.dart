@@ -98,7 +98,8 @@ class _BillsState extends State<Bills> {
                                   builder: (context) => HomeListComponent(
                                     type: "Expense",
                                     category: value,
-                                    headerTitle: value[0].toUpperCase() + value.substring(1),
+                                    headerTitle: value[0].toUpperCase() +
+                                        value.substring(1),
                                   ),
                                 ),
                               );
@@ -109,6 +110,7 @@ class _BillsState extends State<Bills> {
                             records: viewModel.recordsData,
                             date: currentDate,
                           ),
+                          const SizedBox(height: 30),
                         ],
                       ),
                     ),

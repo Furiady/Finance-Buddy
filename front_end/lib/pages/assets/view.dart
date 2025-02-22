@@ -111,6 +111,7 @@ class _AssetsState extends State<Assets> {
                               records: viewModel.recordsData,
                               date: currentDate,
                             ),
+                            const SizedBox(height: 30),
                           ],
                         ),
                       ),

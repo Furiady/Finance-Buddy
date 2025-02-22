@@ -40,6 +40,7 @@ class CreateRecordViewModel {
       date: _formatDate(date),
       description: descriptionController.text,
       deductFrom: selectedType == 'expense' ? deductFromController.text : null,
+      image: selectedImage
     );
 
     await recordService.createRecord(record, context);
@@ -61,8 +62,7 @@ class CreateRecordViewModel {
     deductFromController.dispose();
   }
 
-  Future<void> ocrReaderTotalReceipt(File image,
-      TextEditingController valueController, BuildContext context) async {
+  Future<void> ocrReaderTotalReceipt(File image, TextEditingController valueController, BuildContext context) async {
     final inputImage = InputImage.fromFile(image);
     final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
 

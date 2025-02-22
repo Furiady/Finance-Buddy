@@ -10,7 +10,7 @@ class RegisterService {
     try {
       final response = await _dio.post(registerEndPoint, data: model.toJson());
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Account created successfully')),
+        const SnackBar(content: Text('Account created successfully')),
       );
       return true;
     } on DioException catch (e) {

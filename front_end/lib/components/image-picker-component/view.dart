@@ -8,8 +8,6 @@ class ImagePickerComponent extends StatefulWidget {
   final double height;
   final File? selectedImage;
   final ValueChanged<File?> onImageChanged;
-  final bool readOnly;
-  final String? imageUrl;
 
   const ImagePickerComponent({
     super.key,
@@ -17,8 +15,6 @@ class ImagePickerComponent extends StatefulWidget {
     required this.height,
     this.selectedImage,
     required this.onImageChanged,
-    this.readOnly = false,
-    this.imageUrl,
   });
 
   @override
@@ -27,7 +23,6 @@ class ImagePickerComponent extends StatefulWidget {
 
 class _ImagePickerComponentState extends State<ImagePickerComponent> {
   final ImagePicker _picker = ImagePicker();
-  late String? imageUrl;
 
   Future<void> _pickImage(ImageSource source) async {
     final XFile? image = await _picker.pickImage(source: source);
@@ -38,22 +33,11 @@ class _ImagePickerComponentState extends State<ImagePickerComponent> {
   }
 
   void _removeImage() {
-    if (widget.imageUrl != null) {
-      setState(() {
-        imageUrl = widget.imageUrl;
-      });
       widget.onImageChanged(null);
-    } else {
-      widget.onImageChanged(null);
-    }
+
   }
 
   void _showImageSourcePicker() {
-    if (imageUrl != null) {
-      setState(() {
-        imageUrl = null;
-      });
-    }
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -92,7 +76,6 @@ class _ImagePickerComponentState extends State<ImagePickerComponent> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    imageUrl = widget.imageUrl;
   }
 
   @override
@@ -127,15 +110,7 @@ class _ImagePickerComponentState extends State<ImagePickerComponent> {
             child: SizedBox(
               width: widget.width,
               height: widget.height,
-              child: imageUrl != null
-                  ? ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: Image.network(
-                        widget.imageUrl!,
-                        fit: BoxFit.cover,
-                      ),
-                    )
-                  : widget.selectedImage == null
+              child: widget.selectedImage == null
                       ? Center(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -144,12 +119,8 @@ class _ImagePickerComponentState extends State<ImagePickerComponent> {
                                 icon: const Icon(
                                     Icons.add_circle_outline_rounded),
                                 iconSize: 40,
-                                color: widget.readOnly
-                                    ? Colors.grey
-                                    : Colors.green,
-                                onPressed: widget.readOnly
-                                    ? null
-                                    : _showImageSourcePicker
+                                color:  Colors.green,
+                                onPressed: _showImageSourcePicker
                               ),
                               const SizedBox(height: 8),
                               const Text(
@@ -205,7 +176,6 @@ class _ImagePickerComponentState extends State<ImagePickerComponent> {
             ),
           ),
         const SizedBox(height: 5),
-        if (widget.imageUrl != null)
           const Text(
             "Upload your receipt for easier transaction recording",
             style: TextStyle(

@@ -5,6 +5,7 @@ class UserModel {
   final String id;
   final String pin;
   final int balance;
+  final String gamification;
 
   UserModel({
     required this.username,
@@ -13,6 +14,7 @@ class UserModel {
     required this.id,
     required this.balance,
     required this.pin,
+    required this.gamification,
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class UserModel {
       id: json['id'] ?? 0,
       pin: json['pin'] ?? '',
       balance: json['balance'] ?? 0,
+      gamification: json['gamification'] ?? '',
     );
   }
 
@@ -33,7 +36,8 @@ class UserModel {
       'coin': coin,
       'pin': pin,
       'email': email,
-      'balance': balance
+      'balance': balance,
+      'gamification' : gamification
     };
   }
 }

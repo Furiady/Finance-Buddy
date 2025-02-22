@@ -8,11 +8,8 @@ class BillsListComponent extends StatefulWidget {
   final List<RecordModel> records;
   final DateTime date;
 
-  const BillsListComponent({
-    super.key,
-    required this.records,
-    required this.date
-  });
+  const BillsListComponent(
+      {super.key, required this.records, required this.date});
 
   @override
   _BillsListComponentState createState() => _BillsListComponentState();
@@ -38,7 +35,7 @@ class _BillsListComponentState extends State<BillsListComponent> {
 
   void _updateData(List<RecordModel> records) {
     final BillsListViewModel viewModel = BillsListViewModel();
-    filteredRecords = viewModel.filterRecordsByMonth(records,widget.date);
+    filteredRecords = viewModel.filterRecordsByMonth(records, widget.date);
     dailyTotals = viewModel.groupRecordsByDate(filteredRecords, widget.date);
   }
 
@@ -52,7 +49,7 @@ class _BillsListComponentState extends State<BillsListComponent> {
     return Column(
       children: [
         const Padding(
-          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          padding: EdgeInsets.only(left: 16),
           child: Align(
             alignment: Alignment.centerLeft,
             child: Text(
@@ -76,22 +73,29 @@ class _BillsListComponentState extends State<BillsListComponent> {
             ),
           )
         else
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: sortedDailyTotals.length,
-            itemBuilder: (context, index) {
-              final date = sortedDailyTotals[index].key;
-              final totalAmount = sortedDailyTotals[index].value;
-              return Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                child: Card(
+          Padding(
+            padding: const EdgeInsets.only(left: 12.0, right: 12),
+            child: ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: sortedDailyTotals.length,
+              itemBuilder: (context, index) {
+                final date = sortedDailyTotals[index].key;
+                final totalAmount = sortedDailyTotals[index].value;
+                return Card(
                   elevation: 2,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
                   color: Colors.white,
                   child: ExpansionTile(
+                    collapsedShape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    collapsedBackgroundColor: Colors.white,
                     title: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -123,9 +127,9 @@ class _BillsListComponentState extends State<BillsListComponent> {
                       ),
                     ],
                   ),
-                ),
-              );
-            },
+                );
+              },
+            ),
           ),
       ],
     );
