@@ -227,7 +227,7 @@ class _HomeDetailState extends State<HomeDetail> {
                                 labelText: "Source of fund",
                                 hintText: "Source of fund",
                                 controller: viewModel.deductFromController,
-                                options: viewModel.optionsCategory,
+                                options: viewModel.optionsDeductForm,
                                 initialValue:
                                     viewModel.deductFromController.value,
                                 readOnly: !editable,
