@@ -30,7 +30,7 @@ class _CreateState extends State<Create> {
         value: int.parse(viewModel.valueController.text),
         date: formatter.format(viewModel.date),
         description: viewModel.descriptionController.text,
-        deductFrom: viewModel.selectedType == 'expense' ? viewModel.deductFromController.text : null,
+        deductFrom: viewModel.isExpense ? viewModel.deductFromController.text : null,
         image: viewModel.selectedImage
     );
     await viewModel.recordService.createRecord(record, context);
@@ -183,7 +183,7 @@ class _CreateState extends State<Create> {
                               child: AutocompleteComponent(
                                 labelText: "Source of fund",
                                 controller: viewModel.deductFromController,
-                                options: viewModel.optionsCategory,
+                                options: viewModel.optionsDeductForm,
                                 hintText: "Source of fund",
                               ),
                             ),
