@@ -24,11 +24,11 @@ class _HomeDetailState extends State<HomeDetail> {
       viewModel.isLoadingUpdate = true;
     });
     final record = RecordModel(
-      type: viewModel.selectedType,
+      type: viewModel.typeController.text,
       title: viewModel.titleController.text,
       category: viewModel.categoryController.text,
       value: int.parse(viewModel.valueController.text),
-      date: viewModel.date,
+      date: DateTime.parse(viewModel.dateController.text),
       description: viewModel.descriptionController.text,
       deductFrom: viewModel.isExpense ? viewModel.deductFromController.text : null,
       id: id,

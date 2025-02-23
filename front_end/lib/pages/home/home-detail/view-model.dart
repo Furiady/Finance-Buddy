@@ -19,8 +19,6 @@ class HomeDetailViewModel {
   final deductFromController = TextEditingController();
   final typeController = TextEditingController();
   final dateController = TextEditingController();
-  late String selectedType = 'Expense';
-  late DateTime date = DateTime.now();
   final String imageUrl="";
   final List<String> optionsCategory = [
     'Food',

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:front_end/model/record-response-model/model.dart';
 import 'package:front_end/utils/pop-up-error/pop-up-error.dart';
 import 'package:front_end/utils/pop-up-success/pop-up-success.dart';
+import 'package:intl/intl.dart';
 
 class UpdateRecordService {
   final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
@@ -26,11 +27,9 @@ class UpdateRecordService {
         'title': record.title,
         'category': record.category,
         'value': record.value,
-        'createdAt': record.date,
+        'createdAt': DateFormat('yyyyMMdd').format(record.date),
         'description': record.description ?? '',
         'deductFrom': record.deductFrom ?? '',
-        if (record.image != null)
-          'image': await MultipartFile.fromFile(record.image!.path),
       });
 
       await _dio.put(updateRecordEndPoint + record.id, data: formData);

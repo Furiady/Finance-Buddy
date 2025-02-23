@@ -13,8 +13,8 @@ class CreateRecordViewModel {
   final valueController = TextEditingController();
   final descriptionController = TextEditingController();
   final deductFromController = TextEditingController();
+  final dateController = TextEditingController();
   late String selectedType = 'Expense';
-  late DateTime date = DateTime.now();
   File? selectedImage;
   bool isExpense = true;
   bool isLoading= false;

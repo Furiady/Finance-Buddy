@@ -23,12 +23,14 @@ class _CreateState extends State<Create> {
       viewModel.isLoading = true;
     });
     final DateFormat formatter = DateFormat('yyyyMMdd');
+    final String formattedDate = formatter.format(DateTime.parse(viewModel.dateController.text));
+
     final record = RecordModel(
         type: viewModel.selectedType,
         title: viewModel.titleController.text,
         category: viewModel.categoryController.text,
         value: int.parse(viewModel.valueController.text),
-        date: formatter.format(viewModel.date),
+        date: formattedDate,
         description: viewModel.descriptionController.text,
         deductFrom: viewModel.isExpense ? viewModel.deductFromController.text : null,
         image: viewModel.selectedImage
@@ -154,6 +156,7 @@ class _CreateState extends State<Create> {
                   const SizedBox(height: 16),
                   DatePickerComponent(
                     labelText: "Date",
+                    controller: viewModel.dateController,
                     onChanged: (date) => setState(() => date = date),
                   ),
                   const SizedBox(height: 16),
