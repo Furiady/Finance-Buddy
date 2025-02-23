@@ -3,6 +3,8 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:front_end/constant/api-path.dart';
 import 'package:flutter/material.dart';
 import 'package:front_end/model/record-response-model/model.dart';
+import 'package:front_end/utils/pop-up-error/pop-up-error.dart';
+import 'package:front_end/utils/pop-up-success/pop-up-success.dart';
 
 class UpdateRecordService {
   final Dio _dio = Dio(BaseOptions(baseUrl: baseUrl));
@@ -13,9 +15,7 @@ class UpdateRecordService {
       String? token = await secureStorage.read(key: 'token');
 
       if (token == null) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error: Token is missing or expired')),
-        );
+        showErrorDialog(context, 'Error: Token is missing or expired');
         return;
       }
 
@@ -35,14 +35,16 @@ class UpdateRecordService {
 
       await _dio.put(updateRecordEndPoint + record.id, data: formData);
 
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Record updated successfully!')),
+      showSuccessDialog(
+        context: context,
+        message: 'Record created successfully!',
+        onPressed: () {
+          Navigator.of(context).pop(); // Close dialog
+        },
       );
     } on DioException catch (e) {
       String message = e.response?.data['message'] ?? 'Unknown error';
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: $message')),
-      );
+      showErrorDialog(context, 'Error: $message');
     }
   }
 }

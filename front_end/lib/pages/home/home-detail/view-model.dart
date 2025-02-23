@@ -7,7 +7,10 @@ import 'package:front_end/services/record-services/update-record-services.dart';
 class HomeDetailViewModel {
   final UpdateRecordService updateRecordService = UpdateRecordService();
   final DeleteRecordService deleteRecordService = DeleteRecordService();
-  late bool loading = false;
+  late bool isLoadingDelete = false;
+  late bool isLoadingUpdate = false;
+  bool isExpense = true;
+  bool editable = false;
   final formKey = GlobalKey<FormState>();
   final titleController = TextEditingController();
   final categoryController = TextEditingController();
@@ -33,23 +36,6 @@ class HomeDetailViewModel {
     'Bank Transfer',
     'Wallet'
   ];
-
-  Future<void> updateRecord(BuildContext context, String id) async {
-    final record = RecordModel(
-      type: selectedType,
-      title: titleController.text,
-      category: categoryController.text,
-      value: int.parse(valueController.text),
-      date: date,
-      description: descriptionController.text,
-      deductFrom: selectedType == 'expense' ? deductFromController.text : null,
-      id: id,
-    );
-    await updateRecordService.updateRecord(record, context);
-    formKey.currentState!.reset();
-    selectedType = 'Expense';
-    date = DateTime.now();
-  }
 
 
 

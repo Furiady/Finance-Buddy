@@ -18,8 +18,28 @@ class HomeDetail extends StatefulWidget {
 
 class _HomeDetailState extends State<HomeDetail> {
   final HomeDetailViewModel viewModel = HomeDetailViewModel();
-  bool isExpense = true;
-  bool editable = false;
+
+  Future<void> updateRecord(BuildContext context, String id) async {
+    setState(() {
+      viewModel.isLoadingUpdate = true;
+    });
+    final DateFormat formatter = DateFormat('yyyyMMdd');
+    final record = RecordModel(
+      type: viewModel.selectedType,
+      title: viewModel.titleController.text,
+      category: viewModel.categoryController.text,
+      value: int.parse(viewModel.valueController.text),
+      date: viewModel.date,
+      description: viewModel.descriptionController.text,
+      deductFrom: viewModel.isExpense ? viewModel.deductFromController.text : null,
+      id: id,
+    );
+    await viewModel.updateRecordService.updateRecord(record, context);
+    setState(() {
+      viewModel.isLoadingUpdate = false;
+    });
+  }
+
 
   void showDeleteConfirmationDialog(
       {required BuildContext context, required String id}) {
@@ -30,7 +50,7 @@ class _HomeDetailState extends State<HomeDetail> {
           builder: (context, setState) {
             return AlertDialog(
               title: const Text("Delete Record"),
-              content: viewModel.loading
+              content: viewModel.isLoadingDelete
                   ? const Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -41,7 +61,7 @@ class _HomeDetailState extends State<HomeDetail> {
                     )
                   : const Text("Are you sure you want to delete this record?"),
               actions: [
-                if (!viewModel.loading)
+                if (!viewModel.isLoadingDelete)
                   TextButton(
                     onPressed: () {
                       Navigator.of(context).pop();
@@ -49,16 +69,16 @@ class _HomeDetailState extends State<HomeDetail> {
                     child: const Text("Cancel"),
                   ),
                 TextButton(
-                  onPressed: viewModel.loading
+                  onPressed: viewModel.isLoadingDelete
                       ? null
                       : () async {
                           setState(() {
-                            viewModel.loading = true;
+                            viewModel.isLoadingDelete = true;
                           });
                           await viewModel.deleteRecordService
                               .deleteRecord(context: context, id: id);
                           setState(() {
-                            viewModel.loading = false;
+                            viewModel.isLoadingDelete = false;
                           });
                         },
                   child: const Text("OK"),
@@ -81,7 +101,7 @@ class _HomeDetailState extends State<HomeDetail> {
     viewModel.valueController.text = widget.record.value.toString();
     viewModel.typeController.text = widget.record.type;
     viewModel.dateController.text = DateFormat('dd/MM/yyyy').format(widget.record.date);
-    isExpense = widget.record.type == "Expense";
+    viewModel.isExpense = widget.record.type == "Expense";
   }
 
   @override
@@ -115,7 +135,7 @@ class _HomeDetailState extends State<HomeDetail> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (!editable)
+              if (!viewModel.editable)
                 ElevatedButtonComponent(
                   text: "Edit Transaction",
                   prefixIcon: const Icon(
@@ -124,7 +144,7 @@ class _HomeDetailState extends State<HomeDetail> {
                   ),
                   onPressed: () {
                     setState(() {
-                      editable = true;
+                      viewModel.editable = true;
                     });
                   },
                   width: MediaQuery.of(context).size.width,
@@ -136,7 +156,7 @@ class _HomeDetailState extends State<HomeDetail> {
                   textColor: Colors.white,
                 ),
               const SizedBox(height: 15),
-              if (isExpense && widget.record.url != null)
+              if (viewModel.isExpense && widget.record.url != null)
                 Card(
                   elevation: 10,
                   shape: RoundedRectangleBorder(
@@ -185,27 +205,27 @@ class _HomeDetailState extends State<HomeDetail> {
                     controller: viewModel.titleController,
                     labelText: "Title",
                     hintText: "Title",
-                    readOnly: !editable,
+                    readOnly: !viewModel.editable,
                   ),
                   const SizedBox(height: 16),
                   DatePickerComponent(
                     labelText: "Date",
                     controller: viewModel.dateController,
                     onChanged: (date) => setState(() => date = date),
-                    readOnly: !editable,
+                    readOnly: !viewModel.editable,
                   ),
                   const SizedBox(height: 16),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (!isExpense)
+                      if (!viewModel.isExpense)
                         AutocompleteComponent(
                           labelText: "Category",
                           hintText: "Select or type",
                           controller: viewModel.categoryController,
                           options: viewModel.optionsCategory,
                           initialValue: viewModel.categoryController.value,
-                          readOnly: !editable,
+                          readOnly: !viewModel.editable,
                         )
                       else
                         Row(
@@ -218,7 +238,7 @@ class _HomeDetailState extends State<HomeDetail> {
                                 options: viewModel.optionsCategory,
                                 initialValue:
                                     viewModel.categoryController.value,
-                                readOnly: !editable,
+                                readOnly: !viewModel.editable,
                               ),
                             ),
                             const SizedBox(width: 16),
@@ -230,7 +250,7 @@ class _HomeDetailState extends State<HomeDetail> {
                                 options: viewModel.optionsDeductForm,
                                 initialValue:
                                     viewModel.deductFromController.value,
-                                readOnly: !editable,
+                                readOnly: !viewModel.editable,
                               ),
                             ),
                           ],
@@ -243,7 +263,7 @@ class _HomeDetailState extends State<HomeDetail> {
                     labelText: "Amount",
                     hintText: "Amount",
                     keyboardType: TextInputType.number,
-                    readOnly: !editable,
+                    readOnly: !viewModel.editable,
                   ),
                   const SizedBox(height: 16),
                   FormComponent(
@@ -253,12 +273,12 @@ class _HomeDetailState extends State<HomeDetail> {
                     keyboardType: TextInputType.multiline,
                     minLines: 3,
                     maxLines: 6,
-                    readOnly: !editable,
+                    readOnly: !viewModel.editable,
                   ),
                   const SizedBox(height: 24),
                 ],
               ),
-              if (editable)
+              if (viewModel.editable)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -266,7 +286,7 @@ class _HomeDetailState extends State<HomeDetail> {
                       text: "Cancel",
                       onPressed: () {
                         setState(() {
-                          editable = false;
+                          viewModel.editable = false;
                         });
                       },
                       width: MediaQuery.of(context).size.width / 2.5,
@@ -287,8 +307,9 @@ class _HomeDetailState extends State<HomeDetail> {
                     ),
                     ElevatedButtonComponent(
                       text: "Save",
+                      isLoading: viewModel.isLoadingUpdate,
                       onPressed: () {
-                        viewModel.updateRecord(context, widget.record.id);
+                        updateRecord(context, widget.record.id);
                       },
                       width: MediaQuery.of(context).size.width / 2.5,
                       height: 50,
