@@ -74,7 +74,7 @@ class _CreateState extends State<Create> {
                     text: "Income",
                     width: MediaQuery.of(context).size.width * 0.45,
                     height: 50,
-                    onPressed: () => setState(() => viewModel.isExpense = false),
+                    onPressed: () => setState(() {viewModel.selectedType = "Income"; viewModel.isExpense = false;}),
                     textColor: viewModel.isExpense ? Colors.green : Colors.white,
                     fontSize: viewModel.isExpense ? 16 : 18,
                     style: ButtonStyle(

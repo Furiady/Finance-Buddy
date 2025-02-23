@@ -33,9 +33,6 @@ class CreateRecordViewModel {
     'Wallet'
   ];
 
-
-
-
   void dispose() {
     titleController.dispose();
     categoryController.dispose();
@@ -49,57 +46,63 @@ class CreateRecordViewModel {
     final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
 
     try {
-      final RecognizedText recognizedText =
-          await textRecognizer.processImage(inputImage);
-      String extractedValue = '';
+      final RecognizedText recognizedText = await textRecognizer.processImage(inputImage);
+      String text = recognizedText.text.toLowerCase();
 
-      final String text = recognizedText.text.toLowerCase();
+      // Ensure we only process numbers AFTER the first occurrence of "total"
+      int totalIndex = text.indexOf("total");
+      if (totalIndex == -1) {
+        _showErrorAlert(context, "Keyword 'total' not found in the receipt.");
+        return;
+      }
 
-      if (text.contains("total")) {
-        for (TextBlock block in recognizedText.blocks) {
-          final String blockText = block.text.toLowerCase();
+      // Extract only the relevant portion of text after "total"
+      String relevantText = text.substring(totalIndex);
 
-          if (blockText.contains("total")) {
-            final startIndex = blockText.indexOf("total") + "total".length;
+      // Extract all numeric values (supports formats like Rp 8.000, 1,500,000, 500.00)
+      RegExp regex = RegExp(r'(\d[\d,.]*)');
+      Iterable<Match> matches = regex.allMatches(relevantText);
 
-            String totalString = "";
-            for (int i = startIndex; i < blockText.length; i++) {
-              if (i + 3 <= blockText.length &&
-                  blockText.substring(i, i + 3) == ",00") {
-                break;
-              }
-              if (blockText[i] == '\n') {
-                break;
-              }
-              totalString += blockText[i];
-            }
+      List<int> extractedNumbers = [];
 
-            String totalStringOnlyDigits = "";
-            for (int i = 0; i < totalString.length; i++) {
-              if (RegExp(r'[0-9]').hasMatch(totalString[i])) {
-                totalStringOnlyDigits += totalString[i];
-              }
-            }
+      for (Match match in matches) {
+        String rawNumber = match.group(0) ?? '';
 
-            if (totalStringOnlyDigits.isNotEmpty) {
-              extractedValue = totalStringOnlyDigits;
-              break; // Stop after finding the first match
-            }
-          }
+        // Remove non-numeric characters (except numbers)
+        String cleanedNumber = rawNumber.replaceAll(RegExp(r'[^0-9]'), '');
+
+        // Ignore numbers with more than 10 digits
+        if (cleanedNumber.length > 10) {
+          continue;
         }
 
-        int totalInt = int.tryParse(extractedValue) ?? 0;
-
-        if (totalInt != 0) {
-          valueController.text = totalInt.toString();
-        } else {
-          _showErrorAlert(context, "Error reading the total.");
+        if (cleanedNumber.isNotEmpty) {
+          extractedNumbers.add(int.parse(cleanedNumber));
         }
       }
 
-      if (extractedValue.isEmpty) {
-        _showErrorAlert(context, "No total value found in the image.");
+      if (extractedNumbers.isEmpty) {
+        _showErrorAlert(context, "No valid monetary values found after 'total'.");
+        return;
       }
+
+      // Sort in descending order
+      extractedNumbers.sort((b, a) => a.compareTo(b));
+
+      // Get the two highest values
+      int highest = extractedNumbers[0];
+      int secondHighest = extractedNumbers.length > 1 ? extractedNumbers[1] : 0;
+
+      // Determine total based on logic
+      int totalValue;
+      if (extractedNumbers.contains(highest - secondHighest)) {
+        totalValue = secondHighest;
+      } else {
+        totalValue = highest;
+      }
+
+      // Update UI with detected total
+      valueController.text = totalValue.toString();
     } catch (e) {
       _showErrorAlert(context, "Error processing image for OCR: $e");
     } finally {

@@ -82,8 +82,8 @@ class _ListItemState extends State<ListItem> {
                     color: shopItem.status ? Colors.green : Colors.red,
                     child: Image.asset(
                       shopItem.path,
-                      height: 120,
-                      width: 120,
+                      height: 90,
+                      width: 90,
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -141,9 +141,14 @@ class _ListItemState extends State<ListItem> {
                     },
                     suffixIcon: (isUsed || shopItem.status)
                         ? null
-                        : const Icon(
-                      CupertinoIcons.money_dollar_circle_fill,
-                      color: Colors.yellowAccent,
+                        : const SizedBox(
+                      width: 20,  // 👈 Set width
+                      height: 20, // 👈 Set height
+                      child: Icon(
+                        CupertinoIcons.money_dollar_circle_fill,
+                        color: Colors.yellowAccent,
+                        size: 20, // 👈 You can also adjust the icon size itself
+                      ),
                     ),
                     style: ButtonStyle(
                       backgroundColor:
