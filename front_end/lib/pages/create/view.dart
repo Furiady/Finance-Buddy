@@ -22,9 +22,11 @@ class _CreateState extends State<Create> {
     setState(() {
       viewModel.isLoading = true;
     });
-    final DateFormat formatter = DateFormat('yyyyMMdd');
-    final String formattedDate = formatter.format(DateTime.parse(viewModel.dateController.text));
-
+    final DateFormat inputFormat = DateFormat('MM/dd/yyyy');
+    final DateFormat outputFormat = DateFormat('yyyyMMdd');
+    final DateTime parsedDate = inputFormat.parse(
+        viewModel.dateController.text);
+    final String formattedDate = outputFormat.format(parsedDate);
     final record = RecordModel(
         type: viewModel.selectedType,
         title: viewModel.titleController.text,
@@ -32,7 +34,9 @@ class _CreateState extends State<Create> {
         value: int.parse(viewModel.valueController.text),
         date: formattedDate,
         description: viewModel.descriptionController.text,
-        deductFrom: viewModel.isExpense ? viewModel.deductFromController.text : null,
+        deductFrom: viewModel.isExpense
+            ? viewModel.deductFromController.text
+            : null,
         image: viewModel.selectedImage
     );
     await viewModel.recordService.createRecord(record, context);
@@ -40,6 +44,7 @@ class _CreateState extends State<Create> {
       viewModel.isLoading = false;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -54,10 +59,17 @@ class _CreateState extends State<Create> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   ElevatedButtonComponent(
-                    width: MediaQuery.of(context).size.width * 0.45,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.45,
                     height: 50,
                     text: "Expense",
-                    onPressed: () => setState(() => viewModel.isExpense = true),
+                    onPressed: () =>
+                        setState(() {
+                          viewModel.selectedType = "Expense";
+                          viewModel.isExpense = true;
+                        }),
                     textColor: viewModel.isExpense ? Colors.white : Colors.red,
                     fontSize: viewModel.isExpense ? 18 : 16,
                     style: ButtonStyle(
@@ -74,10 +86,18 @@ class _CreateState extends State<Create> {
                   ),
                   ElevatedButtonComponent(
                     text: "Income",
-                    width: MediaQuery.of(context).size.width * 0.45,
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.45,
                     height: 50,
-                    onPressed: () => setState(() {viewModel.selectedType = "Income"; viewModel.isExpense = false;}),
-                    textColor: viewModel.isExpense ? Colors.green : Colors.white,
+                    onPressed: () =>
+                        setState(() {
+                          viewModel.selectedType = "Income";
+                          viewModel.isExpense = false;
+                        }),
+                    textColor: viewModel.isExpense ? Colors.green : Colors
+                        .white,
                     fontSize: viewModel.isExpense ? 16 : 18,
                     style: ButtonStyle(
                         foregroundColor: viewModel.isExpense
@@ -131,7 +151,7 @@ class _CreateState extends State<Create> {
                             selectedImage: viewModel.selectedImage,
                             onImageChanged: (newImage) {
                               setState(
-                                  () => viewModel.selectedImage = newImage);
+                                      () => viewModel.selectedImage = newImage);
                               if (newImage != null) {
                                 viewModel.ocrReaderTotalReceipt(newImage,
                                     viewModel.valueController, context);
@@ -216,14 +236,19 @@ class _CreateState extends State<Create> {
               ElevatedButtonComponent(
                 isLoading: viewModel.isLoading,
                 text: "Save Transaction",
-                onPressed: viewModel.isLoading ? null:() {
+                onPressed: viewModel.isLoading ? null : () {
                   createRecord(context);
                 },
-                width: MediaQuery.of(context).size.width,
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
                 height: 50,
                 style: ButtonStyle(
-                    backgroundColor: WidgetStateProperty.all<Color>(Colors.blue),
-                    foregroundColor: WidgetStateProperty.all<Color>(Colors.blue),
+                    backgroundColor: WidgetStateProperty.all<Color>(
+                        Colors.blue),
+                    foregroundColor: WidgetStateProperty.all<Color>(
+                        Colors.blue),
                     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8),

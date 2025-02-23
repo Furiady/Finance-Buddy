@@ -23,12 +23,16 @@ class _HomeDetailState extends State<HomeDetail> {
     setState(() {
       viewModel.isLoadingUpdate = true;
     });
+
+    final inputDate = viewModel.dateController.text;
+    final parsedDate = DateFormat("dd/MM/yyyy").parse(inputDate);
+
     final record = RecordModel(
       type: viewModel.typeController.text,
       title: viewModel.titleController.text,
       category: viewModel.categoryController.text,
       value: int.parse(viewModel.valueController.text),
-      date: DateTime.parse(viewModel.dateController.text),
+      date: parsedDate,
       description: viewModel.descriptionController.text,
       deductFrom: viewModel.isExpense ? viewModel.deductFromController.text : null,
       id: id,
@@ -38,7 +42,6 @@ class _HomeDetailState extends State<HomeDetail> {
       viewModel.isLoadingUpdate = false;
     });
   }
-
 
   void showDeleteConfirmationDialog(
       {required BuildContext context, required String id}) {
@@ -99,7 +102,8 @@ class _HomeDetailState extends State<HomeDetail> {
     viewModel.titleController.text = widget.record.title;
     viewModel.valueController.text = widget.record.value.toString();
     viewModel.typeController.text = widget.record.type;
-    viewModel.dateController.text = DateFormat('dd/MM/yyyy').format(widget.record.date);
+    viewModel.dateController.text =
+        DateFormat('dd/MM/yyyy').format(widget.record.date);
     viewModel.isExpense = widget.record.type == "Expense";
   }
 
@@ -149,9 +153,14 @@ class _HomeDetailState extends State<HomeDetail> {
                   width: MediaQuery.of(context).size.width,
                   height: 50,
                   style: ButtonStyle(
-                      backgroundColor: WidgetStateProperty.all<Color>(Colors.green),
-                      foregroundColor: WidgetStateProperty.all<Color>(Colors.green),
-                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: const BorderSide(color: Colors.green)))),
+                      backgroundColor:
+                          WidgetStateProperty.all<Color>(Colors.green),
+                      foregroundColor:
+                          WidgetStateProperty.all<Color>(Colors.green),
+                      shape: WidgetStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: const BorderSide(color: Colors.green)))),
                   textColor: Colors.white,
                 ),
               const SizedBox(height: 15),
@@ -180,10 +189,12 @@ class _HomeDetailState extends State<HomeDetail> {
                         fit: BoxFit.cover, // Ensures proper scaling
                         loadingBuilder: (context, child, loadingProgress) {
                           if (loadingProgress == null) return child;
-                          return const Center(child: CircularProgressIndicator());
+                          return const Center(
+                              child: CircularProgressIndicator());
                         },
                         errorBuilder: (context, error, stackTrace) {
-                          return const Icon(Icons.broken_image, size: 50, color: Colors.red);
+                          return const Icon(Icons.broken_image,
+                              size: 50, color: Colors.red);
                         },
                       ),
                     ),
@@ -307,9 +318,11 @@ class _HomeDetailState extends State<HomeDetail> {
                     ElevatedButtonComponent(
                       text: "Save",
                       isLoading: viewModel.isLoadingUpdate,
-                      onPressed: () {
-                        updateRecord(context, widget.record.id);
-                      },
+                      onPressed: viewModel.isLoadingUpdate
+                          ? null
+                          : () {
+                              updateRecord(context, widget.record.id);
+                            },
                       width: MediaQuery.of(context).size.width / 2.5,
                       height: 50,
                       style: ButtonStyle(
