@@ -23,7 +23,6 @@ class _HomeDetailState extends State<HomeDetail> {
     setState(() {
       viewModel.isLoadingUpdate = true;
     });
-    final DateFormat formatter = DateFormat('yyyyMMdd');
     final record = RecordModel(
       type: viewModel.selectedType,
       title: viewModel.titleController.text,
