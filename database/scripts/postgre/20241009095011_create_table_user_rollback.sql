@@ -22,8 +22,8 @@ DROP TABLE IF EXISTS user_quest;
 -- Drop table quest
 DROP TABLE IF EXISTS quest;
 
--- Drop table transaction
-DROP TABLE IF EXISTS transaction;
+-- Drop table transactions
+DROP TABLE IF EXISTS records;
 
 -- Drop table user
 DROP TABLE IF EXISTS user;

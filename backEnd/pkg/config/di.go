@@ -14,6 +14,10 @@ func Register(container *dig.Container) error {
 	if err := container.Provide(NewDBConfig); err != nil {
 		return fmt.Errorf("[DI] cannot initialize db config: %+v", err)
 	}
-	
+
+	if err := container.Provide(NewFirebaseConfig); err != nil {
+		return fmt.Errorf("[DI] cannot initialize firebase config: %+v", err)
+	}
+
 	return nil
 }

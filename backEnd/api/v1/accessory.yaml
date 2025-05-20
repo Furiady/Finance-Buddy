@@ -31,7 +31,12 @@ paths:
       requestBody:
         content: {}
       description: Get list of accessory
-      parameters: []
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
     parameters: []
   /accessory:
     post:
@@ -65,6 +70,12 @@ paths:
       description: Buy accessory
       tags:
         - Theme
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
     parameters: []
 tags:
   - name: Theme

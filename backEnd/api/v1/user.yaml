@@ -1,9 +1,9 @@
 openapi: 3.0.0
 x-stoplight:
-  id: u99if9njxukie
+  id: vqwdr0grkpix3
 info:
   title: user
-  version: '1.0'
+  version: "1.0"
   contact: {}
   description: User API group is used to get and update user data.
 paths:
@@ -13,14 +13,12 @@ paths:
       tags:
         - User
       responses:
-        '200':
+        "200":
           description: OK
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: ./common.yaml#/components/schemas/User
+                $ref: ./common.yaml#/components/schemas/User
         default:
           description: Error
           content:
@@ -31,11 +29,116 @@ paths:
       parameters:
         - schema:
             type: string
-          in: cookie
-          name: token
+          in: header
+          name: Authorization
           required: true
       description: Get user data by token
+  /user/assets:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - User
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValueCount"
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-user-assets
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+      description: Get list of user asset value
+    parameters: []
+  /user/liabilities:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - User
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ValueCount"
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-user-liabilities
+      description: Get list of user liability value
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+  /user/gamification:
+    post:
+      summary: ""
+      operationId: post-user-gamification
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      description: ""
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                gamification:
+                  type: string
+                  x-stoplight:
+                    id: 302stn4x82axr
+              required:
+                - gamification
 components:
-  schemas: {}
+  schemas:
+    ValueCount:
+      title: ValueCount
+      x-stoplight:
+        id: ap10y2pxtmisa
+      type: object
+      properties:
+        category:
+          type: string
+          x-stoplight:
+            id: 5t2v1nf7ilsfr
+        value:
+          type: integer
+          x-stoplight:
+            id: k3st85lcqbhzs
+          format: int64
+      required:
+        - category
+        - value
 tags:
   - name: User

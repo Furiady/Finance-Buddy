@@ -1,6 +1,6 @@
 openapi: 3.0.0
 x-stoplight:
-  id: l97rg9k84kyv5
+  id: oqys2nsi6r698
 info:
   title: Common
   version: '1.0'
@@ -14,46 +14,45 @@ components:
     User:
       title: User
       x-stoplight:
-        id: 8kgku1z0r2203
+        id: zsvgmpt0zpr40
       type: object
       properties:
         id:
           type: string
           x-stoplight:
-            id: 31b6w6xqxmzca
+            id: 5xl948ll9elmk
         email:
           type: string
           x-stoplight:
-            id: 1n72kmjfef18w
+            id: nq2u3kyro9tup
           format: email
         username:
           type: string
           x-stoplight:
-            id: 0ho9rcd1l8i0k
+            id: v8uhz39lsjvqw
         pin:
           type: string
           x-stoplight:
-            id: ae1u3y3h69zhy
+            id: yzyp5c8aclqlk
         coin:
           type: integer
           x-stoplight:
-            id: 36ozdcnmswrc0
-        balance:
-          type: integer
+            id: gphsdjadmctd0
+        gamification:
+          type: string
           x-stoplight:
-            id: 7slfwfn9da1oe
-          format: int64
+            id: gb427b968g2c9
       required:
         - id
         - email
         - username
         - pin
         - coin
-        - balance
-    Transaction:
-      title: Transaction
+        - gamification
+    Record:
+      title: Record
       x-stoplight:
-        id: rlnsisl7n650x
+        id: k9kpycq929fjr
       type: object
       properties:
         id:
@@ -61,32 +60,36 @@ components:
         title:
           type: string
           x-stoplight:
-            id: ksyj0g4egoqxc
+            id: uj8s2gpae9xio
         description:
           type: string
           x-stoplight:
-            id: dp3dv6xbewqdy
+            id: aj539zvbstjrl
         type:
           type: string
           x-stoplight:
-            id: jxcnc4ly2f259
+            id: 080rvcqxnymob
         category:
           type: string
           x-stoplight:
-            id: 6s2cb1b1bumon
+            id: 3317vgl9r15xx
         value:
           type: integer
           x-stoplight:
-            id: pnlq3j2xq5lk0
+            id: jfk1245sw3oal
           format: int64
         url:
           type: string
           x-stoplight:
-            id: kumfwjzkdiwye
+            id: s5ne6xnvmxjce
         createdAt:
           type: string
           x-stoplight:
-            id: bvrcwxnieka60
+            id: m0vxbibnrauzk
+        deductFrom:
+          type: string
+          x-stoplight:
+            id: rl2cyq59fxe1b
       required:
         - id
         - title
@@ -94,12 +97,11 @@ components:
         - type
         - category
         - value
-        - url
         - createdAt
     Quest:
       title: Quest
       x-stoplight:
-        id: d7ir80842q8a6
+        id: 4xarxbo8t0e2n
       type: object
       properties:
         id:
@@ -107,27 +109,27 @@ components:
         title:
           type: string
           x-stoplight:
-            id: 6l34oarznzi72
+            id: v6wyt0lk31ln1
         description:
           type: string
           x-stoplight:
-            id: wo7mw35kkk7l7
+            id: b38fiuwn4zbgm
         reward:
           type: integer
           x-stoplight:
-            id: l1g1xwvmdlan7
+            id: 8ildu6ofrbscq
         cooldown:
           type: integer
           x-stoplight:
-            id: kvvl7k592neb4
+            id: ap98cidk4fd6c
         status:
           type: boolean
           x-stoplight:
-            id: o30txyg1nf5ir
+            id: jzeccs2br32ry
         updatedAt:
           type: string
           x-stoplight:
-            id: nfex64ztgs8fq
+            id: 8hlfu9jsb483y
       required:
         - id
         - title
@@ -139,7 +141,7 @@ components:
     Pet:
       title: Pet
       x-stoplight:
-        id: i0w5toa1unj2a
+        id: 8tfjwblnzgxej
       type: object
       properties:
         id:
@@ -147,19 +149,19 @@ components:
         name:
           type: string
           x-stoplight:
-            id: 4dba08hrdagyn
+            id: 2eggaxf4t7hg5
         price:
           type: integer
           x-stoplight:
-            id: uhk9jc6lfukkl
+            id: 4ku4ojalop6k4
         status:
           type: boolean
           x-stoplight:
-            id: zrdq5shsh42gv
+            id: z8r3qtfi583e2
         path:
           type: string
           x-stoplight:
-            id: 74xtnyjldv2yl
+            id: 2q1helra90w1c
       required:
         - id
         - name
@@ -169,7 +171,7 @@ components:
     Accessory:
       title: Accessory
       x-stoplight:
-        id: wd1ri9oohsjqi
+        id: 7saogffi52c9v
       type: object
       properties:
         id:
@@ -177,19 +179,19 @@ components:
         name:
           type: string
           x-stoplight:
-            id: epc7oxdvroqsn
+            id: r9wu5d6yqykoa
         price:
           type: integer
           x-stoplight:
-            id: eighuh90sua0l
+            id: 78xmhh0glapz6
         status:
           type: boolean
           x-stoplight:
-            id: k6r30fagwrh8u
+            id: h042gkhp823o1
         path:
           type: string
           x-stoplight:
-            id: be3kp29kto4aq
+            id: 5e0ru06jdby3f
       required:
         - id
         - name
@@ -199,7 +201,7 @@ components:
     Theme:
       title: Theme
       x-stoplight:
-        id: ktsw3azgdwc0x
+        id: cotvqo8c1g9m5
       type: object
       properties:
         id:
@@ -208,19 +210,19 @@ components:
         name:
           type: string
           x-stoplight:
-            id: m0afnlt1dk6nm
+            id: wqdi1xe4u9xml
         price:
           type: integer
           x-stoplight:
-            id: 49lpnnsieeesr
+            id: z7s3ca7c4a5p3
         status:
           type: boolean
           x-stoplight:
-            id: o71igc49klmup
+            id: cbwjmep6kuxy5
         path:
           type: string
           x-stoplight:
-            id: 98o8uo2el97o7
+            id: i5fy8x41h1t17
       required:
         - id
         - name
@@ -230,17 +232,17 @@ components:
     BaseResponse:
       title: BaseResponse
       x-stoplight:
-        id: xa5yx093f05rx
+        id: 2te4mztk83lq1
       type: object
       properties:
         message:
           type: string
           x-stoplight:
-            id: bvl6bx1zddh4x
+            id: 4pg8sz4lm3kpv
         timestamp:
           type: string
           x-stoplight:
-            id: 0ctzdhy6lexlo
+            id: m3p6qut14mql4
       required:
         - message
         - timestamp

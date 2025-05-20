@@ -10,23 +10,23 @@ CREATE TABLE IF NOT EXISTS users (
     coin INT
 );
 
--- Create table balance
-CREATE TABLE IF NOT EXISTS balance_categories (
+-- Create table asset_categories
+CREATE TABLE IF NOT EXISTS asset_categories (
     id bigserial PRIMARY KEY,
     category VARCHAR(255) NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS user_balance (
+CREATE TABLE IF NOT EXISTS user_asset (
     user_id BIGINT REFERENCES users(id),
-    category_id BIGINT REFERENCES balance_categories(id),
+    category_id BIGINT REFERENCES asset_categories(id),
     value BIGINT NOT NULL,
     PRIMARY KEY (user_id, category_id)
 );
 
-CREATE INDEX idx_user_balance_user_id ON user_balance(user_id);
+CREATE INDEX idx_user_asset_user_id_category_id ON user_asset(user_id, category_id);
 
--- Create table transaction
-CREATE TABLE IF NOT EXISTS transactions (
+-- Create table records
+CREATE TABLE IF NOT EXISTS records (
     id bigserial PRIMARY KEY,
     user_id BIGINT REFERENCES users(id),
     title VARCHAR(255) NOT NULL,
@@ -35,11 +35,12 @@ CREATE TABLE IF NOT EXISTS transactions (
     value BIGINT NOT NULL,
     url VARCHAR(255),
     type VARCHAR(10) NOT NULL,
+    deduct_from VARCHAR(255),
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     deleted_at TIMESTAMPTZ NULL
 );
 
-CREATE INDEX idx_transaction_user_id_type_category ON transactions(user_id, type, category);
+CREATE INDEX idx_record_user_id_type_category ON records(user_id, type, category);
 
 -- Create table quest
 CREATE TABLE IF NOT EXISTS quests (

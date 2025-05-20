@@ -10,6 +10,9 @@ import (
 type (
 	UseCase interface {
 		GetUser(ctx context.Context) (model.User, error)
+		GetUserAssets(ctx context.Context) (model.UserAssets, error)
+		GetUserLiabilities(ctx context.Context) (model.UserLiabilities, error)
+		PostUserGamification(ctx context.Context, gamification string) error
 	}
 
 	useCase struct {

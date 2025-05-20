@@ -31,7 +31,13 @@ paths:
       requestBody:
         content: {}
       description: Get list of pet
-      parameters: []
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+    parameters: []
   /pet:
     post:
       summary: ''
@@ -64,5 +70,11 @@ paths:
       description: Buy pet
       tags:
         - Pet
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
 tags:
   - name: Pet

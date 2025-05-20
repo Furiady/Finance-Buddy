@@ -12,12 +12,23 @@ import (
 	externalRef0 "backEnd/internal/inbound/http/v1/common"
 
 	"github.com/gin-gonic/gin"
+	"github.com/oapi-codegen/runtime"
 	strictgin "github.com/oapi-codegen/runtime/strictmiddleware/gin"
 )
 
 // BuyThemeJSONBody defines parameters for BuyTheme.
 type BuyThemeJSONBody struct {
 	ThemeId string `json:"themeId"`
+}
+
+// BuyThemeParams defines parameters for BuyTheme.
+type BuyThemeParams struct {
+	Authorization *string `json:"Authorization,omitempty"`
+}
+
+// GetAllParams defines parameters for GetAll.
+type GetAllParams struct {
+	Authorization string `json:"Authorization"`
 }
 
 // BuyThemeJSONRequestBody defines body for BuyTheme for application/json ContentType.
@@ -27,10 +38,10 @@ type BuyThemeJSONRequestBody BuyThemeJSONBody
 type ServerInterface interface {
 
 	// (POST /theme)
-	BuyTheme(c *gin.Context)
+	BuyTheme(c *gin.Context, params BuyThemeParams)
 	// Your GET endpoint
 	// (GET /themes)
-	GetAll(c *gin.Context)
+	GetAll(c *gin.Context, params GetAllParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -45,6 +56,32 @@ type MiddlewareFunc func(c *gin.Context)
 // BuyTheme operation middleware
 func (siw *ServerInterfaceWrapper) BuyTheme(c *gin.Context) {
 
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BuyThemeParams
+
+	headers := c.Request.Header
+
+	// ------------- Optional header parameter "Authorization" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Authorization")]; found {
+		var Authorization string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandler(c, fmt.Errorf("Expected one value for Authorization, got %d", n), http.StatusBadRequest)
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Authorization", valueList[0], &Authorization, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: false})
+		if err != nil {
+			siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter Authorization: %w", err), http.StatusBadRequest)
+			return
+		}
+
+		params.Authorization = &Authorization
+
+	}
+
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
 		if c.IsAborted() {
@@ -52,12 +89,41 @@ func (siw *ServerInterfaceWrapper) BuyTheme(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.BuyTheme(c)
+	siw.Handler.BuyTheme(c, params)
 }
 
 // GetAll operation middleware
 func (siw *ServerInterfaceWrapper) GetAll(c *gin.Context) {
 
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetAllParams
+
+	headers := c.Request.Header
+
+	// ------------- Required header parameter "Authorization" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Authorization")]; found {
+		var Authorization string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandler(c, fmt.Errorf("Expected one value for Authorization, got %d", n), http.StatusBadRequest)
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Authorization", valueList[0], &Authorization, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true})
+		if err != nil {
+			siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter Authorization: %w", err), http.StatusBadRequest)
+			return
+		}
+
+		params.Authorization = Authorization
+
+	} else {
+		siw.ErrorHandler(c, fmt.Errorf("Header parameter Authorization is required, but not found"), http.StatusBadRequest)
+		return
+	}
+
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
 		if c.IsAborted() {
@@ -65,7 +131,7 @@ func (siw *ServerInterfaceWrapper) GetAll(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.GetAll(c)
+	siw.Handler.GetAll(c, params)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -100,7 +166,8 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 }
 
 type BuyThemeRequestObject struct {
-	Body *BuyThemeJSONRequestBody
+	Params BuyThemeParams
+	Body   *BuyThemeJSONRequestBody
 }
 
 type BuyThemeResponseObject interface {
@@ -129,6 +196,7 @@ func (response BuyThemedefaultJSONResponse) VisitBuyThemeResponse(w http.Respons
 }
 
 type GetAllRequestObject struct {
+	Params GetAllParams
 }
 
 type GetAllResponseObject interface {
@@ -179,8 +247,10 @@ type strictHandler struct {
 }
 
 // BuyTheme operation middleware
-func (sh *strictHandler) BuyTheme(ctx *gin.Context) {
+func (sh *strictHandler) BuyTheme(ctx *gin.Context, params BuyThemeParams) {
 	var request BuyThemeRequestObject
+
+	request.Params = params
 
 	var body BuyThemeJSONRequestBody
 	if err := ctx.ShouldBindJSON(&body); err != nil {
@@ -212,8 +282,10 @@ func (sh *strictHandler) BuyTheme(ctx *gin.Context) {
 }
 
 // GetAll operation middleware
-func (sh *strictHandler) GetAll(ctx *gin.Context) {
+func (sh *strictHandler) GetAll(ctx *gin.Context, params GetAllParams) {
 	var request GetAllRequestObject
+
+	request.Params = params
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.GetAll(ctx, request.(GetAllRequestObject))

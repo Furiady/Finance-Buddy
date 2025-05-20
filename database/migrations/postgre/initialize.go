@@ -10,11 +10,39 @@ import (
 func InitializeMigrations(conn *gorm.DB) []migration.Migration {
 	var migrations = make([]migration.Migration, 0)
 	migrations = append(migrations, Migration_20241009095011(conn))
+	migrations = append(migrations, Migration_20250209144337(conn))
+	migrations = append(migrations, Migration_20250209145844(conn))
+	migrations = append(migrations, Migration_20250209150306(conn))
+	migrations = append(migrations, Migration_20250222144410(conn))
 	return migrations
 }
 
 func Migration_20241009095011(conn *gorm.DB) migration.Migration {
 	return &migration_20241009095011{
+		Conn: conn,
+	}
+}
+
+func Migration_20250209144337(conn *gorm.DB) migration.Migration {
+	return &migration_20250209144337{
+		Conn: conn,
+	}
+}
+
+func Migration_20250209145844(conn *gorm.DB) migration.Migration {
+	return &migration_20250209145844{
+		Conn: conn,
+	}
+}
+
+func Migration_20250209150306(conn *gorm.DB) migration.Migration {
+	return &migration_20250209150306{
+		Conn: conn,
+	}
+}
+
+func Migration_20250222144410(conn *gorm.DB) migration.Migration {
+	return &migration_20250222144410{
 		Conn: conn,
 	}
 }

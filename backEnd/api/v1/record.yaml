@@ -1,0 +1,388 @@
+openapi: 3.0.0
+x-stoplight:
+  id: idjbzp75vddrp
+info:
+  title: record
+  version: '1.0'
+  description: Record API group consist of CRUD method of Record data
+  contact:
+    name: Renaldo Furiady
+    email: renaldof73@gmail.com
+paths:
+  '/record/{recordId}':
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/Record
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-record
+      description: Get single record data by id
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+    delete:
+      summary: ''
+      operationId: delete-record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      tags:
+        - Record
+      description: Delete single record data by id
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+    put:
+      summary: ''
+      operationId: update-record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  x-stoplight:
+                    id: ibnsjwf6yi3l9
+                description:
+                  type: string
+                  x-stoplight:
+                    id: p0dndpg2t8tzk
+                type:
+                  type: string
+                  x-stoplight:
+                    id: elh0x4i5wety7
+                category:
+                  type: string
+                  x-stoplight:
+                    id: wyjkd8gdy3jdi
+                value:
+                  type: integer
+                  x-stoplight:
+                    id: 2zuh2s43qouwb
+                  format: int64
+                createdAt:
+                  type: string
+                  x-stoplight:
+                    id: 7tcvltf3p1o4r
+                deductFrom:
+                  type: string
+                  x-stoplight:
+                    id: hb3vcg5rxk245
+                image:
+                  type: string
+                  x-stoplight:
+                    id: yurzw0vmuxnc9
+                  format: binary
+              required:
+                - title
+                - type
+                - category
+                - value
+                - createdAt
+      tags:
+        - Record
+      description: Update single record data by id
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+    parameters:
+      - schema:
+          type: string
+        name: recordId
+        in: path
+        required: true
+  /record:
+    post:
+      summary: ''
+      operationId: create-record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      description: Create record data
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  x-stoplight:
+                    id: 2zj0xck20s5m2
+                description:
+                  type: string
+                  x-stoplight:
+                    id: 17o1tk1ty2mrc
+                category:
+                  type: string
+                  x-stoplight:
+                    id: 0lvc8c8ssjzyf
+                value:
+                  type: integer
+                  x-stoplight:
+                    id: cwnfd0djbi6ed
+                  format: int64
+                createdAt:
+                  type: string
+                  x-stoplight:
+                    id: p1jz15b9g8oh7
+                type:
+                  type: string
+                  x-stoplight:
+                    id: l9nrg6bw8yt63
+                deductFrom:
+                  type: string
+                  x-stoplight:
+                    id: 4f9sfkbdricb4
+                image:
+                  type: string
+                  x-stoplight:
+                    id: cxjxd7fvfpyet
+                  format: binary
+              required:
+                - title
+                - category
+                - value
+                - createdAt
+                - type
+        description: ''
+      tags:
+        - Record
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+  /records:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./common.yaml#/components/schemas/Record
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-records
+      description: Get list ofrecord data
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: startDate
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: endDate
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: category
+        - schema:
+            type: string
+          in: query
+          name: type
+        - schema:
+            type: string
+          in: query
+          name: deductFrom
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+        - schema:
+            type: integer
+          in: query
+          name: limit
+        - schema:
+            type: integer
+          in: query
+          name: page
+  /records/type/count:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecordCount'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-records-by-category
+      description: Get value of records grouped by category
+      parameters:
+        - schema:
+            type: string
+          in: query
+          name: startDate
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: endDate
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: type
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+    parameters: []
+  /records/total:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Record
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  expense:
+                    type: integer
+                    x-stoplight:
+                      id: 4d93qqcngztjo
+                    format: int64
+                  income:
+                    type: integer
+                    x-stoplight:
+                      id: ztup1ubtkpj9t
+                    format: int64
+                required:
+                  - expense
+                  - income
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-record-total
+      description: Return expense and income total value of certain time range
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: startDate
+          required: true
+        - schema:
+            type: string
+          in: query
+          name: endDate
+          required: true
+      requestBody:
+        content: {}
+    parameters: []
+components:
+  schemas:
+    RecordCount:
+      title: RecordCount
+      x-stoplight:
+        id: owv5b3fslxm6t
+      type: object
+      properties:
+        category:
+          type: string
+          x-stoplight:
+            id: s8ycauapeyvur
+        value:
+          type: integer
+          x-stoplight:
+            id: yzmesum9tszme
+          format: int64
+      required:
+        - category
+        - value
+tags:
+  - name: Record

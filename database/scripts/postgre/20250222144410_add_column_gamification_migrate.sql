@@ -1,0 +1,1 @@
+ALTER TABLE users ADD COLUMN gamification VARCHAR DEFAULT '1-0-1';

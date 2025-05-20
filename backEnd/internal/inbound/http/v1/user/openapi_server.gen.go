@@ -16,16 +16,49 @@ import (
 	strictgin "github.com/oapi-codegen/runtime/strictmiddleware/gin"
 )
 
+// ValueCount defines model for ValueCount.
+type ValueCount struct {
+	Category string `json:"category"`
+	Value    int64  `json:"value"`
+}
+
 // GetUserParams defines parameters for GetUser.
 type GetUserParams struct {
-	Token string `form:"token" json:"token"`
+	Authorization string `json:"Authorization"`
 }
+
+// GetUserAssetsParams defines parameters for GetUserAssets.
+type GetUserAssetsParams struct {
+	Authorization string `json:"Authorization"`
+}
+
+// PostUserGamificationJSONBody defines parameters for PostUserGamification.
+type PostUserGamificationJSONBody struct {
+	Gamification string `json:"gamification"`
+}
+
+// GetUserLiabilitiesParams defines parameters for GetUserLiabilities.
+type GetUserLiabilitiesParams struct {
+	Authorization string `json:"Authorization"`
+}
+
+// PostUserGamificationJSONRequestBody defines body for PostUserGamification for application/json ContentType.
+type PostUserGamificationJSONRequestBody PostUserGamificationJSONBody
 
 // ServerInterface represents all server handlers.
 type ServerInterface interface {
 	// Your GET endpoint
 	// (GET /user)
 	GetUser(c *gin.Context, params GetUserParams)
+	// Your GET endpoint
+	// (GET /user/assets)
+	GetUserAssets(c *gin.Context, params GetUserAssetsParams)
+
+	// (POST /user/gamification)
+	PostUserGamification(c *gin.Context)
+	// Your GET endpoint
+	// (GET /user/liabilities)
+	GetUserLiabilities(c *gin.Context, params GetUserLiabilitiesParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -45,22 +78,28 @@ func (siw *ServerInterfaceWrapper) GetUser(c *gin.Context) {
 	// Parameter object where we will unmarshal all parameters from the context
 	var params GetUserParams
 
-	{
-		var cookie string
+	headers := c.Request.Header
 
-		if cookie, err = c.Cookie("token"); err == nil {
-			var value string
-			err = runtime.BindStyledParameterWithOptions("simple", "token", cookie, &value, runtime.BindStyledParameterOptions{Explode: true, Required: true})
-			if err != nil {
-				siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter token: %w", err), http.StatusBadRequest)
-				return
-			}
-			params.Token = value
-
-		} else {
-			siw.ErrorHandler(c, fmt.Errorf("Query argument token is required, but not found"), http.StatusBadRequest)
+	// ------------- Required header parameter "Authorization" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Authorization")]; found {
+		var Authorization string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandler(c, fmt.Errorf("Expected one value for Authorization, got %d", n), http.StatusBadRequest)
 			return
 		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Authorization", valueList[0], &Authorization, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true})
+		if err != nil {
+			siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter Authorization: %w", err), http.StatusBadRequest)
+			return
+		}
+
+		params.Authorization = Authorization
+
+	} else {
+		siw.ErrorHandler(c, fmt.Errorf("Header parameter Authorization is required, but not found"), http.StatusBadRequest)
+		return
 	}
 
 	for _, middleware := range siw.HandlerMiddlewares {
@@ -71,6 +110,103 @@ func (siw *ServerInterfaceWrapper) GetUser(c *gin.Context) {
 	}
 
 	siw.Handler.GetUser(c, params)
+}
+
+// GetUserAssets operation middleware
+func (siw *ServerInterfaceWrapper) GetUserAssets(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetUserAssetsParams
+
+	headers := c.Request.Header
+
+	// ------------- Required header parameter "Authorization" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Authorization")]; found {
+		var Authorization string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandler(c, fmt.Errorf("Expected one value for Authorization, got %d", n), http.StatusBadRequest)
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Authorization", valueList[0], &Authorization, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true})
+		if err != nil {
+			siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter Authorization: %w", err), http.StatusBadRequest)
+			return
+		}
+
+		params.Authorization = Authorization
+
+	} else {
+		siw.ErrorHandler(c, fmt.Errorf("Header parameter Authorization is required, but not found"), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetUserAssets(c, params)
+}
+
+// PostUserGamification operation middleware
+func (siw *ServerInterfaceWrapper) PostUserGamification(c *gin.Context) {
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.PostUserGamification(c)
+}
+
+// GetUserLiabilities operation middleware
+func (siw *ServerInterfaceWrapper) GetUserLiabilities(c *gin.Context) {
+
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetUserLiabilitiesParams
+
+	headers := c.Request.Header
+
+	// ------------- Required header parameter "Authorization" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Authorization")]; found {
+		var Authorization string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandler(c, fmt.Errorf("Expected one value for Authorization, got %d", n), http.StatusBadRequest)
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Authorization", valueList[0], &Authorization, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true})
+		if err != nil {
+			siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter Authorization: %w", err), http.StatusBadRequest)
+			return
+		}
+
+		params.Authorization = Authorization
+
+	} else {
+		siw.ErrorHandler(c, fmt.Errorf("Header parameter Authorization is required, but not found"), http.StatusBadRequest)
+		return
+	}
+
+	for _, middleware := range siw.HandlerMiddlewares {
+		middleware(c)
+		if c.IsAborted() {
+			return
+		}
+	}
+
+	siw.Handler.GetUserLiabilities(c, params)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -101,6 +237,9 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 	}
 
 	router.GET(options.BaseURL+"/user", wrapper.GetUser)
+	router.GET(options.BaseURL+"/user/assets", wrapper.GetUserAssets)
+	router.POST(options.BaseURL+"/user/gamification", wrapper.PostUserGamification)
+	router.GET(options.BaseURL+"/user/liabilities", wrapper.GetUserLiabilities)
 }
 
 type GetUserRequestObject struct {
@@ -111,7 +250,7 @@ type GetUserResponseObject interface {
 	VisitGetUserResponse(w http.ResponseWriter) error
 }
 
-type GetUser200JSONResponse []externalRef0.User
+type GetUser200JSONResponse externalRef0.User
 
 func (response GetUser200JSONResponse) VisitGetUserResponse(w http.ResponseWriter) error {
 	w.Header().Set("Content-Type", "application/json")
@@ -132,11 +271,107 @@ func (response GetUserdefaultJSONResponse) VisitGetUserResponse(w http.ResponseW
 	return json.NewEncoder(w).Encode(response.Body)
 }
 
+type GetUserAssetsRequestObject struct {
+	Params GetUserAssetsParams
+}
+
+type GetUserAssetsResponseObject interface {
+	VisitGetUserAssetsResponse(w http.ResponseWriter) error
+}
+
+type GetUserAssets200JSONResponse []ValueCount
+
+func (response GetUserAssets200JSONResponse) VisitGetUserAssetsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetUserAssetsdefaultJSONResponse struct {
+	Body       externalRef0.BaseResponse
+	StatusCode int
+}
+
+func (response GetUserAssetsdefaultJSONResponse) VisitGetUserAssetsResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(response.StatusCode)
+
+	return json.NewEncoder(w).Encode(response.Body)
+}
+
+type PostUserGamificationRequestObject struct {
+	Body *PostUserGamificationJSONRequestBody
+}
+
+type PostUserGamificationResponseObject interface {
+	VisitPostUserGamificationResponse(w http.ResponseWriter) error
+}
+
+type PostUserGamification200JSONResponse externalRef0.BaseResponse
+
+func (response PostUserGamification200JSONResponse) VisitPostUserGamificationResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type PostUserGamificationdefaultJSONResponse struct {
+	Body       externalRef0.BaseResponse
+	StatusCode int
+}
+
+func (response PostUserGamificationdefaultJSONResponse) VisitPostUserGamificationResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(response.StatusCode)
+
+	return json.NewEncoder(w).Encode(response.Body)
+}
+
+type GetUserLiabilitiesRequestObject struct {
+	Params GetUserLiabilitiesParams
+}
+
+type GetUserLiabilitiesResponseObject interface {
+	VisitGetUserLiabilitiesResponse(w http.ResponseWriter) error
+}
+
+type GetUserLiabilities200JSONResponse []ValueCount
+
+func (response GetUserLiabilities200JSONResponse) VisitGetUserLiabilitiesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(200)
+
+	return json.NewEncoder(w).Encode(response)
+}
+
+type GetUserLiabilitiesdefaultJSONResponse struct {
+	Body       externalRef0.BaseResponse
+	StatusCode int
+}
+
+func (response GetUserLiabilitiesdefaultJSONResponse) VisitGetUserLiabilitiesResponse(w http.ResponseWriter) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(response.StatusCode)
+
+	return json.NewEncoder(w).Encode(response.Body)
+}
+
 // StrictServerInterface represents all server handlers.
 type StrictServerInterface interface {
 	// Your GET endpoint
 	// (GET /user)
 	GetUser(ctx context.Context, request GetUserRequestObject) (GetUserResponseObject, error)
+	// Your GET endpoint
+	// (GET /user/assets)
+	GetUserAssets(ctx context.Context, request GetUserAssetsRequestObject) (GetUserAssetsResponseObject, error)
+
+	// (POST /user/gamification)
+	PostUserGamification(ctx context.Context, request PostUserGamificationRequestObject) (PostUserGamificationResponseObject, error)
+	// Your GET endpoint
+	// (GET /user/liabilities)
+	GetUserLiabilities(ctx context.Context, request GetUserLiabilitiesRequestObject) (GetUserLiabilitiesResponseObject, error)
 }
 
 type StrictHandlerFunc = strictgin.StrictGinHandlerFunc
@@ -171,6 +406,93 @@ func (sh *strictHandler) GetUser(ctx *gin.Context, params GetUserParams) {
 		ctx.Status(http.StatusInternalServerError)
 	} else if validResponse, ok := response.(GetUserResponseObject); ok {
 		if err := validResponse.VisitGetUserResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetUserAssets operation middleware
+func (sh *strictHandler) GetUserAssets(ctx *gin.Context, params GetUserAssetsParams) {
+	var request GetUserAssetsRequestObject
+
+	request.Params = params
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetUserAssets(ctx, request.(GetUserAssetsRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetUserAssets")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(GetUserAssetsResponseObject); ok {
+		if err := validResponse.VisitGetUserAssetsResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// PostUserGamification operation middleware
+func (sh *strictHandler) PostUserGamification(ctx *gin.Context) {
+	var request PostUserGamificationRequestObject
+
+	var body PostUserGamificationJSONRequestBody
+	if err := ctx.ShouldBindJSON(&body); err != nil {
+		ctx.Status(http.StatusBadRequest)
+		ctx.Error(err)
+		return
+	}
+	request.Body = &body
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.PostUserGamification(ctx, request.(PostUserGamificationRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "PostUserGamification")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(PostUserGamificationResponseObject); ok {
+		if err := validResponse.VisitPostUserGamificationResponse(ctx.Writer); err != nil {
+			ctx.Error(err)
+		}
+	} else if response != nil {
+		ctx.Error(fmt.Errorf("unexpected response type: %T", response))
+	}
+}
+
+// GetUserLiabilities operation middleware
+func (sh *strictHandler) GetUserLiabilities(ctx *gin.Context, params GetUserLiabilitiesParams) {
+	var request GetUserLiabilitiesRequestObject
+
+	request.Params = params
+
+	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
+		return sh.ssi.GetUserLiabilities(ctx, request.(GetUserLiabilitiesRequestObject))
+	}
+	for _, middleware := range sh.middlewares {
+		handler = middleware(handler, "GetUserLiabilities")
+	}
+
+	response, err := handler(ctx, request)
+
+	if err != nil {
+		ctx.Error(err)
+		ctx.Status(http.StatusInternalServerError)
+	} else if validResponse, ok := response.(GetUserLiabilitiesResponseObject); ok {
+		if err := validResponse.VisitGetUserLiabilitiesResponse(ctx.Writer); err != nil {
 			ctx.Error(err)
 		}
 	} else if response != nil {

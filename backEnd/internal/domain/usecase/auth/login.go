@@ -21,14 +21,12 @@ func (u *useCase) Login(ctx context.Context, request model.LoginRequest) (*strin
 	}
 
 	if user.Id == 0 {
-		return nil, pkgError.ErrBadRequest
-	}
-
-	user, err = u.outbound.Repositories.User.Get(ctx, obModel.RequestGetUser{
-		Username: &request.Username,
-	})
-	if err != nil {
-		return nil, err
+		user, err = u.outbound.Repositories.User.Get(ctx, obModel.RequestGetUser{
+			Username: &request.Username,
+		})
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	if user.Id == 0 {

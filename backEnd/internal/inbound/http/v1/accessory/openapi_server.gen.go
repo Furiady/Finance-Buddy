@@ -12,12 +12,23 @@ import (
 	externalRef0 "backEnd/internal/inbound/http/v1/common"
 
 	"github.com/gin-gonic/gin"
+	"github.com/oapi-codegen/runtime"
 	strictgin "github.com/oapi-codegen/runtime/strictmiddleware/gin"
 )
+
+// GetAllParams defines parameters for GetAll.
+type GetAllParams struct {
+	Authorization string `json:"Authorization"`
+}
 
 // BuyAccessoryJSONBody defines parameters for BuyAccessory.
 type BuyAccessoryJSONBody struct {
 	AccessoryId string `json:"accessoryId"`
+}
+
+// BuyAccessoryParams defines parameters for BuyAccessory.
+type BuyAccessoryParams struct {
+	Authorization string `json:"Authorization"`
 }
 
 // BuyAccessoryJSONRequestBody defines body for BuyAccessory for application/json ContentType.
@@ -27,10 +38,10 @@ type BuyAccessoryJSONRequestBody BuyAccessoryJSONBody
 type ServerInterface interface {
 	// Your GET endpoint
 	// (GET /accessories)
-	GetAll(c *gin.Context)
+	GetAll(c *gin.Context, params GetAllParams)
 
 	// (POST /accessory)
-	BuyAccessory(c *gin.Context)
+	BuyAccessory(c *gin.Context, params BuyAccessoryParams)
 }
 
 // ServerInterfaceWrapper converts contexts to parameters.
@@ -45,6 +56,35 @@ type MiddlewareFunc func(c *gin.Context)
 // GetAll operation middleware
 func (siw *ServerInterfaceWrapper) GetAll(c *gin.Context) {
 
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params GetAllParams
+
+	headers := c.Request.Header
+
+	// ------------- Required header parameter "Authorization" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Authorization")]; found {
+		var Authorization string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandler(c, fmt.Errorf("Expected one value for Authorization, got %d", n), http.StatusBadRequest)
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Authorization", valueList[0], &Authorization, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true})
+		if err != nil {
+			siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter Authorization: %w", err), http.StatusBadRequest)
+			return
+		}
+
+		params.Authorization = Authorization
+
+	} else {
+		siw.ErrorHandler(c, fmt.Errorf("Header parameter Authorization is required, but not found"), http.StatusBadRequest)
+		return
+	}
+
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
 		if c.IsAborted() {
@@ -52,12 +92,41 @@ func (siw *ServerInterfaceWrapper) GetAll(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.GetAll(c)
+	siw.Handler.GetAll(c, params)
 }
 
 // BuyAccessory operation middleware
 func (siw *ServerInterfaceWrapper) BuyAccessory(c *gin.Context) {
 
+	var err error
+
+	// Parameter object where we will unmarshal all parameters from the context
+	var params BuyAccessoryParams
+
+	headers := c.Request.Header
+
+	// ------------- Required header parameter "Authorization" -------------
+	if valueList, found := headers[http.CanonicalHeaderKey("Authorization")]; found {
+		var Authorization string
+		n := len(valueList)
+		if n != 1 {
+			siw.ErrorHandler(c, fmt.Errorf("Expected one value for Authorization, got %d", n), http.StatusBadRequest)
+			return
+		}
+
+		err = runtime.BindStyledParameterWithOptions("simple", "Authorization", valueList[0], &Authorization, runtime.BindStyledParameterOptions{ParamLocation: runtime.ParamLocationHeader, Explode: false, Required: true})
+		if err != nil {
+			siw.ErrorHandler(c, fmt.Errorf("Invalid format for parameter Authorization: %w", err), http.StatusBadRequest)
+			return
+		}
+
+		params.Authorization = Authorization
+
+	} else {
+		siw.ErrorHandler(c, fmt.Errorf("Header parameter Authorization is required, but not found"), http.StatusBadRequest)
+		return
+	}
+
 	for _, middleware := range siw.HandlerMiddlewares {
 		middleware(c)
 		if c.IsAborted() {
@@ -65,7 +134,7 @@ func (siw *ServerInterfaceWrapper) BuyAccessory(c *gin.Context) {
 		}
 	}
 
-	siw.Handler.BuyAccessory(c)
+	siw.Handler.BuyAccessory(c, params)
 }
 
 // GinServerOptions provides options for the Gin server.
@@ -100,6 +169,7 @@ func RegisterHandlersWithOptions(router gin.IRouter, si ServerInterface, options
 }
 
 type GetAllRequestObject struct {
+	Params GetAllParams
 }
 
 type GetAllResponseObject interface {
@@ -128,7 +198,8 @@ func (response GetAlldefaultJSONResponse) VisitGetAllResponse(w http.ResponseWri
 }
 
 type BuyAccessoryRequestObject struct {
-	Body *BuyAccessoryJSONRequestBody
+	Params BuyAccessoryParams
+	Body   *BuyAccessoryJSONRequestBody
 }
 
 type BuyAccessoryResponseObject interface {
@@ -179,8 +250,10 @@ type strictHandler struct {
 }
 
 // GetAll operation middleware
-func (sh *strictHandler) GetAll(ctx *gin.Context) {
+func (sh *strictHandler) GetAll(ctx *gin.Context, params GetAllParams) {
 	var request GetAllRequestObject
+
+	request.Params = params
 
 	handler := func(ctx *gin.Context, request interface{}) (interface{}, error) {
 		return sh.ssi.GetAll(ctx, request.(GetAllRequestObject))
@@ -204,8 +277,10 @@ func (sh *strictHandler) GetAll(ctx *gin.Context) {
 }
 
 // BuyAccessory operation middleware
-func (sh *strictHandler) BuyAccessory(ctx *gin.Context) {
+func (sh *strictHandler) BuyAccessory(ctx *gin.Context, params BuyAccessoryParams) {
 	var request BuyAccessoryRequestObject
+
+	request.Params = params
 
 	var body BuyAccessoryJSONRequestBody
 	if err := ctx.ShouldBindJSON(&body); err != nil {

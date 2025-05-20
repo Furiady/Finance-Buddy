@@ -1,0 +1,114 @@
+openapi: 3.0.0
+x-stoplight:
+  id: vtiq0njdbe94f
+info:
+  contact: {}
+  title: quest
+  version: '1.0'
+  description: Quest API Group
+paths:
+  /quests:
+    get:
+      summary: Your GET endpoint
+      tags:
+        - Quest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Quest'
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      operationId: get-quests
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
+      description: Get all quest data
+  '/quest/{id}/claim':
+    parameters:
+      - schema:
+          type: string
+        name: id
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: claim-quest
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+        default:
+          description: Error
+          content:
+            application/json:
+              schema:
+                $ref: ./common.yaml#/components/schemas/BaseResponse
+      tags:
+        - Quest
+      description: Claim quest reward
+components:
+  schemas:
+    Quest:
+      title: Quest
+      x-stoplight:
+        id: baqagpsp1cxyf
+      type: object
+      x-tags:
+        - Quest
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+          x-stoplight:
+            id: o76gzxbii6afc
+        description:
+          type: string
+          x-stoplight:
+            id: da2bgwyaqyh7u
+        reward:
+          type: integer
+          x-stoplight:
+            id: 5iyyhh407tqy9
+        cooldown:
+          type: integer
+          x-stoplight:
+            id: x721gczjjny6y
+        status:
+          type: boolean
+          x-stoplight:
+            id: 9xz3jemvs3i39
+        count:
+          type: integer
+          x-stoplight:
+            id: jmh8kfyt2qv9n
+        limit:
+          type: integer
+          x-stoplight:
+            id: ol1qobe7r04d4
+      required:
+        - id
+        - title
+        - description
+        - reward
+        - cooldown
+        - status
+        - count
+        - limit
+tags:
+  - name: Quest

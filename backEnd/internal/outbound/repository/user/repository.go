@@ -11,6 +11,7 @@ type (
 		Create(ctx context.Context, user model.RequestRegister) error
 		Get(ctx context.Context, request model.RequestGetUser) (model.User, error)
 		UpdateCoin(ctx context.Context, userId string, coin int) error
+		UpdateGamification(ctx context.Context, userId string, gamification string) error
 	}
 
 	repository struct {

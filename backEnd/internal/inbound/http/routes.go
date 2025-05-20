@@ -5,8 +5,9 @@ import (
 	"backEnd/internal/inbound/http/v1/accessory"
 	"backEnd/internal/inbound/http/v1/auth"
 	"backEnd/internal/inbound/http/v1/pet"
+	"backEnd/internal/inbound/http/v1/quest"
+	"backEnd/internal/inbound/http/v1/record"
 	"backEnd/internal/inbound/http/v1/theme"
-	"backEnd/internal/inbound/http/v1/transaction"
 	"backEnd/internal/inbound/http/v1/user"
 	httpMiddleware "backEnd/pkg/middleware/http"
 	pkgResource "backEnd/pkg/resource"
@@ -20,12 +21,13 @@ type Http struct {
 
 	Resource pkgResource.Resource
 
-	Theme       theme.Controller
-	Auth        auth.Controller
-	Accessory   accessory.Controller
-	Pet         pet.Controller
-	User        user.Controller
-	Transaction transaction.Controller
+	Theme     theme.Controller
+	Auth      auth.Controller
+	Accessory accessory.Controller
+	Pet       pet.Controller
+	User      user.Controller
+	Record    record.Controller
+	Quest     quest.Controller
 }
 
 func (h Http) Routes(gn *gin.Engine) {
@@ -53,7 +55,11 @@ func (h Http) Routes(gn *gin.Engine) {
 		httpMiddleware.ValidateToken(h.Resource.ConfigApp.Environment, h.Resource.ConfigApp.TokenSecret),
 	}))
 
-	transaction.RegisterHandlers(v1, transaction.NewStrictHandler(&h.Transaction, []transaction.StrictMiddlewareFunc{
+	record.RegisterHandlers(v1, record.NewStrictHandler(&h.Record, []record.StrictMiddlewareFunc{
+		httpMiddleware.ValidateToken(h.Resource.ConfigApp.Environment, h.Resource.ConfigApp.TokenSecret),
+	}))
+
+	quest.RegisterHandlers(v1, quest.NewStrictHandler(&h.Quest, []quest.StrictMiddlewareFunc{
 		httpMiddleware.ValidateToken(h.Resource.ConfigApp.Environment, h.Resource.ConfigApp.TokenSecret),
 	}))
 }

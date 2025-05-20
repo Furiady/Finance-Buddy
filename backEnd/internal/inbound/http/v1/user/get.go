@@ -25,13 +25,11 @@ func (c *Controller) GetUser(ctx context.Context, request GetUserRequestObject) 
 	}
 
 	return GetUser200JSONResponse{
-		common.User{
-			Id:       strconv.Itoa(data.Id),
-			Email:    types.Email(data.Email),
-			Username: data.Username,
-			Pin:      data.Pin,
-			Balance:  int64(data.Balance),
-			Coin:     data.Coin,
-		},
+		Id:       strconv.Itoa(data.Id),
+		Email:    types.Email(data.Email),
+		Username: data.Username,
+		Pin:      data.Pin,
+		Gamification: data.Gamification,
+		Coin:     data.Coin,
 	}, nil
 }

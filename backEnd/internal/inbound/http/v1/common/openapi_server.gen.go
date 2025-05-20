@@ -44,6 +44,19 @@ type Quest struct {
 	UpdatedAt   string `json:"updatedAt"`
 }
 
+// Record defines model for Record.
+type Record struct {
+	Category    string  `json:"category"`
+	CreatedAt   string  `json:"createdAt"`
+	DeductFrom  *string `json:"deductFrom,omitempty"`
+	Description string  `json:"description"`
+	Id          string  `json:"id"`
+	Title       string  `json:"title"`
+	Type        string  `json:"type"`
+	Url         *string `json:"url,omitempty"`
+	Value       int64   `json:"value"`
+}
+
 // Theme defines model for Theme.
 type Theme struct {
 	Id     string `json:"id"`
@@ -53,26 +66,14 @@ type Theme struct {
 	Status bool   `json:"status"`
 }
 
-// Transaction defines model for Transaction.
-type Transaction struct {
-	Category    string `json:"category"`
-	CreatedAt   string `json:"createdAt"`
-	Description string `json:"description"`
-	Id          string `json:"id"`
-	Title       string `json:"title"`
-	Type        string `json:"type"`
-	Url         string `json:"url"`
-	Value       int64  `json:"value"`
-}
-
 // User defines model for User.
 type User struct {
-	Balance  int64               `json:"balance"`
-	Coin     int                 `json:"coin"`
-	Email    openapi_types.Email `json:"email"`
-	Id       string              `json:"id"`
-	Pin      string              `json:"pin"`
-	Username string              `json:"username"`
+	Coin         int                 `json:"coin"`
+	Email        openapi_types.Email `json:"email"`
+	Gamification string              `json:"gamification"`
+	Id           string              `json:"id"`
+	Pin          string              `json:"pin"`
+	Username     string              `json:"username"`
 }
 
 // ServerInterface represents all server handlers.

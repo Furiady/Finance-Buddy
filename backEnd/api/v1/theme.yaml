@@ -1,6 +1,6 @@
 openapi: 3.0.0
 x-stoplight:
-  id: j1s9tpnt7n0lf
+  id: pekiixqepo3lf
 info:
   contact: {}
   title: theme
@@ -31,7 +31,12 @@ paths:
       requestBody:
         content: {}
       description: Get list of theme
-      parameters: []
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
+          required: true
   /theme:
     post:
       summary: ''
@@ -58,11 +63,16 @@ paths:
                 themeId:
                   type: string
                   x-stoplight:
-                    id: vduwfikk3wx5g
+                    id: zfa1qd23og2hn
               required:
                 - themeId
       description: Buy theme
       tags:
         - Theme
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: Authorization
 tags:
   - name: Theme
